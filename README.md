@@ -11,7 +11,7 @@ MobileL2P is a mobile version of the RWTH Aachen L2P.
 `git clone https://github.com/jeanjackfranji/mobileL2P.git`
 
 2- Download Node JS using this link: 
-	..* https://nodejs.org/en/download/
+	+ https://nodejs.org/en/download/
 	
 3- Open CMD Tool (Command Line Prompt) using administrator privilegs:
 	* Execute the following commands:
