@@ -1,0 +1,5 @@
+C:\Users\Jean Jack\Documents\Visual Studio 2013\Projects\L2P-Api-Client-master\L2PAPIClient\bin\Debug\L2PAPIClient.dll.config
+C:\Users\Jean Jack\Documents\Visual Studio 2013\Projects\L2P-Api-Client-master\L2PAPIClient\bin\Debug\L2PAPIClient.dll
+C:\Users\Jean Jack\Documents\Visual Studio 2013\Projects\L2P-Api-Client-master\L2PAPIClient\bin\Debug\L2PAPIClient.pdb
+C:\Users\Jean Jack\Documents\Visual Studio 2013\Projects\L2P-Api-Client-master\L2PAPIClient\obj\Debug\L2PAPIClient.dll
+C:\Users\Jean Jack\Documents\Visual Studio 2013\Projects\L2P-Api-Client-master\L2PAPIClient\obj\Debug\L2PAPIClient.pdb

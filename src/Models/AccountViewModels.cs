@@ -7,8 +7,8 @@ namespace Cik.MazSite.WebApp.Models
     public class ExternalLoginConfirmationViewModel
     {
         [Required]
-        [EmailAddress]
-        public string Email { get; set; }
+        [StringLength(100)]
+        public string Username { get; set; }
     }
 
     public class SendCodeViewModel
@@ -42,11 +42,11 @@ namespace Cik.MazSite.WebApp.Models
     public class ResetPasswordViewModel
     {
         [Required]
-        [EmailAddress]
-        public string Email { get; set; }
+        [StringLength(100, ErrorMessage = "The {0} must be at least {8} characters long.", MinimumLength = 8)]
+        public string Username { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
+        [StringLength(8, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
@@ -61,15 +61,15 @@ namespace Cik.MazSite.WebApp.Models
     public class ForgotPasswordViewModel
     {
         [Required]
-        [EmailAddress]
-        public string Email { get; set; }
+        [StringLength(100)]
+        public string Username { get; set; }
     }
 
     public class LoginViewModel
     {
         [Required]
-        [EmailAddress]
-        public string Email { get; set; }
+        [StringLength(100)]
+        public string Username { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
@@ -82,9 +82,9 @@ namespace Cik.MazSite.WebApp.Models
     public class RegisterViewModel
     {
         [Required]
-        [EmailAddress]
-        [Display(Name = "Email")]
-        public string Email { get; set; }
+        [StringLength(100)]
+        [Display(Name = "Username")]
+        public string Username { get; set; }
 
         [Required]
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]

@@ -8,6 +8,9 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Mvc;
 using Microsoft.AspNet.Mvc.Rendering;
 using Microsoft.Data.Entity;
+using System.Diagnostics;
+using System.Threading;
+using System;
 
 namespace Cik.MazSite.WebApp.Controllers
 {
@@ -58,10 +61,43 @@ namespace Cik.MazSite.WebApp.Controllers
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+                var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
-                    return RedirectToLocal(returnUrl);
+
+                    //Init the Auth Process
+                    string url = L2PAPIClient.AuthenticationManager.StartAuthenticationProcessAsync().Result;
+
+                    // Inform user and start browser
+                    //Console.WriteLine("A Browser will open. Please authenticate this application.");
+                    Process.Start(url);
+
+                    // Wait for authentication
+                    // so far, not authenticated
+                    bool done = false;
+
+                    while (!done)
+                    {
+                        // Just wait 5 seconds - this is the recommended querying time for OAuth by ITC
+                        Thread.Sleep(5000);
+
+                        await L2PAPIClient.AuthenticationManager.CheckAuthenticationProgressAsync();
+
+                        done = (L2PAPIClient.AuthenticationManager.getState() == L2PAPIClient.AuthenticationManager.AuthenticationState.ACTIVE);
+
+                        if (!done)
+                        {
+                            Console.WriteLine("App not authenticated right now...");
+                        }
+                        else
+                        {
+                            Console.WriteLine("App authenticated!");
+                            return RedirectToLocal(returnUrl);
+                        }
+                    }
+
+                    return View(model);
+
                 }
                 if (result.RequiresTwoFactor)
                 {
@@ -101,7 +137,7 @@ namespace Cik.MazSite.WebApp.Controllers
             EnsureDatabaseCreated(_applicationDbContext);
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.Username, Email = model.Username };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -177,7 +213,7 @@ namespace Cik.MazSite.WebApp.Controllers
                 ViewData["ReturnUrl"] = returnUrl;
                 ViewData["LoginProvider"] = info.LoginProvider;
                 var email = info.ExternalPrincipal.FindFirstValue(ClaimTypes.Email);
-                return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { Email = email });
+                return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { Username = email });
             }
         }
 
@@ -201,7 +237,7 @@ namespace Cik.MazSite.WebApp.Controllers
                 {
                     return View("ExternalLoginFailure");
                 }
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.Username, Email = model.Username };
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
@@ -255,7 +291,7 @@ namespace Cik.MazSite.WebApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await _userManager.FindByNameAsync(model.Email);
+                var user = await _userManager.FindByNameAsync(model.Username);
                 if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
                 {
                     // Don't reveal that the user does not exist or is not confirmed
@@ -304,7 +340,7 @@ namespace Cik.MazSite.WebApp.Controllers
             {
                 return View(model);
             }
-            var user = await _userManager.FindByNameAsync(model.Email);
+            var user = await _userManager.FindByNameAsync(model.Username);
             if (user == null)
             {
                 // Don't reveal that the user does not exist

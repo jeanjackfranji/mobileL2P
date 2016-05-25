@@ -6,59 +6,64 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="description" content="Magazine Website, a simple website about magazines.">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>@ViewData["Title"] - Magazine Website</title>
+    <title>@ViewData["Title"] - L2P Mobile</title>
 
-    <!-- Material Design Lite -->
-    <script src="https://storage.googleapis.com/code.getmdl.io/1.0.4/material.min.js"></script>
-    <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.0.4/material.indigo-pink.min.css">
     <!-- Material Design icon font -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-
+    <!-- Material Design Lite -->
+    <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.1.3/material.indigo-pink.min.css">
+    <script defer src="https://storage.googleapis.com/code.getmdl.io/1.1.3/material.min.js"></script>
     <link rel="stylesheet" href="~/css/site.css"/>
+
 </head>
 <body>
 <div class="mdl-layout mdl-js-layout">
-    <header class="mdl-layout__header mdl-layout__header--waterfall">
-        <!-- Top row, always visible -->
-        <div class="mdl-layout__header-row">
-            <!-- Title -->
-            <span class="mdl-layout-title">Magazine Website</span>
-            <div class="mdl-layout-spacer"></div>
-            <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable
-                mdl-textfield--floating-label mdl-textfield--align-right">
-                <label class="mdl-button mdl-js-button mdl-button--icon"
-                       for="waterfall-exp">
-                    <i class="material-icons">search</i>
-                </label>
-                <div class="mdl-textfield__expandable-holder">
-                    <input class="mdl-textfield__input" type="text" name="sample"
-                           id="waterfall-exp"/>
+    <!-- Always shows a header, even in smaller screens. -->
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+        <header class="mdl-layout__header">
+            <div class="mdl-layout__header-row">
+                <!-- Title -->
+                <span class="mdl-layout-title">L2P Mobile</span>
+                <!-- Add spacer, to align navigation to the right -->
+                <div class="mdl-layout-spacer"></div>
+                <!-- Navigation. We hide it in small screens. -->
+                <nav class="mdl-navigation mdl-layout--large-screen-only">
+                    <a class="mdl-navigation__link" href="">Link</a>
+                    <a class="mdl-navigation__link" href="">Link</a>
+                </nav>
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable
+                  mdl-textfield--floating-label mdl-textfield--align-right">
+                    <label class="mdl-button mdl-js-button mdl-button--icon"
+                           for="fixed-header-drawer-exp">
+                        <i class="material-icons">search</i>
+                    </label>
+                    <div class="mdl-textfield__expandable-holder">
+                        <input class="mdl-textfield__input" type="text" name="sample"
+                               id="fixed-header-drawer-exp">
+                    </div>
                 </div>
             </div>
+        </header>
+        <div class="mdl-layout__drawer">
+            <span class="mdl-layout-title">L2P Mobile</span>
+            <nav class="mdl-navigation">
+                <a asp-controller="Home" asp-action="Index" class="mdl-navigation__link">Home</a>
+                <a asp-controller="Home" asp-action="About" class="mdl-navigation__link">About</a>
+                <a asp-controller="Home" asp-action="Contact" class="mdl-navigation__link">Contact</a>
+                <hr />
+                @await Html.PartialAsync("_LoginPartial")
+            </nav>
         </div>
-
-    </header>
-
-    <div class="mdl-layout__drawer">
-        <span class="mdl-layout-title">Magazine Website</span>
-        <nav class="mdl-navigation">
-            <a asp-controller="Home" asp-action="Index" class="mdl-navigation__link">Home</a>
-            <a asp-controller="Home" asp-action="About" class="mdl-navigation__link">About</a>
-            <a asp-controller="Home" asp-action="Contact" class="mdl-navigation__link">Contact</a>
-            <hr/>
-            @await Html.PartialAsync("_LoginPartial")
-        </nav>
+        <main class="mdl-layout__content">
+            <div class="mdl-grid page-content">
+                @RenderBody()
+            </div>
+        </main>
     </div>
-
-    <main class="mdl-layout__content">
-        <div class="mdl-grid page-content">
-            @RenderBody()
-        </div>
-    </main>
 
     <footer class="mdl-mini-footer">
         <div class="mdl-mini-footer--left-section">
-            <p>&copy; 2015 - MazWebApp</p>
+            <p>&copy; 2016 - Mobile L2P</p>
         </div>
     </footer>
 </div>
