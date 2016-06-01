@@ -59,6 +59,7 @@ namespace Cik.MazSite.WebApp.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
+                 
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
                 var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberMe, lockoutOnFailure: false);
@@ -70,7 +71,7 @@ namespace Cik.MazSite.WebApp.Controllers
 
                     // Inform user and start browser
                     //Console.WriteLine("A Browser will open. Please authenticate this application.");
-                    Process.Start(url);
+                    Process.Start("chrome.exe",url);
 
                     // Wait for authentication
                     // so far, not authenticated
