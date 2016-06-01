@@ -30,6 +30,11 @@
     width: auto !important;
 }
 
+.mdl-button--icon {
+  margin-right: 3px;
+  margin-left: 3px;
+}
+
 .mdl-mini-footer {
     padding: 5px 16px !important;
 }

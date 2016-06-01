@@ -6,40 +6,32 @@
 
 
 <div class="mdl-cell mdl-cell--12-col">
-    <div align="right">
-        <button id="demo-menu-lower-right"
-                class="mdl-button mdl-js-button mdl-button--icon">
-            <i class="material-icons">more_vert</i>
-        </button>
-    </div>
-    <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="demo-menu-lower-right">
-        <li class="mdl-menu__item"><a asp-controller="MyCourse" asp-action="LearningMaterials" class="mdl-navigation__link">Learning Materials</a></li>
-        <li class="mdl-menu__item"><a asp-controller="MyCourse" asp-action="SharedDocuments" class="mdl-navigation__link">Shared Documents</a></li>
-        <li class="mdl-menu__item"><a asp-controller="MyCourse" asp-action="Hyperlinks" class="mdl-navigation__link">Hyperlinks</a></li>
-        <li class="mdl-menu__item"><a asp-controller="MyCourse" asp-action="Assignments" class="mdl-navigation__link">Assignments</a></li>
-        <li class="mdl-menu__item">Announcements</li>
-        <li class="mdl-menu__item">Emails</li>
-        <li class="mdl-menu__item">Discussion Forum</li>
-        <li class="mdl-menu__item"><a asp-controller="MyCourse" asp-action="MediaLibrary" class="mdl-navigation__link">Media Library</a></li>
-        <li class="mdl-menu__item"><a asp-controller="MyCourse" asp-action="Literature" class="mdl-navigation__link">Literarture</a></li>
-    </ul>
+
     <h3>@ViewData["Title"]</h3>
 
     <hr />
 
-    <table align="center">
-
+    <table align="left">
         <tr>
+            <td style="align-content:flex-end">
+
+                <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab" title="Add Assignment">
+                    <i class="material-icons">add</i>
+                </button>
+
+            </td>
             <td>
-                <button class="mdl-button mdl-js-button mdl-button--fab">
+                <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab" title="Corrected Assignments">
                     <i class="material-icons">delete</i>
                 </button>
             </td>
             <td>
-                <button class="mdl-button mdl-js-button mdl-button--fab">
+                <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab" title="Corrected Assignments">
                     <i class="material-icons">file_download</i>
                 </button>
             </td>
+        </tr>
+    </table>
             <!-- <td>
                   <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-shadow--4dp">
                       <i class="material-icons">add</i>
@@ -51,7 +43,7 @@
 
 </div>
 <div class="mdl-cell mdl-cell--12-col">
-    <table align="center" class="mdl-data-table mdl-js-data-table mdl-data-table--selectable">
+    <table align="left" class="mdl-data-table mdl-js-data-table mdl-data-table--selectable">
         <thead>
             <tr>
                 <th class="mdl-data-table__cell--non-numeric">File</th>
@@ -59,25 +51,17 @@
         </thead>
         <tbody>
             <tr>
-                <td class="mdl-data-table__cell--non-numeric">Document 1</td>
+                <td class="mdl-data-table__cell--non-numeric"><a href="https://www3.elearning.rwth-aachen.de/ws15/15ws-04405/Lists/LiteratureDocuments/A04/The%20Human.pdf">The Human</a></td>
             </tr>
             <tr>
-                <td class="mdl-data-table__cell--non-numeric">Document 2</td>
+                <td class="mdl-data-table__cell--non-numeric"><a href="https://www3.elearning.rwth-aachen.de/ws15/15ws-04405/Lists/LiteratureDocuments/A04/The%20Human.pdf">The Interaction</a></td>
             </tr>
             <tr>
-                <td class="mdl-data-table__cell--non-numeric">Document 3</td>
+                <td class="mdl-data-table__cell--non-numeric"><a href="https://www3.elearning.rwth-aachen.de/ws15/15ws-04405/Lists/LiteratureDocuments/A04/The%20Human.pdf">Theories</a></td>
             </tr>
         </tbody>
     </table>
 
 </div>
 
-<div class="mdl-grid">
-    <div class="mdl-cell mdl-cell--12-col">
-        <div id="bottom-right">
-            <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored mdl-shadow--4dp mdl-color--accent">
-                <i class="material-icons">add</i>
-            </button>
-        </div>
-    </div>
-</div>
+

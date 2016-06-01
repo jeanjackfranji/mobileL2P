@@ -6,37 +6,21 @@
 
 
 <div class="mdl-cell mdl-cell--12-col">
-    <div align="right">
-        <button id="demo-menu-lower-right"
-                class="mdl-button mdl-js-button mdl-button--icon">
-            <i class="material-icons">more_vert</i>
-        </button>
-    </div>
-    <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="demo-menu-lower-right">
-        <li class="mdl-menu__item"><a asp-controller="MyCourse" asp-action="LearningMaterials" class="mdl-navigation__link">Learning Materials</a></li>
-        <li class="mdl-menu__item"><a asp-controller="MyCourse" asp-action="SharedDocuments" class="mdl-navigation__link">Shared Documents</a></li>
-        <li class="mdl-menu__item"><a asp-controller="MyCourse" asp-action="Hyperlinks" class="mdl-navigation__link">Hyperlinks</a></li>
-        <li class="mdl-menu__item"><a asp-controller="MyCourse" asp-action="Assignments" class="mdl-navigation__link">Assignments</a></li>
-        <li class="mdl-menu__item">Announcements</li>
-        <li class="mdl-menu__item">Emails</li>
-        <li class="mdl-menu__item">Discussion Forum</li>
-        <li class="mdl-menu__item"><a asp-controller="MyCourse" asp-action="MediaLibrary" class="mdl-navigation__link">Media Library</a></li>
-        <li class="mdl-menu__item"><a asp-controller="MyCourse" asp-action="Literature" class="mdl-navigation__link">Literarture</a></li>
-    </ul>
-    <h3>@ViewData["Title"]</h3>
+
+    <h4>@ViewData["Title"]</h4>
 
     <hr />
 
-    <table align="center">
+    <table align="left">
 
         <tr>
             <td>
-                <button class="mdl-button mdl-js-button mdl-button--fab">
+                <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab">
                     <i class="material-icons">delete</i>
                 </button>
             </td>
             <td>
-                <button class="mdl-button mdl-js-button mdl-button--fab">
+                <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab">
                     <i class="material-icons">file_download</i>
                 </button>
             </td>
@@ -51,7 +35,7 @@
 
 </div>
 <div class="mdl-cell mdl-cell--12-col">
-    <table align="center" class="mdl-data-table mdl-js-data-table mdl-data-table--selectable">
+    <table align="left" class="mdl-data-table mdl-js-data-table mdl-data-table--selectable">
         <thead>
             <tr>
                 <th class="mdl-data-table__cell--non-numeric">File</th>
