@@ -15,8 +15,15 @@ namespace Grp.L2PSite.MobileApp.Controllers
             ViewData["Message"] = "Your application description page.";
             return View();
         }
-        
-
-
+        public IActionResult Literature()
+        {
+            ViewData["Message"] = "Your application description page.";
+            return View();
+        }
+        public IActionResult MediaLibrary()
+        {
+            ViewData["Message"] = "Your application description page.";
+            return View();
+        }
     }
 }
