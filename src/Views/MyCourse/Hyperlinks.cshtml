@@ -1,0 +1,82 @@
+﻿@{
+    ViewData["Title"] = "Hyperlinks";
+}
+
+
+
+
+<div class="mdl-cell mdl-cell--12-col">
+    <div align="right">
+        <button id="demo-menu-lower-right"
+                class="mdl-button mdl-js-button mdl-button--icon">
+            <i class="material-icons">more_vert</i>
+        </button>
+    </div>
+    <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="demo-menu-lower-right">
+        <li class="mdl-menu__item"><a asp-controller="MyCourse" asp-action="LearningMaterials" class="mdl-navigation__link">Learning Materials</a></li>
+        <li class="mdl-menu__item"><a asp-controller="MyCourse" asp-action="SharedDocuments" class="mdl-navigation__link">Shared Documents</a></li>
+        <li class="mdl-menu__item"><a asp-controller="MyCourse" asp-action="Hyperlinks" class="mdl-navigation__link">Hyperlinks</a></li>
+        <li class="mdl-menu__item">Assignments</li>
+        <li class="mdl-menu__item">Announcements</li>
+        <li class="mdl-menu__item">Emails</li>
+        <li class="mdl-menu__item">Discussion Forum</li>
+        <li class="mdl-menu__item"><a asp-controller="MyCourse" asp-action="MediaLibrary" class="mdl-navigation__link">Media Library</a></li>
+        <li class="mdl-menu__item"><a asp-controller="MyCourse" asp-action="Literature" class="mdl-navigation__link">Literarture</a></li>
+    </ul>
+    <h3>@ViewData["Title"]</h3>
+
+    <hr />
+    <table align="center">
+
+        <tr>
+            <td>
+                <button class="mdl-button mdl-js-button mdl-button--fab">
+                    <i class="material-icons">delete</i>
+                </button>
+            </td>
+            <td>
+                <button class="mdl-button mdl-js-button mdl-button--fab">
+                    <i class="material-icons">file_download</i>
+                </button>
+            </td>
+            <!-- <td>
+                  <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-shadow--4dp">
+                      <i class="material-icons">add</i>
+                  </button>
+              </td>-->
+        </tr>
+    </table>
+
+
+</div>
+<div class="mdl-cell mdl-cell--12-col">
+    <table align="center" class="mdl-data-table mdl-js-data-table mdl-data-table--selectable">
+        <thead>
+            <tr>
+                <th class="mdl-data-table__cell--non-numeric">File</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="mdl-data-table__cell--non-numeric">Link 1</td>
+            </tr>
+            <tr>
+                <td class="mdl-data-table__cell--non-numeric">Link 2</td>
+            </tr>
+            <tr>
+                <td class="mdl-data-table__cell--non-numeric">Link 3</td>
+            </tr>
+        </tbody>
+    </table>
+
+</div>
+
+<div class="mdl-grid">
+    <div class="mdl-cell mdl-cell--12-col">
+        <div id="bottom-right">
+            <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored mdl-shadow--4dp mdl-color--accent">
+                <i class="material-icons">add</i>
+            </button>
+        </div>
+    </div>
+</div>
