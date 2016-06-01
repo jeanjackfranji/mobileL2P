@@ -1,8 +1,44 @@
-﻿@{
+﻿@using L2PAPIClient.DataModel;
+@{
     ViewData["Title"] = "Home Page";
+
+    var result = ViewData["Courses"];
 }
 
 <div class="mdl-cell mdl-cell--12-col">
     <h3>@ViewData["Title"]</h3>
     <h4>@ViewData["Message"]</h4>
+
+    @if (result != null)
+    {
+
+        List<L2PCourseInfoData> courses = ((List<L2PCourseInfoData>)ViewData["Courses"]);
+        var semesters = (from a in courses
+                         select a.semester).Distinct();
+
+        if (semesters.Any())
+        {
+            <!-- Primary-colored flat button -->
+            <button class="mdl-button mdl-js-button mdl-button--primary">
+                @semesters.First()
+            </button>
+           
+            foreach (String semester in semesters.ToList().Skip(1))
+            {
+                 <!-- Primary-colored flat button -->
+                <button class="mdl-button mdl-js-button mdl-button--accent">
+                    @semester
+                </button>
+            }
+
+            List<L2PCourseInfoData> currentCourses = L2PAPIClient.api.Calls.L2PviewAllCourseIfoBySemesterAsync(semesters.First()).Result.dataset;
+            foreach (L2PCourseInfoData infoData in currentCourses)
+            {
+                <p> @infoData.courseTitle </p>
+            }
+        }
+
+
+    }
+
 </div>

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNet.Mvc;
+using L2PAPIClient.DataModel;
 
 namespace Cik.MazSite.WebApp.Controllers
 {
@@ -6,6 +7,14 @@ namespace Cik.MazSite.WebApp.Controllers
     {
         public IActionResult Index()
         {
+            bool isActive = (L2PAPIClient.AuthenticationManager.getState() == L2PAPIClient.AuthenticationManager.AuthenticationState.ACTIVE);
+            if (isActive)
+            {
+                L2PCourseInfoSetData result = L2PAPIClient.api.Calls.L2PviewAllCourseInfoAsync().Result;
+                ViewData["Courses"] = result.dataset;
+
+            }
+
             return View();
         }
 
