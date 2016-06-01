@@ -32,6 +32,7 @@
             }
 
             List<L2PCourseInfoData> currentCourses = L2PAPIClient.api.Calls.L2PviewAllCourseIfoBySemesterAsync(semesters.First()).Result.dataset;
+            List<L2PAnnouncementElement> anncList = L2PAPIClient.api.Calls.L2PviewAllAnnouncements(semesters.First()).Result.dataSet;
             foreach (L2PCourseInfoData infoData in currentCourses)
             {
                 <p> @infoData.courseTitle </p>
