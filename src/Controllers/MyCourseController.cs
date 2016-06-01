@@ -41,5 +41,10 @@ namespace Grp.L2PSite.MobileApp.Controllers
             return View();
         }
 
+        public IActionResult Assignments()
+        {
+            return View();
+        }
+
     }
 }

@@ -49,6 +49,9 @@
     padding: 0 !important;
 }
 
-.full-width {
-    width: 100%;
+#bottom-right
+{
+right: 10%;
+bottom: 10%;
+position: absolute;
 }

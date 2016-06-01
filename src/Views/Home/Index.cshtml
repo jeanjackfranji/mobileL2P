@@ -18,20 +18,27 @@
 
         if (semesters.Any())
         {
-            <!-- Primary-colored flat button -->
-            <button class="mdl-button mdl-js-button mdl-button--primary">
-                @semesters.First()
-            </button>
+            <table align="center">
+                <tr>
+                    <td>    
+                        <!-- Primary-colored flat button -->
+                        <button class="mdl-button mdl-js-button mdl-button--primary">@semesters.First()</button>
+                    </td>
+                    <td>
+                        @{
+                            foreach (String semester in semesters.ToList().Skip(1))
+                            {
+                                 <!-- Primary-colored flat button -->
+                                <button class="mdl-button mdl-js-button mdl-button--accent">@semester</button>
+                            }
+                        }
+                    </td>
+                </tr>
 
-            foreach (String semester in semesters.ToList().Skip(1))
-            {
-                 <!-- Primary-colored flat button -->
-                <button class="mdl-button mdl-js-button mdl-button--accent">
-                    @semester
-                </button>
-            }
+            </table>
+
             <div class="mdl-cell mdl-cell--12-col">
-                <table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp full-width">
+                <table align="center" class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp">
                     <thead>
                         <tr>
                             <th class="mdl-data-table__cell--non-numeric">Course Room</th>
