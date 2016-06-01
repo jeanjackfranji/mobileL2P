@@ -1,0 +1,33 @@
+﻿@{
+    ViewData["Title"] = "Course Info";
+}
+
+<div class="mdl-cell mdl-cell--12-col">
+    <div align="right">
+        <button id="demo-menu-lower-right"
+                class="mdl-button mdl-js-button mdl-button--icon">
+            <i class="material-icons">more_vert</i>
+        </button>
+    </div>
+    <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="demo-menu-lower-right">
+         <li class="mdl-menu__item"><a asp-controller="MyCourse" asp-action="LearningMaterials" class="mdl-navigation__link">Learning Materials</a></li>
+        <li class="mdl-menu__item"><a asp-controller="MyCourseFiles" asp-action="SharedDocuments" class="mdl-navigation__link">Shared Documents</a></li>
+        <li class="mdl-menu__item"><a asp-controller="MyCourseFiles" asp-action="Hyperlinks" class="mdl-navigation__link">Hyperlinks</a></li> 
+        <li class="mdl-menu__item">Assignments</li> 
+         <li class="mdl-menu__item">Announcements</li>
+         <li class="mdl-menu__item">Emails</li>
+        <li class="mdl-menu__item">Discussion Forum</li>
+   </ul>
+      </div>
+    <div class="mdl-grid">
+        <div class="mdl-cell mdl-cell--12-col">
+            <h3>@ViewData["Title"]</h3>
+            <p>
+                Lorem ipsum dolor sit amet
+                Qui sint ut et qui nisi cupidatat. Reprehenderit nostrud proident officia exercitation anim et pariatur ex.
+                Dolore ex deserunt aute fugiat aute nulla ea sunt aliqua nisi cupidatat eu. Nostrud in laboris labore nisi amet do dolor eu fugiat consectetur elit cillum esse.
+            </p>
+        </div>
+        </div>
+  
+   

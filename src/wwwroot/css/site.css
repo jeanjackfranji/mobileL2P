@@ -48,3 +48,9 @@
     margin: 0 !important;
     padding: 0 !important;
 }
+#bottom-right
+{
+right: 10%;
+bottom: 10%;
+position: absolute;
+}

@@ -1,0 +1,65 @@
+﻿@{
+    ViewData["Title"] = "Learning Materials";
+}
+
+
+
+
+<div class="mdl-cell mdl-cell--12-col">
+    <h3>@ViewData["Title"]</h3>
+
+    <hr />
+    <table align="center">
+
+        <tr>
+            <td>
+                <button class="mdl-button mdl-js-button mdl-button--fab">
+                    <i class="material-icons">delete</i>
+                </button>
+            </td>
+            <td>
+                <button class="mdl-button mdl-js-button mdl-button--fab">
+                    <i class="material-icons">file_download</i>
+                </button>
+            </td>
+            <!-- <td>
+                  <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-shadow--4dp">
+                      <i class="material-icons">add</i>
+                  </button>
+              </td>-->
+        </tr>
+    </table>
+
+
+</div>
+<div class="mdl-cell mdl-cell--12-col">
+    <table align="center" class="mdl-data-table mdl-js-data-table mdl-data-table--selectable">
+        <thead>
+            <tr>
+                <th class="mdl-data-table__cell--non-numeric">File</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="mdl-data-table__cell--non-numeric">Lesson 1</td>
+            </tr>
+            <tr>
+                <td class="mdl-data-table__cell--non-numeric">Lesson 2</td>
+            </tr>
+            <tr>
+                <td class="mdl-data-table__cell--non-numeric">Lesson 3</td>
+            </tr>
+        </tbody>
+    </table>
+
+</div>
+
+<div class="mdl-grid">
+    <div class="mdl-cell mdl-cell--12-col">
+        <div id="bottom-right">
+            <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored mdl-shadow--4dp mdl-color--accent">
+                <i class="material-icons">add</i>
+            </button>
+        </div>
+    </div>
+</div>
