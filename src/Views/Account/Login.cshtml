@@ -14,10 +14,10 @@
           asp-route-returnurl="@ViewData["ReturnUrl"]"
           method="post" role="form">
         <div class="mdl-grid page-container">
-            <div class="mdl-cell mdl-cell--7-col page-row">
+            <div class="mdl-cell mdl-cell--12-col page-row">
                 <div class="mdl-grid page-container">
                     <div class="mdl-cell mdl-cell--12-col page-row">
-                        <h3 class="page-title">Use a local account to log in</h3>
+                        <h3 class="page-title">Use your L2P credentials to log in</h3>
                         <hr/>
                     </div>
                     <div asp-validation-summary="ValidationSummary.All"></div>
@@ -45,54 +45,6 @@
                             Log in
                         </button>
                     </div>
-                    <p class="mdl-cell mdl-cell--12-col">
-                        <a asp-action="Register">Register as a new user?</a>
-                        <a asp-action="ForgotPassword">Forgot your password?</a>
-                    </p>
-                </div>
-            </div>
-            <div class="mdl-cell mdl-cell--5-col page-row">
-                <div class="mdl-grid page-container">
-                    <div class="mdl-cell mdl-cell--12-col page-row">
-                        <h3 class="page-title">Use another service to log in.</h3>
-                        <hr/>
-                    </div>
-                    @{
-                        var loginProviders = SignInManager.GetExternalAuthenticationSchemes().ToList();
-                        if (loginProviders.Count == 0)
-                        {
-                            <div>
-                                <p>
-                                    There are no external authentication services configured. See <a href="http://go.microsoft.com/fwlink/?LinkID=532715">this article</a>
-                                    for details on setting up this ASP.NET application to support logging in via external services.
-                                </p>
-                            </div>
-                        }
-                        else
-                        {
-                            <form asp-controller="Account"
-                                  asp-action="ExternalLogin"
-                                  asp-route-returnurl="@ViewData["ReturnUrl"]"
-                                  method="post" role="form">
-                                <div>
-                                    <p>
-                                        @foreach (var provider in loginProviders)
-                                        {
-                                            <button type="submit"
-                                                    class="mdl-button mdl-js-button 
-                                                        mdl-button--raised mdl-button--colored
-                                                        mdl-js-ripple-effect"
-                                                    name="provider"
-                                                    value="@provider.AuthenticationScheme"
-                                                    title="Log in using your @provider.Caption account">
-                                                @provider.AuthenticationScheme
-                                            </button>
-                                        }
-                                    </p>
-                                </div>
-                            </form>
-                        }
-                    }
                 </div>
             </div>
         </div>

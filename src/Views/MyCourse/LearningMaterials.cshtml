@@ -1,0 +1,92 @@
+﻿@{
+    ViewData["Title"] = "Learning Materials";
+}
+
+<div class="mdl-cell mdl-cell--12-col">
+    <div align="right">
+        <button id="demo-menu-lower-right"
+                class="mdl-button mdl-js-button mdl-button--icon">
+            <i class="material-icons">more_vert</i>
+        </button>
+    </div>
+    <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="demo-menu-lower-right">
+        <li class="mdl-menu__item"><a asp-controller="MyCourse" asp-action="LearningMaterials" class="mdl-navigation__link">Learning Materials</a></li>
+        <li class="mdl-menu__item"><a asp-controller="MyCourse" asp-action="SharedDocuments" class="mdl-navigation__link">Shared Documents</a></li>
+        <li class="mdl-menu__item"><a asp-controller="MyCourse" asp-action="Hyperlinks" class="mdl-navigation__link">Hyperlinks</a></li>
+        <li class="mdl-menu__item"><a asp-controller="MyCourse" asp-action="Assignments" class="mdl-navigation__link">Assignments</a></li>
+        <li class="mdl-menu__item">Announcements</li>
+        <li class="mdl-menu__item">Emails</li>
+        <li class="mdl-menu__item">Discussion Forum</li>
+        <li class="mdl-menu__item"><a asp-controller="MyCourse" asp-action="MediaLibrary" class="mdl-navigation__link">Media Library</a></li>
+        <li class="mdl-menu__item"><a asp-controller="MyCourse" asp-action="Literature" class="mdl-navigation__link">Literarture</a></li>
+    </ul>
+    <h3>@ViewData["Title"]</h3>
+
+    <hr />
+
+</div>
+
+<div class="mdl-cell mdl-cell--12-col">
+    <table align="center" class="mdl-cell--stretch">
+        <tr>
+            <td>
+                <button class="mdl-button mdl-js-button mdl-button--fab">
+                    <i class="material-icons">delete</i>
+                </button>
+            </td>
+            <td>
+                <button class="mdl-button mdl-js-button mdl-button--fab">
+                    <i class="material-icons">file_download</i>
+                </button>
+            </td>
+            <!-- <td>
+                  <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-shadow--4dp">
+                      <i class="material-icons">add</i>
+                  </button>
+              </td>-->
+        </tr>
+    </table>
+</div>
+<div class="mdl-cell mdl-cell--12-col">
+    <table align="center" class="mdl-data-table mdl-js-data-table mdl-data-table--selectable">
+        <thead>
+            <tr>
+                <th class="mdl-data-table__cell--non-numeric">File</th>
+                <th class="mdl-data-table__cell--non-numeric">Lecture Date</th>
+                <th class="mdl-data-table__cell--non-numeric">Modified</th>
+                <th class="mdl-data-table__cell--non-numeric">File Size</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="mdl-data-table__cell--non-numeric">S02–GEL, BWS</td>
+                <td class="mdl-data-table__cell--non-numeric">4/11/2016 10:05 AM</td>
+                <td class="mdl-data-table__cell--non-numeric">April 18</td>
+                <td class="mdl-data-table__cell--non-numeric">239 KB</td>
+            </tr>
+            <tr>
+                <td class="mdl-data-table__cell--non-numeric">S03–WM, UITK</td>
+                <td class="mdl-data-table__cell--non-numeric">4/15/2016 2:10 PM</td>
+                <td class="mdl-data-table__cell--non-numeric">April 22</td>
+                <td class="mdl-data-table__cell--non-numeric">7578 KB</td>
+            </tr>
+            <tr>
+                <td class="mdl-data-table__cell--non-numeric">S04–UITK, Wayland</td>
+                <td class="mdl-data-table__cell--non-numeric">4/19/2016 10:30 PM</td>
+                <td class="mdl-data-table__cell--non-numeric">April 25</td>
+                <td class="mdl-data-table__cell--non-numeric">5821 KB</td>
+            </tr>
+        </tbody>
+    </table>
+
+</div>
+
+<div class="mdl-grid">
+    <div class="mdl-cell mdl-cell--12-col">
+        <div id="bottom-right">
+            <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored mdl-shadow--4dp mdl-color--accent">
+                <i class="material-icons">add</i>
+            </button>
+        </div>
+    </div>
+</div>
