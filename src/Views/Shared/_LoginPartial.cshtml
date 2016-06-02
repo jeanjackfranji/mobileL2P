@@ -1,8 +1,8 @@
-﻿@using System.Security.Claims
-@if (User.Identity.IsAuthenticated)
+﻿@using Grp.L2PSite.MobileApp.Controllers
+@if (L2PAPIClient.AuthenticationManager.getState() == L2PAPIClient.AuthenticationManager.AuthenticationState.ACTIVE && AppVariables.loggedIn)
 {
     <form asp-controller="Account" asp-action="LogOff" method="post" id="logoutForm">
-        <a asp-controller="Manage" asp-action="Index" title="Manage" class="mdl-navigation__link">@User.GetUserName()!</a>
+        <!--<a asp-controller="Manage" asp-action="Index" title="Manage" class="mdl-navigation__link">Data Here!</a>-->
         <a href="javascript:document.getElementById('logoutForm').submit()" class="mdl-navigation__link">Log off</a>
     </form>
 }

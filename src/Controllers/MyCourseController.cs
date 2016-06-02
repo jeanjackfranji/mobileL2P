@@ -1,22 +1,16 @@
 ﻿using Microsoft.AspNet.Mvc;
-using System.Threading.Tasks;
 
 namespace Grp.L2PSite.MobileApp.Controllers
 {
     public class MyCourseController : Controller
     {
-        public IActionResult Index()
-        {
-            return View();
-        }
 
         public IActionResult ShowSubject(string id)
         {
             ViewData["CourseId"] = id;
+            AppVariables.cId = id;
             return View();
         }
-
-
 
         public IActionResult LearningMaterials()
         {

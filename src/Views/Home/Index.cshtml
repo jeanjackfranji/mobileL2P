@@ -5,9 +5,8 @@
     var result = ViewData["Courses"];
 }
 
-<div class="mdl-cell mdl-cell--12-col">
+<div align="center" class="mdl-cell mdl-cell--12-col">
     <h3>@ViewData["Title"]</h3>
-    <h4>@ViewData["Message"]</h4>
 
     @if (result != null)
     {
@@ -20,7 +19,7 @@
         {
             <table align="center">
                 <tr>
-                    <td>    
+                    <td>
                         <!-- Primary-colored flat button -->
                         <button class="mdl-button mdl-js-button mdl-button--primary">@semesters.First()</button>
                     </td>
@@ -38,10 +37,10 @@
             </table>
 
             <div class="mdl-cell mdl-cell--12-col">
-                <table align="center" class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp">
+                <table align="center" class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
                     <thead>
                         <tr>
-                            <th class="mdl-data-table__cell--non-numeric">Course Room</th>
+                            <th class="mdl-data-table__cell--non-numeric">Course Name</th>
                             <th class="mdl-data-table__cell--non-numeric">Status</th>
                             <th class="mdl-data-table__cell--non-numeric">Type</th>
                         </tr>
@@ -61,7 +60,7 @@
                     </tbody>
                 </table>
             </div>
-        }
     }
+}
 
 </div>

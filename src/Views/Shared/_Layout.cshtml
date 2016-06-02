@@ -1,84 +1,98 @@
-﻿<!DOCTYPE html>
+﻿@using Grp.L2PSite.MobileApp.Controllers;
+<!DOCTYPE html>
 
 <html>
 <head>
-    <meta charset="utf-8"/>
+    <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="description" content="Magazine Website, a simple website about magazines.">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - L2P Mobile</title>
-  
+
     <!-- Material Design icon font -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <!-- Material Design Lite -->
-    <link rel="stylesheet" href="https://code.getmdl.io/1.1.3/material.indigo-blue.min.css" />
+    <link rel="stylesheet" href="https://code.getmdl.io/1.1.3/material.indigo-blue.min.css">
     <script defer src="https://storage.googleapis.com/code.getmdl.io/1.1.3/material.min.js"></script>
-    <link rel="stylesheet" href="~/css/site.css"/>
-    
+    <link rel="stylesheet" href="~/css/site.css" />
+
+    <link rel='stylesheet' href='http://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.7.2/fullcalendar.min.css' />
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script defer src='http://momentjs.com/downloads/moment.js'></script>
+    <script defer src='http://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.7.2/fullcalendar.min.js'></script>
+
 </head>
 <body>
-<div class="mdl-layout mdl-js-layout">
-    <!-- Always shows a header, even in smaller screens. -->
-    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-        <header class="mdl-layout__header">
-            <div class="mdl-layout__header-row">
-                <!-- Title -->
-                <span class="mdl-layout-title">L2P Mobile</span>
-                <!-- Add spacer, to align navigation to the right -->
-                <div class="mdl-layout-spacer"></div>
-                <!-- Navigation. We hide it in small screens. -->
-                <nav class="mdl-navigation mdl-layout--large-screen-only">
-                    <a class="mdl-navigation__link" href="">Link</a>
-                    <a class="mdl-navigation__link" href="">Link</a>
-                </nav>
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable
+    <div class="mdl-layout mdl-js-layout">
+        <!-- Always shows a header, even in smaller screens. -->
+        <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+            <header class="mdl-layout__header">
+                <div class="mdl-layout__header-row">
+                    <!-- Title -->
+                    <span class="mdl-layout-title">L2P Mobile</span>
+                    <!-- Add spacer, to align navigation to the right -->
+                    <div class="mdl-layout-spacer"></div>
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable
                   mdl-textfield--floating-label mdl-textfield--align-right">
-                    <label class="mdl-button mdl-js-button mdl-button--icon"
-                           for="fixed-header-drawer-exp">
-                        <i class="material-icons">search</i>
-                    </label>
-                    <div class="mdl-textfield__expandable-holder">
-                        <input class="mdl-textfield__input" type="text" name="sample"
-                               id="fixed-header-drawer-exp">
+                        <label class="mdl-button mdl-js-button mdl-button--icon"
+                               for="fixed-header-drawer-exp">
+                            <i class="material-icons">search</i>
+                        </label>
+                        <div class="mdl-textfield__expandable-holder">
+                            <input class="mdl-textfield__input" type="text" name="sample"
+                                   id="fixed-header-drawer-exp">
+                        </div>
                     </div>
+                    <!-- Right aligned menu below button -->
+                    <button id="LtoP-menu-lower-right"
+                            class="mdl-button mdl-js-button mdl-button--icon">
+                        <i class="material-icons">more_vert</i>
+                    </button>
+
+                    @if (AppVariables.cId != null)
+                    {
+                        <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="LtoP-menu-lower-right">
+                            <li class="mdl-menu__item"><a asp-controller="MyCourse" asp-action="LearningMaterials" class="mdl-navigation__link" style="color: black">Learning Materials</a></li>
+                            <li class="mdl-menu__item"><a asp-controller="MyCourse" asp-action="SharedDocuments" class="mdl-navigation__link" style="color: black">Shared Documents</a></li>
+                            <li class="mdl-menu__item"><a asp-controller="MyCourse" asp-action="Hyperlinks" class="mdl-navigation__link" style="color: black">Hyperlinks</a></li>
+                            <li class="mdl-menu__item"><a asp-controller="MyCourse" asp-action="Assignments" class="mdl-navigation__link" style="color: black">Assignments</a></li>
+                            <li class="mdl-menu__item"><a asp-controller="" asp-action="" class="mdl-navigation__link" style="color: black">Announcements</a></li>
+                            <li class="mdl-menu__item"><a asp-controller="" asp-action="" class="mdl-navigation__link" style="color: black">Emails</a></li>
+                            <li class="mdl-menu__item"><a asp-controller="" asp-action="" class="mdl-navigation__link" style="color: black">Discussion Forum</a> Forum</li>
+                            <li class="mdl-menu__item"><a asp-controller="MyCourse" asp-action="MediaLibrary" class="mdl-navigation__link" style="color: black">Media Library</a></li>
+                            <li class="mdl-menu__item"><a asp-controller="MyCourse" asp-action="Literature" class="mdl-navigation__link" style="color: black">Literarture</a></li>
+                        </ul>
+                    }
                 </div>
-                <!-- Right aligned menu below button -->
-                <button id="demo-menu-lower-right"
-                        class="mdl-button mdl-js-button mdl-button--icon">
-                    <i class="material-icons">more_vert</i>
-                </button>
-
-              
+            </header>
+            <div class="mdl-layout__drawer">
+                <span class="mdl-layout-title">L2P Mobile</span>
+                <nav class="mdl-navigation">
+                    <a asp-controller="Home" asp-action="Index" class="mdl-navigation__link">My Courses</a>
+                    <a asp-controller="Home" asp-action="Calendar" class="mdl-navigation__link">Calendar</a>
+                    <a asp-controller="Home" asp-action="About" class="mdl-navigation__link">About</a>
+                    <hr />
+                    @await Html.PartialAsync("_LoginPartial")
+                </nav>
             </div>
-        </header>
-        <div class="mdl-layout__drawer">
-            <span class="mdl-layout-title">L2P Mobile</span>
-            <nav class="mdl-navigation">
-                <a asp-controller="Home" asp-action="Index" class="mdl-navigation__link">My Courses</a>
-                <a asp-controller="Home" asp-action="About" class="mdl-navigation__link">About</a>
-                <a asp-controller="Home" asp-action="Contact" class="mdl-navigation__link">Contact</a>
-                <hr />
-                @await Html.PartialAsync("_LoginPartial")
-            </nav>
+            <main class="mdl-layout__content">
+                <div class="mdl-grid page-content">
+                    @RenderBody()
+                </div>
+            </main>
+            <footer class="mdl-mini-footer">
+                <div class="mdl-mini-footer--left-section">
+                    <p>&copy; 2016 - Mobile L2P</p>
+                </div>
+            </footer>
         </div>
-        <main class="mdl-layout__content">
-            <div class="mdl-grid page-content">
-                @RenderBody()
-            </div>
-        </main>
-        <footer class="mdl-mini-footer">
-            <div class="mdl-mini-footer--left-section">
-                <p>&copy; 2016 - Mobile L2P</p>
-            </div>
-        </footer>
     </div>
-</div>
 
-<script src="~/lib/system.js" type="text/javascript"></script>
-<script src="~/config.js" type="text/javascript"></script>
-<script>
+    <script src="~/lib/system.js" type="text/javascript"></script>
+    <script src="~/config.js" type="text/javascript"></script>
+    <script>
     System.import("js/site").catch(console.log.bind(console));
-</script>
-@RenderSection("scripts", false)
+    </script>
+    @RenderSection("scripts", false)
 </body>
 </html>
