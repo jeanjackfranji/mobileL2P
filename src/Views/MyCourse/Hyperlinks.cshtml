@@ -1,5 +1,8 @@
-﻿@{
+﻿@using L2PAPIClient.DataModel;
+@{
     ViewData["Title"] = "Hyperlinks";
+    string courseId = ViewData["CourseId"].ToString();
+    L2PCourseInfoData course = L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(courseId).Result;
 }
 
 <div class="mdl-cell mdl-cell--12-col">
@@ -10,9 +13,11 @@
     <table align="left">
         <tr>
             <td style="align-content:flex-end">
-                <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab" title="Add Assignment">
-                    <i class="material-icons">add</i>
-                </button>
+                <a asp-controller="MyCourse" asp-action="AddHyperlink" class="mdl-navigation__link" asp-route-id="@course.uniqueid">
+                    <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab" title="Add Assignment">
+                        <i class="material-icons">add</i>
+                    </button>
+                </a>
             </td>
             <td>
                 <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab" title="Corrected Assignments">

@@ -1,0 +1,49 @@
+﻿@using L2PAPIClient.DataModel;
+@{
+    ViewData["Title"] = "Announcement";
+    string courseId = ViewData["CourseId"].ToString();
+    List<L2PAnnouncementElement> announcementlist = L2PAPIClient.api.Calls.L2PviewAllAnnouncements(courseId).Result.dataSet;
+    L2PCourseInfoData course = L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(courseId).Result;
+}
+
+<h3>Announcements</h3>
+<h4>@course.courseTitle</h4>
+<hr />
+
+<table align="left">
+    <tr>
+        <td style="align-content:flex-end">
+            <a asp-controller="MyCourse" asp-action="AddAnnouncement" class="mdl-navigation__link" asp-route-id="@course.uniqueid">
+                <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab" title="Add Announcement">
+                    <i class="material-icons">Add</i>
+                </button>
+            </a>
+        </td>
+    </tr>
+</table>
+
+<div class="mdl-grid">
+    <div class="mdl-cell mdl-cell--12-col">
+        <table class="mdl-data-table mdl-js-data-table">
+            <thead>
+                <tr>
+                    <th class="mdl-data-table__cell--non-numeric">Title</th>
+                    <th class="mdl-data-table__cell--non-numeric">Body</th>
+                    <th class="mdl-data-table__cell--non-numeric">Created</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    foreach (L2PAnnouncementElement annoucement in announcementlist)
+                    {
+                        <tr>
+                            <td class="mdl-data-table__cell--non-numeric" width="30px">@annoucement.title</td>
+                            <td class="mdl-data-table__cell--non-numeric" width="30px">@Html.Raw(@annoucement.body.Trim())</td>
+                            <td class="mdl-data-table__cell--non-numeric" width="30px">@annoucement.created</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

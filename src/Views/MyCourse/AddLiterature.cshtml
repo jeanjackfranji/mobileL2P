@@ -1,0 +1,53 @@
+﻿@using L2PAPIClient.DataModel
+@{
+
+    ViewData["Title"] = "Add Literature";
+    string courseId = ViewData["CourseId"].ToString();
+    L2PCourseInfoData course = L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(courseId).Result;
+    L2PLiteratureElementDataType literature = new L2PLiteratureElementDataType();
+}
+
+<h3>@ViewData["Title"]</h3>
+<h4>@course.courseTitle</h4>
+<hr />
+<div class="mdl-grid">
+    <div class="mdl-cell mdl-cell--12-col">
+        <table class="mdl-data-table mdl-js-data-table">
+            <tr>
+                <td class="mdl-data-table__cell--non-numeric">Title</td>
+            </tr>
+            <tr>
+                <td class="mdl-data-table__cell--non-numeric">
+                    <form action="#">
+                        <div class="mdl-textfield mdl-js-textfield">
+                            <input class="mdl-textfield__input" type="text" id="Subject">
+                            <label class="mdl-textfield__label" for="Subject">Text...</label>
+                        </div>
+                    </form>
+                </td>
+            </tr>
+            <tr>
+                <td class="mdl-data-table__cell--non-numeric">Select File</td>
+            </tr>
+            <tr>
+                <td class="mdl-data-table__cell--non-numeric">
+                    <div class="file_input_div">
+                        <div class="file_input">
+                            <label class="image_input_button mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-js-ripple-effect mdl-button--colored">
+                                <i class="material-icons">file_upload</i>
+                                <input id="file_input_file" class="none" type="file" />
+                            </label>
+                        </div>
+                        <div id="file_input_text_div" class="mdl-textfield mdl-js-textfield textfield-demo">
+                            <input class="file_input_text mdl-textfield__input" type="text" disabled readonly id="file_input_text" />
+                            <label class="mdl-textfield__label" for="file_input_text"></label>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="mdl-cell mdl-cell--12-col">
+    <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect">Submit</button>
+</div>
