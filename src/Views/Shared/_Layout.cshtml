@@ -5,94 +5,83 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="description" content="Magazine Website, a simple website about magazines.">
+    <meta name="description" content="The mobile version of the RWTH Learning App (L2P).">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - L2P Mobile</title>
 
     <!-- Material Design icon font -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <!-- Material Design Lite -->
-    <link rel="stylesheet" href="https://code.getmdl.io/1.1.3/material.indigo-blue.min.css">
-    <script defer src="https://storage.googleapis.com/code.getmdl.io/1.1.3/material.min.js"></script>
-    <link rel="stylesheet" href="~/css/site.css" />
-
+    <!-- Materialize CSS + Calendar -->
+    <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css" media="screen,projection" />
     <link rel='stylesheet' href='http://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.7.2/fullcalendar.min.css' />
-    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
-    <script defer src='http://momentjs.com/downloads/moment.js'></script>
-    <script defer src='http://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.7.2/fullcalendar.min.js'></script>
+    <link rel="stylesheet" href="~/css/site.css" /> 
+    <!-- JQuery JS Plugin-->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
 
 </head>
 <body>
-    <div class="mdl-layout mdl-js-layout">
-        <!-- Always shows a header, even in smaller screens. -->
-        <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-            <header class="mdl-layout__header">
-                <div class="mdl-layout__header-row">
-                    <!-- Title -->
-                    <span class="mdl-layout-title">L2P Mobile</span>
-                    <!-- Add spacer, to align navigation to the right -->
-                    <div class="mdl-layout-spacer"></div>
-                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable
-                  mdl-textfield--floating-label mdl-textfield--align-right">
-                        <label class="mdl-button mdl-js-button mdl-button--icon"
-                               for="fixed-header-drawer-exp">
-                            <i class="material-icons">search</i>
-                        </label>
-                        <div class="mdl-textfield__expandable-holder">
-                            <input class="mdl-textfield__input" type="text" name="sample"
-                                   id="fixed-header-drawer-exp">
-                        </div>
-                    </div>
-                    <!-- Right aligned menu below button -->
-                    <button id="LtoP-menu-lower-right"
-                            class="mdl-button mdl-js-button mdl-button--icon">
-                        <i class="material-icons">more_vert</i>
-                    </button>
-
-                    @if (AppVariables.cId != null)
-                    {
-                        <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="LtoP-menu-lower-right">
-                            <li class="mdl-menu__item"><a asp-controller="MyCourse" asp-action="LearningMaterials" class="mdl-navigation__link" style="color: black">Learning Materials</a></li>
-                            <li class="mdl-menu__item"><a asp-controller="MyCourse" asp-action="SharedDocuments" class="mdl-navigation__link" style="color: black">Shared Documents</a></li>
-                            <li class="mdl-menu__item"><a asp-controller="MyCourse" asp-action="Hyperlinks" class="mdl-navigation__link" style="color: black">Hyperlinks</a></li>
-                            <li class="mdl-menu__item"><a asp-controller="MyCourse" asp-action="Assignments" class="mdl-navigation__link" style="color: black">Assignments</a></li>
-                            <li class="mdl-menu__item"><a asp-controller="MyCourse" asp-action="Announcement" class="mdl-navigation__link" style="color: black">Announcements</a></li>
-                            <li class="mdl-menu__item"><a asp-controller="" asp-action="" class="mdl-navigation__link" style="color: black">Emails</a></li>
-                            <li class="mdl-menu__item"><a asp-controller="" asp-action="" class="mdl-navigation__link" style="color: black">Discussion Forum</a> Forum</li>
-                            <li class="mdl-menu__item"><a asp-controller="MyCourse" asp-action="MediaLibrary" class="mdl-navigation__link" style="color: black">Media Library</a></li>
-                            <li class="mdl-menu__item"><a asp-controller="MyCourse" asp-action="Literature" class="mdl-navigation__link" style="color: black">Literarture</a></li>
-                        </ul>
-                    }
-                </div>
-            </header>
-            <div class="mdl-layout__drawer">
-                <span class="mdl-layout-title">L2P Mobile</span>
-                <nav class="mdl-navigation">
-                    <a asp-controller="Home" asp-action="Index" class="mdl-navigation__link">My Courses</a>
-                    <a asp-controller="Home" asp-action="Calendar" class="mdl-navigation__link">Calendar</a>
-                    <a asp-controller="Home" asp-action="About" class="mdl-navigation__link">About</a>
-                    <hr />
-                    @await Html.PartialAsync("_LoginPartial")
-                </nav>
-            </div>
-            <main class="mdl-layout__content">
-                <div class="mdl-grid page-content">
-                    @RenderBody()
-                </div>
-            </main>
-            <footer class="mdl-mini-footer">
-                <div class="mdl-mini-footer--left-section">
-                    <p>&copy; 2016 - Mobile L2P</p>
-                </div>
-            </footer>
+    <nav class="blue darken-3" role="navigation">
+        <div class="nav-wrapper">
+            <a href="#!" class="brand-logo margin-left-20">L2P Mobile</a>
+            <a href="#" data-activates="mobile" class="button-collapse show-on-large"><i class="material-icons">menu</i></a>
+            <ul class="right">
+                <!-- Dropdown Trigger -->
+                <li><a class="dropdown-button" href="#!" data-activates="coursesDropdown"><i class="material-icons right">more_vert</i></a></li>
+            </ul>
+            <ul class="side-nav" id="mobile">
+                <li><a class="waves-effect waves-light" asp-controller="Home" asp-action="Index">My Courses</a></li>
+                <li><a class="waves-effect waves-light" asp-controller="Home" asp-action="Calendar">Calendar</a></li>
+                <li><a class="waves-effect waves-light" asp-controller="Home" asp-action="About">About</a></li>
+                <li class="divider"></li>
+                @await Html.PartialAsync("_LoginPartial")
+            </ul>
         </div>
-    </div>
+    </nav>
 
+    @if (AppVariables.cId != null)
+            {
+        <ul id="coursesDropdown" class="dropdown-content waves-effect waves-teal">
+            <li><a asp-controller="MyCourse" asp-action="LearningMaterials" class="waves-effect waves-light" >Learning Materials</a></li>
+            <li><a asp-controller="MyCourse" asp-action="SharedDocuments" class="waves-effect waves-light" >Shared Documents</a></li>
+            <li><a asp-controller="MyCourse" asp-action="Hyperlinks" class="waves-effect waves-light" >Hyperlinks</a></li>
+            <li><a asp-controller="MyCourse" asp-action="Assignments" class="waves-effect waves-light" >Assignments</a></li>
+            <li><a asp-controller="MyCourse" asp-action="Announcement" class="waves-effect waves-light" >Announcements</a></li>
+            <li><a asp-controller=""         asp-action="" class="waves-effect waves-light" >Emails</a></li>
+            <li><a asp-controller=""         asp-action="" class="waves-effect waves-light" >Discussion Forum</a> Forum</li>
+            <li><a asp-controller="MyCourse" asp-action="MediaLibrary" class="waves-effect waves-light" >Media Library</a></li>
+            <li><a asp-controller="MyCourse" asp-action="Literature" class="waves-effect waves-light" >Literarture</a></li>
+        </ul>
+    }
+
+    <main class="mdl-layout__content">
+        <div class="page-content">
+            @RenderBody()
+        </div>
+    </main>
+
+    <!--Import jQuery before materialize.js-->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js"></script>
+    <script type="text/javascript" src='http://momentjs.com/downloads/moment.js'></script>
+    <script type="text/javascript" src='http://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.7.2/fullcalendar.min.js'></script>
     <script src="~/lib/system.js" type="text/javascript"></script>
     <script src="~/config.js" type="text/javascript"></script>
     <script>
-    System.import("js/site").catch(console.log.bind(console));
+        System.import("js/site").catch(console.log.bind(console));
     </script>
+
+    <script>
+        $(document).ready(function () {
+            $('.button-collapse').sideNav({
+                menuWidth: 300, // Default is 240
+                edge: 'left', // Choose the horizontal origin
+                closeOnClick: true // Closes side-nav on <a> clicks, useful for Angular/Meteor
+            }
+            );
+
+            $(".dropdown-button").dropdown();
+        })
+    </script>
+
     @RenderSection("scripts", false)
 </body>
 </html>
