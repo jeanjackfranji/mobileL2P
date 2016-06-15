@@ -1,4 +1,4 @@
-﻿@using Grp.L2PSite.MobileApp.Controllers;
+﻿@using Grp.L2PSite.MobileApp.Helpers;
 <!DOCTYPE html>
 
 <html>
@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="~/css/site.css" /> 
     <!-- JQuery JS Plugin-->
     <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
-
+   
 </head>
 <body>
     <nav class="blue darken-3" role="navigation">
@@ -29,7 +29,7 @@
                 <li><a class="dropdown-button" href="#!" data-activates="coursesDropdown"><i class="material-icons right">more_vert</i></a></li>
             </ul>
             <ul class="side-nav" id="mobile">
-                <li><a class="waves-effect waves-light" asp-controller="Home" asp-action="Index">My Courses</a></li>
+                <li><a class="waves-effect waves-light" asp-controller="Home" asp-action="MyCourses">My Courses</a></li>
                 <li><a class="waves-effect waves-light" asp-controller="Home" asp-action="Calendar">Calendar</a></li>
                 <li><a class="waves-effect waves-light" asp-controller="Home" asp-action="About">About</a></li>
                 <li class="divider"></li>
@@ -38,7 +38,7 @@
         </div>
     </nav>
 
-    @if (AppVariables.cId != null)
+    @if (Tools.cId != null)
             {
         <ul id="coursesDropdown" class="dropdown-content waves-effect waves-teal">
             <li><a asp-controller="MyCourse" asp-action="LearningMaterials" class="waves-effect waves-light" >Learning Materials</a></li>
@@ -53,14 +53,15 @@
         </ul>
     }
 
-    <main class="mdl-layout__content">
-        <div class="page-content">
+    <main class="layout__content">
+        <div class="page-container">
             @RenderBody()
         </div>
     </main>
 
     <!--Import jQuery before materialize.js-->
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js"></script>
+    <!--<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js"></script>-->
+    <script type="text/javascript" src='~/js/materialize.js'></script>
     <script type="text/javascript" src='http://momentjs.com/downloads/moment.js'></script>
     <script type="text/javascript" src='http://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.7.2/fullcalendar.min.js'></script>
     <script src="~/lib/system.js" type="text/javascript"></script>

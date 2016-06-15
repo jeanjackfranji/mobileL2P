@@ -1,4 +1,21 @@
 ﻿/* Page setup */
+
+@media only screen and (max-width : 992px) {
+    header, main, footer {
+        padding-left: 0;
+    }
+
+    nav .brand-logo {
+        left: 50% !important;
+        -webkit-transform: translateX(-50%);
+        transform: translateX(-50%);
+    }
+
+    #a-secondary-content{
+         top: 40px;
+    }
+}
+
 .page-content {
     margin: 5px;
     padding: 5px;
@@ -14,49 +31,23 @@
     color: #D32F2F;
 }
 
-/* Customized card layout */
-.mdl-card {
-    width: auto !important;
-}
-
-.mdl-card-panel > .mdl-card__title {
-    background: #3F51B5;
-    color: #fff;
-    /* padding-bottom: 40px;
-    padding-top: 40px; */
-}
-
-.mdl-card-panel > .mdl-card__supporting-text {
-    width: auto !important;
-}
-
-.mdl-button--icon {
-  margin-right: 3px;
-  margin-left: 3px;
-}
-
-.mdl-mini-footer {
-    padding: 5px 16px !important;
-}
-
-.mdl-mini-footer > .mdl-mini-footer--left-section > p {
-    margin-top: 10px;
-}
-
 /* Page header */
 .page-container > .page-row {
     margin: 0 !important;
     padding: 0 !important;
 }
 
-.page-container > .page-row > .page-title {
-    margin: 0 !important;
-    padding: 0 !important;
+    .page-container > .page-row > .page-title {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+#bottom-right {
+    right: 10%;
+    bottom: 10%;
+    position: absolute;
 }
 
-#bottom-right
-{
-right: 10%;
-bottom: 10%;
-position: absolute;
+nav .brand-logo {
+    left: 50px;
 }

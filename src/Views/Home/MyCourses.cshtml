@@ -1,0 +1,59 @@
+﻿@using L2PAPIClient.DataModel;
+@{
+    ViewData["Title"] = "My Courses";
+    var result = ViewData["Courses"];
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col s12">
+            <br />
+            @if (result != null)
+            {
+                List<L2PCourseInfoData> courses = ((List<L2PCourseInfoData>)ViewData["Courses"]);
+                var semesters = (from a in courses
+                                 select new { code = a.semester, name = a.semester.Replace("ss", "Summer Semester ").Replace("ws", "Winter Semester ") }).Distinct();
+
+                if (semesters.Any())
+                {
+                    <div class="input-field col s12">
+                        <select>
+                            <option value="" disabled>Semester Select</option>
+                            <option value="@semesters.First().code" class="active">@semesters.First().name</option>
+                            @foreach (var sem in semesters.ToList().Skip(1))
+                            {
+                                <option value="@sem.code">@sem.name</option>
+                            }
+                        </select>
+                        <label>Choose your semester</label>
+                    </div>
+
+                    <ul class="collection with-header">
+                        <li class="collection-header center-align"><h4>@ViewData["Title"]</h4></li>
+                        @{
+                            List<L2PCourseInfoData> currentCourses = L2PAPIClient.api.Calls.L2PviewAllCourseIfoBySemesterAsync(semesters.First().code.ToString()).Result.dataset;
+                            foreach (L2PCourseInfoData course in currentCourses)
+                            {
+                                <li class="collection-item avatar">
+                                    <i class="material-icons circle">school</i>
+                                    <span class="title"><a asp-controller="MyCourse" asp-action="ShowSubject" asp-route-id="@course.uniqueid">@course.courseTitle</a></span>
+                                    <p>
+                                        @course.courseStatus <br>
+                                        @course.description
+                                    </p>
+                                    <a id="a-secondary-content" class="secondary-content" asp-controller="MyCourse" asp-action="ShowSubject" asp-route-id="@course.uniqueid"><i class="material-icons">send</i></a>
+                                </li>
+                            }
+                        }
+                    </ul>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('select').material_select();
+    });
+</script>

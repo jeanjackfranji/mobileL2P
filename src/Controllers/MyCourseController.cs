@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNet.Mvc;
+﻿using Grp.L2PSite.MobileApp.Helpers;
+using Microsoft.AspNet.Mvc;
 
 namespace Grp.L2PSite.MobileApp.Controllers
 {
@@ -9,7 +10,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
         public IActionResult ShowSubject(string id)
         {
             ViewData["CourseId"] = id;
-            AppVariables.cId = id;
+            Tools.cId = id;
             selectedcourse_id = id;
             return View();
         }

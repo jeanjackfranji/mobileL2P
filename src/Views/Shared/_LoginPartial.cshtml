@@ -1,5 +1,5 @@
-﻿@using Grp.L2PSite.MobileApp.Controllers
-@if (L2PAPIClient.AuthenticationManager.getState() == L2PAPIClient.AuthenticationManager.AuthenticationState.ACTIVE && AppVariables.loggedIn)
+﻿@using Grp.L2PSite.MobileApp.Helpers
+@if (L2PAPIClient.AuthenticationManager.getState() == L2PAPIClient.AuthenticationManager.AuthenticationState.ACTIVE && Tools.loggedIn)
 {
     <form asp-controller="Account" asp-action="LogOff" method="post" id="logoutForm">
         <!--<a asp-controller="Manage" asp-action="Index" title="Manage" class="mdl-navigation__link">Data Here!</a>-->

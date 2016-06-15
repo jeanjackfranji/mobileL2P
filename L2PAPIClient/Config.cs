@@ -4,7 +4,7 @@ using System.Text;
 
 namespace L2PAPIClient
 {
-    class Config
+    public class Config
     {
 	internal const string OAuthEndPoint = "https://oauth.campus.rwth-aachen.de/oauth2waitress/oauth2.svc/code";
 
@@ -18,26 +18,26 @@ namespace L2PAPIClient
 
         #region Token Management (Add Storage Option in here!)
 
-        private static string accessToken = "36bZwO830oeZNFhswbxxCIQlrH6djhJWdJyCsSPt1vBzyI2jJU6LncTP466bjMfc";
+        private static string accessToken = "";
 
-        internal static string getAccessToken()
+        public static string getAccessToken()
         {
             return accessToken;
         }
 
-        internal static void setAccessToken(string token)
+        public static void setAccessToken(string token)
         {
             accessToken = token;
         }
 
-        private static string refreshToken = "RhFQDmBse3wN6cfMPgLYOQZW9TczOdE0FBPFjC1XwQsSaTbRgJ75XzX7DYRpQ1Ve";
+        private static string refreshToken = "";
 
-        internal static string getRefreshToken()
+        public static string getRefreshToken()
         {
             return refreshToken;
         }
 
-        internal static void setRefreshToken(string token)
+        public static void setRefreshToken(string token)
         {
             refreshToken = token;
         }

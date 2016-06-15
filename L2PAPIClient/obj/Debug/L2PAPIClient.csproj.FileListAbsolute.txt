@@ -3,3 +3,13 @@ C:\Users\Jean Jack\Documents\Visual Studio 2013\Projects\L2P-Api-Client-master\L
 C:\Users\Jean Jack\Documents\Visual Studio 2013\Projects\L2P-Api-Client-master\L2PAPIClient\bin\Debug\L2PAPIClient.pdb
 C:\Users\Jean Jack\Documents\Visual Studio 2013\Projects\L2P-Api-Client-master\L2PAPIClient\obj\Debug\L2PAPIClient.dll
 C:\Users\Jean Jack\Documents\Visual Studio 2013\Projects\L2P-Api-Client-master\L2PAPIClient\obj\Debug\L2PAPIClient.pdb
+C:\Users\Jean Jack\Documents\Visual Studio 2015\Projects\mobileL2P\L2PAPIClient\bin\Debug\L2PAPIClient.dll.config
+C:\Users\Jean Jack\Documents\Visual Studio 2015\Projects\mobileL2P\L2PAPIClient\bin\Debug\L2PAPIClient.dll
+C:\Users\Jean Jack\Documents\Visual Studio 2015\Projects\mobileL2P\L2PAPIClient\bin\Debug\L2PAPIClient.pdb
+C:\Users\Jean Jack\Documents\Visual Studio 2015\Projects\mobileL2P\L2PAPIClient\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Jean Jack\Documents\Visual Studio 2015\Projects\mobileL2P\L2PAPIClient\bin\Debug\Refit.dll
+C:\Users\Jean Jack\Documents\Visual Studio 2015\Projects\mobileL2P\L2PAPIClient\bin\Debug\Newtonsoft.Json.xml
+C:\Users\Jean Jack\Documents\Visual Studio 2015\Projects\mobileL2P\L2PAPIClient\bin\Debug\Refit.pdb
+C:\Users\Jean Jack\Documents\Visual Studio 2015\Projects\mobileL2P\L2PAPIClient\obj\Debug\L2PAPIClient.dll
+C:\Users\Jean Jack\Documents\Visual Studio 2015\Projects\mobileL2P\L2PAPIClient\obj\Debug\L2PAPIClient.pdb
+C:\Users\Jean Jack\Documents\Visual Studio 2015\Projects\mobileL2P\L2PAPIClient\obj\Debug\L2PAPIClient.csprojResolveAssemblyReference.cache

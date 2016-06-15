@@ -16,7 +16,7 @@
     "dependencies": {
       "hammer": "github:hammerjs/hammer.js@^2.0.4",
       "ixisio/bootstrap-touch-carousel": "github:ixisio/bootstrap-touch-carousel@^0.8.0",
-      "jquery": "github:components/jquery@^2.1.4",
+      "jquery": "github:components/jquery@^2.2.4",
       "jquery-validation": "github:jzaefferer/jquery-validation@^1.14.0",
       "jquery-validation-unobtrusive": "github:aspnet/jquery-validation-unobtrusive@^3.2.2"
     },

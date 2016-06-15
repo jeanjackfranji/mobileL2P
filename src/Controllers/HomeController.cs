@@ -1,22 +1,35 @@
 ﻿using Microsoft.AspNet.Mvc;
 using L2PAPIClient.DataModel;
-using Grp.L2PSite.MobileApp.Controllers;
+using Grp.L2PSite.MobileApp.Helpers;
+using L2PAPIClient;
+using System;
+using System.Threading.Tasks;
 
 namespace Cik.MazSite.WebApp.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index()
+        public async Task<IActionResult> MyCourses()
         {
-            AppVariables.cId = null;
-            bool isActive = (L2PAPIClient.AuthenticationManager.getState() == L2PAPIClient.AuthenticationManager.AuthenticationState.ACTIVE);
-           
-            if (isActive)
+            if (!Tools.isL2PAPIClientActive())
             {
-                L2PCourseInfoSetData result = L2PAPIClient.api.Calls.L2PviewAllCourseInfoAsync().Result;
-                ViewData["Courses"] = result.dataset;
-
+                Tools.checkIfTokenCookieExists(Request.Cookies);
+                if (Tools.hasCookieToken && !String.IsNullOrEmpty(Config.getRefreshToken()))
+                {
+                    await AuthenticationManager.CheckAccessTokenAsync();
+                }
             }
+
+            if (Tools.isL2PAPIClientActive())
+            {
+                Tools.cId = null;
+                if (Tools.isL2PAPIClientActive())
+                {
+                    L2PCourseInfoSetData result = L2PAPIClient.api.Calls.L2PviewAllCourseInfoAsync().Result;
+                    ViewData["Courses"] = result.dataset;
+                }
+            }
+
             return View();
         }
 

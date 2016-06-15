@@ -1,17 +1,14 @@
-﻿using System.Linq;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using System.Threading.Tasks;
 using Cik.MazSite.WebApp.Models;
 using Cik.MazSite.WebApp.Services;
 using Microsoft.AspNet.Authorization;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Mvc;
-using Microsoft.AspNet.Mvc.Rendering;
 using Microsoft.Data.Entity;
-using System.Diagnostics;
 using System.Threading;
 using System;
-using Grp.L2PSite.MobileApp.Controllers;
+using Grp.L2PSite.MobileApp.Helpers;
 
 namespace Cik.MazSite.WebApp.Controllers
 {
@@ -46,6 +43,16 @@ namespace Cik.MazSite.WebApp.Controllers
         public IActionResult Login(string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
+            Tools.checkIfTokenCookieExists(Request.Cookies);
+            if (!Tools.hasCookieToken)
+            {
+                //Init the Auth Process
+                ViewData["L2PURL"] = L2PAPIClient.AuthenticationManager.StartAuthenticationProcessAsync().Result;                
+            }
+            else
+            {
+                return RedirectToAction(nameof(HomeController.MyCourses), "Home");
+            }
             return View();
         }
 
@@ -58,41 +65,32 @@ namespace Cik.MazSite.WebApp.Controllers
         {
             EnsureDatabaseCreated(_applicationDbContext);
             ViewData["ReturnUrl"] = returnUrl;
-            if (ModelState.IsValid)
+             
+            // Wait for authentication
+            // so far, not authenticated
+            bool done = false;
+
+            while (!done)
             {
-                //Init the Auth Process
-                string url = L2PAPIClient.AuthenticationManager.StartAuthenticationProcessAsync().Result;
+                // Just wait 5 seconds - this is the recommended querying time for OAuth by ITC
+                Thread.Sleep(5000);
+                await L2PAPIClient.AuthenticationManager.CheckAuthenticationProgressAsync();
 
-                if(!(L2PAPIClient.AuthenticationManager.getState() == L2PAPIClient.AuthenticationManager.AuthenticationState.ACTIVE))
+                done = (L2PAPIClient.AuthenticationManager.getState() == L2PAPIClient.AuthenticationManager.AuthenticationState.ACTIVE);
+                if (!done)
                 {
-                    // Inform user and start browser
-                    //Console.WriteLine("A Browser will open. Please authenticate this application.");
-                    Process.Start(url);
+                    Console.WriteLine("App not authenticated right now...");
                 }
+                else
+                {                   
+                    //Add a Cookie
+                    Response.Cookies.Append("CRTID", Encryptor.Encrypt(L2PAPIClient.Config.getRefreshToken()));
+                    Response.Cookies.Append("CRAID", Encryptor.Encrypt(L2PAPIClient.Config.getAccessToken()));
 
-                // Wait for authentication
-                // so far, not authenticated
-                bool done = false;
-
-                while (!done)
-                {
-                    // Just wait 5 seconds - this is the recommended querying time for OAuth by ITC
-                    Thread.Sleep(5000);
-
-                    await L2PAPIClient.AuthenticationManager.CheckAuthenticationProgressAsync();
-
-                    done = (L2PAPIClient.AuthenticationManager.getState() == L2PAPIClient.AuthenticationManager.AuthenticationState.ACTIVE);
-
-                    if (!done)
-                    {
-                        Console.WriteLine("App not authenticated right now...");
-                    }
-                    else
-                    {
-                        AppVariables.loggedIn = true;
-                        Console.WriteLine("App authenticated!");
-                        return RedirectToLocal(returnUrl);
-                    }
+                    //Set logged in to true
+                    Tools.loggedIn = true;
+                    Console.WriteLine("App authenticated!");
+                    return RedirectToLocal(returnUrl);
                 }
             }
 
@@ -106,108 +104,8 @@ namespace Cik.MazSite.WebApp.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult LogOff()
         {
-            AppVariables.loggedIn = false;
-            return RedirectToAction(nameof(HomeController.Index), "Home");
-        }
-
-        //
-        // GET: /Account/SendCode
-        [HttpGet]
-        [AllowAnonymous]
-        public async Task<ActionResult> SendCode(string returnUrl = null, bool rememberMe = false)
-        {
-            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
-            if (user == null)
-            {
-                return View("Error");
-            }
-            var userFactors = await _userManager.GetValidTwoFactorProvidersAsync(user);
-            var factorOptions = userFactors.Select(purpose => new SelectListItem { Text = purpose, Value = purpose }).ToList();
-            return View(new SendCodeViewModel { Providers = factorOptions, ReturnUrl = returnUrl, RememberMe = rememberMe });
-        }
-
-        //
-        // POST: /Account/SendCode
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SendCode(SendCodeViewModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View();
-            }
-
-            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
-            if (user == null)
-            {
-                return View("Error");
-            }
-
-            // Generate the token and send it
-            var code = await _userManager.GenerateTwoFactorTokenAsync(user, model.SelectedProvider);
-            if (string.IsNullOrWhiteSpace(code))
-            {
-                return View("Error");
-            }
-
-            var message = "Your security code is: " + code;
-            if (model.SelectedProvider == "Email")
-            {
-                await _emailSender.SendEmailAsync(await _userManager.GetEmailAsync(user), "Security Code", message);
-            }
-            else if (model.SelectedProvider == "Phone")
-            {
-                await _smsSender.SendSmsAsync(await _userManager.GetPhoneNumberAsync(user), message);
-            }
-
-            return RedirectToAction(nameof(VerifyCode), new { Provider = model.SelectedProvider, ReturnUrl = model.ReturnUrl, RememberMe = model.RememberMe });
-        }
-
-        //
-        // GET: /Account/VerifyCode
-        [HttpGet]
-        [AllowAnonymous]
-        public async Task<IActionResult> VerifyCode(string provider, bool rememberMe, string returnUrl = null)
-        {
-            // Require that the user has already logged in via username/password or external login
-            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
-            if (user == null)
-            {
-                return View("Error");
-            }
-            return View(new VerifyCodeViewModel { Provider = provider, ReturnUrl = returnUrl, RememberMe = rememberMe });
-        }
-
-        //
-        // POST: /Account/VerifyCode
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> VerifyCode(VerifyCodeViewModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
-            // The following code protects for brute force attacks against the two factor codes.
-            // If a user enters incorrect codes for a specified amount of time then the user account
-            // will be locked out for a specified amount of time.
-            var result = await _signInManager.TwoFactorSignInAsync(model.Provider, model.Code, model.RememberMe, model.RememberBrowser);
-            if (result.Succeeded)
-            {
-                return RedirectToLocal(model.ReturnUrl);
-            }
-            if (result.IsLockedOut)
-            {
-                return View("Lockout");
-            }
-            else
-            {
-                ModelState.AddModelError("", "Invalid code.");
-                return View(model);
-            }
+            Tools.loggedIn = false;
+            return RedirectToAction(nameof(HomeController.MyCourses), "Home");
         }
 
         #region Helpers
@@ -247,7 +145,7 @@ namespace Cik.MazSite.WebApp.Controllers
             }
             else
             {
-                return RedirectToAction(nameof(HomeController.Index), "Home");
+                return RedirectToAction(nameof(HomeController.MyCourses), "Home");
             }
         }
 

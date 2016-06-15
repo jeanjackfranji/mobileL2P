@@ -1,52 +1,27 @@
-﻿@using System.Threading.Tasks
-@using Cik.MazSite.WebApp.Models
-@using Microsoft.AspNet.Identity
-@model LoginViewModel
-@inject SignInManager<ApplicationUser> SignInManager
-
+﻿@using Cik.MazSite.WebApp.Models
 @{
     ViewData["Title"] = "Log in";
 }
 
-<div class="mdl-cell mdl-cell--12-col">
-    <form asp-controller="Account"
-          asp-action="Login"
-          asp-route-returnurl="@ViewData["ReturnUrl"]"
-          method="post" role="form">
-        <div class="mdl-grid page-container">
-            <div class="mdl-cell mdl-cell--12-col page-row">
-                <div class="mdl-grid page-container">
-                    <div class="mdl-cell mdl-cell--12-col page-row">
-                        <h3 class="page-title">Use your L2P credentials to log in</h3>
-                        <hr/>
+<div class="container">
+    <form id="target_login" method="post" role="form"
+          asp-controller="Account" asp-action="Login" asp-route-returnurl="@ViewData["ReturnUrl"]">
+        <div class="row">
+            <div class="col s12">
+                <div class="card blue-grey darken-1">
+                    <div class="card-content white-text">
+                        <span class="card-title">Login via RWTH L2P</span>
+                        <p>
+                            As soon as you click on the login button, you will be redirected to the RWTH L2P authentication
+                            page and be prompted to enter your login credentials to provide access to our application.
+                        </p>
                     </div>
-                    <div asp-validation-summary="ValidationSummary.All"></div>
-                    <div class="mdl-textfield mdl-js-textfield mdl-cell mdl-cell--12-col">
-                        <label asp-for="Username" class="mdl-textfield__label"></label>
-                        <input asp-for="Username" class="mdl-textfield__input"/>
-                        <span asp-validation-for="Username" class="mdl-textfield__error"></span>
-                    </div>
-                    <div class="mdl-textfield mdl-js-textfield mdl-cell mdl-cell--12-col">
-                        <label asp-for="Password" class="mdl-textfield__label"></label>
-                        <input asp-for="Password" class="mdl-textfield__input"/>
-                        <span asp-validation-for="Password" class="mdl-textfield__error"></span>
-                    </div>
-                    <div class="mdl-cell mdl-cell--12-col">
-                        <div class="mdl-checkbox mdl-js-checkbox">
-                            <input asp-for="RememberMe" class="mdl-checkbox__input"/>
-                            <label asp-for="RememberMe" class="mdl-checkbox__label"></label>
-                        </div>
-                    </div>
-                    <div class="mdl-cell mdl-cell--12-col">
-                        <button type="submit"
-                                class="mdl-button mdl-js-button
-                                    mdl-button--raised mdl-button--colored
-                                    mdl-js-ripple-effect">
-                            Log in
-                        </button>
+                    <div class="card-action center-align">
+                        <a class="waves-effect waves-light btn" onclick="redirectToLtoP()"> Log in</a>
                     </div>
                 </div>
             </div>
+            <button hidden="hidden" type="submit" class="waves-light">Log in</button>
         </div>
     </form>
 </div>

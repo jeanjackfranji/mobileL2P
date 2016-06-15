@@ -25,8 +25,7 @@
     "Microsoft.Framework.Configuration.UserSecrets": "1.0.0-beta5",
     "Microsoft.Framework.Logging": "1.0.0-beta5",
     "Microsoft.Framework.Logging.Console": "1.0.0-beta5",
-    "Microsoft.VisualStudio.Web.BrowserLink.Loader": "14.0.0-beta5",
-    "Newtonsoft.Json": "8.0.3"
+    "Microsoft.VisualStudio.Web.BrowserLink.Loader": "14.0.0-beta5"
   },
 
   "commands": {

@@ -1,0 +1,86 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'C:\\Program Files\\nodejs\\node.exe',
+1 verbose cli   'C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
+1 verbose cli   'install',
+1 verbose cli   'newtonsoft' ]
+2 info using npm@2.14.7
+3 info using node@v4.2.2
+4 verbose install initial load of C:\Users\Jean Jack\Documents\Visual Studio 2015\Projects\mobileL2P\package.json
+5 verbose readDependencies loading dependencies from C:\Users\Jean Jack\Documents\Visual Studio 2015\Projects\mobileL2P\package.json
+6 silly cache add args [ 'newtonsoft', null ]
+7 verbose cache add spec newtonsoft
+8 silly cache add parsed spec Result {
+8 silly cache add   raw: 'newtonsoft',
+8 silly cache add   scope: null,
+8 silly cache add   name: 'newtonsoft',
+8 silly cache add   rawSpec: '',
+8 silly cache add   spec: '*',
+8 silly cache add   type: 'range' }
+9 silly addNamed newtonsoft@*
+10 verbose addNamed "*" is a valid semver range for newtonsoft
+11 silly addNameRange { name: 'newtonsoft', range: '*', hasData: false }
+12 silly mapToRegistry name newtonsoft
+13 silly mapToRegistry using default registry
+14 silly mapToRegistry registry https://registry.npmjs.org/
+15 silly mapToRegistry uri https://registry.npmjs.org/newtonsoft
+16 verbose addNameRange registry:https://registry.npmjs.org/newtonsoft not in flight; fetching
+17 verbose request uri https://registry.npmjs.org/newtonsoft
+18 verbose request no auth needed
+19 info attempt registry request try #1 at 9:04:32 PM
+20 verbose request id d53b6469ef5265b3
+21 http request GET https://registry.npmjs.org/newtonsoft
+22 http 404 https://registry.npmjs.org/newtonsoft
+23 verbose headers { 'content-type': 'application/json',
+23 verbose headers   'cache-control': 'max-age=0',
+23 verbose headers   'content-length': '2',
+23 verbose headers   'accept-ranges': 'bytes',
+23 verbose headers   date: 'Tue, 14 Jun 2016 19:04:36 GMT',
+23 verbose headers   via: '1.1 varnish',
+23 verbose headers   age: '0',
+23 verbose headers   connection: 'keep-alive',
+23 verbose headers   'x-served-by': 'cache-ams4149-AMS',
+23 verbose headers   'x-cache': 'MISS',
+23 verbose headers   'x-cache-hits': '0',
+23 verbose headers   'x-timer': 'S1465931076.453180,VS0,VE174',
+23 verbose headers   vary: 'Accept-Encoding' }
+24 silly get cb [ 404,
+24 silly get   { 'content-type': 'application/json',
+24 silly get     'cache-control': 'max-age=0',
+24 silly get     'content-length': '2',
+24 silly get     'accept-ranges': 'bytes',
+24 silly get     date: 'Tue, 14 Jun 2016 19:04:36 GMT',
+24 silly get     via: '1.1 varnish',
+24 silly get     age: '0',
+24 silly get     connection: 'keep-alive',
+24 silly get     'x-served-by': 'cache-ams4149-AMS',
+24 silly get     'x-cache': 'MISS',
+24 silly get     'x-cache-hits': '0',
+24 silly get     'x-timer': 'S1465931076.453180,VS0,VE174',
+24 silly get     vary: 'Accept-Encoding' } ]
+25 verbose stack Error: Registry returned 404 for GET on https://registry.npmjs.org/newtonsoft
+25 verbose stack     at makeError (C:\Program Files\nodejs\node_modules\npm\node_modules\npm-registry-client\lib\request.js:264:12)
+25 verbose stack     at CachingRegistryClient.<anonymous> (C:\Program Files\nodejs\node_modules\npm\node_modules\npm-registry-client\lib\request.js:242:14)
+25 verbose stack     at Request._callback (C:\Program Files\nodejs\node_modules\npm\node_modules\npm-registry-client\lib\request.js:172:14)
+25 verbose stack     at Request.self.callback (C:\Program Files\nodejs\node_modules\npm\node_modules\request\request.js:198:22)
+25 verbose stack     at emitTwo (events.js:87:13)
+25 verbose stack     at Request.emit (events.js:172:7)
+25 verbose stack     at Request.<anonymous> (C:\Program Files\nodejs\node_modules\npm\node_modules\request\request.js:1063:14)
+25 verbose stack     at emitOne (events.js:82:20)
+25 verbose stack     at Request.emit (events.js:169:7)
+25 verbose stack     at IncomingMessage.<anonymous> (C:\Program Files\nodejs\node_modules\npm\node_modules\request\request.js:1009:12)
+26 verbose statusCode 404
+27 verbose pkgid newtonsoft
+28 verbose cwd C:\Users\Jean Jack\Documents\Visual Studio 2015\Projects\mobileL2P
+29 error Windows_NT 10.0.10586
+30 error argv "C:\\Program Files\\nodejs\\node.exe" "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "install" "newtonsoft"
+31 error node v4.2.2
+32 error npm  v2.14.7
+33 error code E404
+34 error 404 Registry returned 404 for GET on https://registry.npmjs.org/newtonsoft
+34 error 404
+34 error 404 'newtonsoft' is not in the npm registry.
+34 error 404 You should bug the author to publish it (or use the name yourself!)
+34 error 404
+34 error 404 Note that you can also install from a
+34 error 404 tarball, folder, http url, or git url.
+35 verbose exit [ 1, true ]
