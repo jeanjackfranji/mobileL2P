@@ -1,9 +1,9 @@
 {
-  "version": "1.0.0-*",
+  "version": "8.0.3",
   "frameworks": {
     "dnx451": {
       "bin": {
-        "assembly": "../../L2PAccess/bin/Debug/Newtonsoft.Json.dll"
+        "assembly": "../../L2PAPIClient/bin/Debug/Newtonsoft.Json.dll"
       }
     }
   }
