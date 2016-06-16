@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-namespace Cik.MazSite.WebApp.Models
+namespace Grp.L2PSite.MobileApp.Models
 {
     //LEft as a reference
     public class ResetPasswordViewModel

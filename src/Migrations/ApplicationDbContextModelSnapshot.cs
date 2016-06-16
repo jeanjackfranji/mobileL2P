@@ -1,5 +1,5 @@
 using System;
-using Cik.MazSite.WebApp.Models;
+using Grp.L2PSite.MobileApp.Models;
 using Microsoft.Data.Entity;
 using Microsoft.Data.Entity.Metadata;
 using Microsoft.Data.Entity.Relational.Migrations.Infrastructure;

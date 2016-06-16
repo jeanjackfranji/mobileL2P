@@ -13,7 +13,9 @@ namespace Grp.L2PSite.MobileApp.Helpers
         public static String pWd = "Integr$atorPa%ss123!@#$5";
         public static Boolean hasCookieToken = false;
 
-        public static void checkIfTokenCookieExists(IReadableStringCollection cookies){
+        public static void checkIfTokenCookieExists(IReadableStringCollection cookies, HttpContext context){
+
+            hasCookieToken = false;
             var cookiesList = from cookieToken in cookies
                          where cookieToken.Key == "CRTID" || cookieToken.Key == "CRAID"
                          select cookieToken;
@@ -22,13 +24,15 @@ namespace Grp.L2PSite.MobileApp.Helpers
                 foreach(var cookie in cookiesList)
                 {
                     if(cookie.Key == "CRTID")
-                        Config.setRefreshToken(cookie.Value.First());
+                        Config.setRefreshToken(Encryptor.Decrypt(cookie.Value.First()));
                     else
-                        Config.setAccessToken(cookie.Value.First());
-                    
+                        Config.setAccessToken(Encryptor.Decrypt(cookie.Value.First()));         
                 }
-                if(cookiesList.Count() == 2)
+                if (cookiesList.Count() == 2)
+                {
                     hasCookieToken = true;
+                    context.Session.SetInt32("LoggedIn", 1);
+                }
             }
         }
 
@@ -44,6 +48,11 @@ namespace Grp.L2PSite.MobileApp.Helpers
         public static Boolean isL2PAPIClientActive()
         {
             return AuthenticationManager.getState() == AuthenticationManager.AuthenticationState.ACTIVE;
+        }
+
+        public static String formatSemesterCode(String code)
+        {
+            return code.Replace("ss", "Summer Semester ").Replace("ws", "Winter Semester ");
         }
     }
 }

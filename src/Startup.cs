@@ -1,5 +1,5 @@
-﻿using Cik.MazSite.WebApp.Models;
-using Cik.MazSite.WebApp.Services;
+﻿using Grp.L2PSite.MobileApp.Models;
+using Grp.L2PSite.MobileApp.Services;
 using Microsoft.AspNet.Authentication.Facebook;
 using Microsoft.AspNet.Authentication.MicrosoftAccount;
 using Microsoft.AspNet.Builder;
@@ -68,6 +68,8 @@ namespace Cik.MazSite.WebApp
 
             // Add MVC services to the services container.
             services.AddMvc();
+            services.AddCaching(); // Adds a default in-memory implementation of IDistributedCache
+            services.AddSession();
 
             // Uncomment the following line to add Web API services which makes it easier to port Web API 2 controllers.
             // You will also need to add the Microsoft.AspNet.Mvc.WebApiCompatShim package to the 'dependencies' section of project.json.
@@ -112,6 +114,8 @@ namespace Cik.MazSite.WebApp
             // app.UseGoogleAuthentication();
             // app.UseMicrosoftAccountAuthentication();
             // app.UseTwitterAuthentication();
+
+            app.UseSession();
 
             // Add MVC to the request pipeline.
             app.UseMvc(routes =>

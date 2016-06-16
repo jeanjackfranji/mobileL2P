@@ -4,33 +4,50 @@ using Grp.L2PSite.MobileApp.Helpers;
 using L2PAPIClient;
 using System;
 using System.Threading.Tasks;
+using Microsoft.AspNet.Http;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace Cik.MazSite.WebApp.Controllers
+namespace Grp.L2PSite.MobileApp.Controllers
 {
     public class HomeController : Controller
     {
-        public async Task<IActionResult> MyCourses()
+        public async Task<IActionResult> MyCourses(String id)
         {
-            if (!Tools.isL2PAPIClientActive())
+            try
             {
-                Tools.checkIfTokenCookieExists(Request.Cookies);
-                if (Tools.hasCookieToken && !String.IsNullOrEmpty(Config.getRefreshToken()))
-                {
-                    await AuthenticationManager.CheckAccessTokenAsync();
-                }
-            }
+                int isLoggedIn = -1;
+                Tools.checkIfTokenCookieExists(Request.Cookies, Context);
 
-            if (Tools.isL2PAPIClientActive())
-            {
-                Tools.cId = null;
-                if (Tools.isL2PAPIClientActive())
+                if (Context.Session.GetInt32("LoggedIn").HasValue)
+                    isLoggedIn = Context.Session.GetInt32("LoggedIn").Value;
+
+                if (isLoggedIn == 1)
                 {
+                    Tools.cId = null;
+                    if (Tools.hasCookieToken)
+                        await AuthenticationManager.CheckAccessTokenAsync();
+
                     L2PCourseInfoSetData result = L2PAPIClient.api.Calls.L2PviewAllCourseInfoAsync().Result;
-                    ViewData["Courses"] = result.dataset;
+                    ViewData["semesters"] = result.dataset;
+                    ViewData["chosenSemesterCode"] = id;
+                    return View();
+                }
+                else
+                {
+                    if (Tools.hasCookieToken && !String.IsNullOrEmpty(Config.getRefreshToken()))
+                    {
+                        await AuthenticationManager.CheckAccessTokenAsync();
+                    }
                 }
             }
-
-            return View();
+            catch
+            {
+                Response.Cookies.Delete("CRTID");
+                Response.Cookies.Delete("CRAID");
+                return View();
+            }
+            return RedirectToAction(nameof(AccountController.Login), "Account");
         }
 
         public IActionResult Calendar()

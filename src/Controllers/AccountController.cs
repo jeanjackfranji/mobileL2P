@@ -1,16 +1,16 @@
 ﻿using System.Security.Claims;
 using System.Threading.Tasks;
-using Cik.MazSite.WebApp.Models;
-using Cik.MazSite.WebApp.Services;
+using Grp.L2PSite.MobileApp.Models;
+using Grp.L2PSite.MobileApp.Services;
 using Microsoft.AspNet.Authorization;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Mvc;
-using Microsoft.Data.Entity;
 using System.Threading;
 using System;
 using Grp.L2PSite.MobileApp.Helpers;
+using Microsoft.AspNet.Http;
 
-namespace Cik.MazSite.WebApp.Controllers
+namespace Grp.L2PSite.MobileApp.Controllers
 {
     [Authorize]
     public class AccountController : Controller
@@ -43,7 +43,7 @@ namespace Cik.MazSite.WebApp.Controllers
         public IActionResult Login(string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
-            Tools.checkIfTokenCookieExists(Request.Cookies);
+            Tools.checkIfTokenCookieExists(Request.Cookies, Context);
             if (!Tools.hasCookieToken)
             {
                 //Init the Auth Process
@@ -105,6 +105,9 @@ namespace Cik.MazSite.WebApp.Controllers
         public IActionResult LogOff()
         {
             Tools.loggedIn = false;
+            Context.Session.SetInt32("LoggedIn", 0);
+            Response.Cookies.Delete("CRTID");
+            Response.Cookies.Delete("CRAID");
             return RedirectToAction(nameof(HomeController.MyCourses), "Home");
         }
 
@@ -120,7 +123,7 @@ namespace Cik.MazSite.WebApp.Controllers
             if (!_databaseChecked)
             {
                 _databaseChecked = true;
-                context.Database.AsRelational().ApplyMigrations();
+                context.Database.EnsureCreated();
             }
         }
 
