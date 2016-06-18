@@ -67,10 +67,8 @@ namespace Grp.L2PSite.MobileApp.Controllers
             ViewData["ReturnUrl"] = returnUrl;
              
             // Wait for authentication
-            // so far, not authenticated
             bool done = false;
-
-            while (!done)
+            while (!done)  // so far, not authenticated
             {
                 // Just wait 5 seconds - this is the recommended querying time for OAuth by ITC
                 Thread.Sleep(5000);
@@ -82,14 +80,15 @@ namespace Grp.L2PSite.MobileApp.Controllers
                     Console.WriteLine("App not authenticated right now...");
                 }
                 else
-                {                   
+                {
                     //Add a Cookie
-                    Response.Cookies.Append("CRTID", Encryptor.Encrypt(L2PAPIClient.Config.getRefreshToken()));
-                    Response.Cookies.Append("CRAID", Encryptor.Encrypt(L2PAPIClient.Config.getAccessToken()));
-
+                    CookieOptions cOptions = new CookieOptions();
+                    cOptions.Expires = DateTime.MaxValue;
+                    Response.Cookies.Append("CRTID", Encryptor.Encrypt(L2PAPIClient.Config.getRefreshToken()), cOptions);
+                    Response.Cookies.Append("CRAID", Encryptor.Encrypt(L2PAPIClient.Config.getAccessToken()), cOptions);
+                    
                     //Set logged in to true
-                    Tools.loggedIn = true;
-                    Console.WriteLine("App authenticated!");
+                    Context.Session.SetInt32("LoggedIn", 1);
                     return RedirectToLocal(returnUrl);
                 }
             }
@@ -104,7 +103,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult LogOff()
         {
-            Tools.loggedIn = false;
+
             Context.Session.SetInt32("LoggedIn", 0);
             Response.Cookies.Delete("CRTID");
             Response.Cookies.Delete("CRAID");

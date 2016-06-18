@@ -12,7 +12,7 @@ namespace L2PAPIClient
 
         internal const string ClientID = "TAgzsUUaRiAqRQAR8BSSvxmfPCITYeiSfAVuX8GDQIQHbKiFFWYkLQhEEBTwbS8q.apps.rwth-aachen.de";
 
-        internal const string L2PEndPoint = "https://www3.elearning.rwth-aachen.de/_vti_bin/l2pservices/api.svc/v1";
+        public const string L2PEndPoint = "https://www3.elearning.rwth-aachen.de/_vti_bin/l2pservices/api.svc/v1";
 
         internal const string OAuthTokenInfoEndPoint = "https://oauth.campus.rwth-aachen.de/oauth2waitress/oauth2.svc/tokeninfo";
 

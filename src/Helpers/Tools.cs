@@ -2,14 +2,12 @@
 using Microsoft.AspNet.Http;
 using System.Linq;
 using L2PAPIClient;
-using System.Threading.Tasks;
 
 namespace Grp.L2PSite.MobileApp.Helpers
 {
     public static class Tools
     {
-        public static bool loggedIn = false;
-        public static String cId = null;
+
         public static String pWd = "Integr$atorPa%ss123!@#$5";
         public static Boolean hasCookieToken = false;
 
@@ -23,7 +21,7 @@ namespace Grp.L2PSite.MobileApp.Helpers
             {
                 foreach(var cookie in cookiesList)
                 {
-                    if(cookie.Key == "CRTID")
+                    if (cookie.Key == "CRTID")
                         Config.setRefreshToken(Encryptor.Decrypt(cookie.Value.First()));
                     else
                         Config.setAccessToken(Encryptor.Decrypt(cookie.Value.First()));         

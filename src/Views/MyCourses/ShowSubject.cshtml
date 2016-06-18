@@ -1,9 +1,7 @@
 ﻿@using L2PAPIClient.DataModel;
 @{
     ViewData["Title"] = "Course Info";
-    string courseId = ViewData["CourseId"].ToString();
-
-    L2PCourseInfoData course = L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(courseId).Result;
+    L2PCourseInfoData course = (L2PCourseInfoData)ViewData["CourseInfo"];
 }
 
 <div class="mdl-grid">

@@ -3,14 +3,21 @@
 @{
     ViewData["Title"] = "My Courses";
     List<L2PCourseInfoData> semestersList = new List<L2PCourseInfoData>();
+    List<L2PCourseInfoData> currentSemesterCourses = new List<L2PCourseInfoData>();
     String semCode = null;
-    if (ViewData["semesters"] != null)
+
+    if (ViewData["semestersList"] != null)
     {
-        semestersList = (List<L2PCourseInfoData>)ViewData["semesters"];
+        semestersList = (List<L2PCourseInfoData>)ViewData["semestersList"];
+    }
+    if (ViewData["currentSemesterCourses"] != null)
+    {
+        currentSemesterCourses = (List<L2PCourseInfoData>)ViewData["currentSemesterCourses"];
     }
     var semesters = (from a in semestersList
                      select new { code = a.semester, name = Tools.formatSemesterCode(a.semester) }).Distinct();
-    if(ViewData["chosenSemesterCode"] != null)
+
+    if (ViewData["chosenSemesterCode"] != null)
     {
         semCode = ViewData["chosenSemesterCode"].ToString();
     }
@@ -22,7 +29,7 @@
             <br />
             @if (semesters != null && semesters.Any())
             {
-                if(semCode == null)
+                if (semCode == null)
                 {
                     semCode = semesters.First().code;
                 }
@@ -47,23 +54,21 @@
                         <ul class="collection with-header">
                             <li class="collection-header center-align"><h4>@ViewData["Title"]</h4></li>
                             @{
-                                List<L2PCourseInfoData> currentCourses = L2PAPIClient.api.Calls.L2PviewAllCourseIfoBySemesterAsync(semCode).Result.dataset;
-                                foreach (L2PCourseInfoData course in currentCourses)
+                                foreach (L2PCourseInfoData course in currentSemesterCourses)
                                 {
                                     <li class="collection-item avatar">
                                         <i class="material-icons circle">school</i>
-                                        <span class="title"><a asp-controller="MyCourse" asp-action="ShowSubject" asp-route-id="@course.uniqueid">@course.courseTitle</a></span>
+                                        <span class="title"><a asp-controller="MyCourses" asp-action="WhatsNew" asp-route-id="@course.uniqueid">@course.courseTitle</a></span>
                                         <p>
                                             @course.courseStatus <br>
                                             @course.description
                                         </p>
-                                        <a id="a-secondary-content" class="secondary-content" asp-controller="MyCourse" asp-action="ShowSubject" asp-route-id="@course.uniqueid"><i class="material-icons">send</i></a>
+                                        <a id="a-secondary-content" class="secondary-content" asp-controller="MyCourses" asp-action="WhatsNew" asp-route-id="@course.uniqueid"><i class="material-icons">send</i></a>
                                     </li>
                                 }
                             }
                         </ul>
-                                }
-            }
+             }                   
         </div>
     </div>
 </div>

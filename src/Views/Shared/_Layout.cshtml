@@ -1,4 +1,4 @@
-﻿@using Grp.L2PSite.MobileApp.Helpers;
+﻿@using Microsoft.AspNet.Http;
 <!DOCTYPE html>
 
 <html>
@@ -20,13 +20,27 @@
    
 </head>
 <body>
+    @if (Context.Session.GetString("CourseId") != null)
+    {
+        <ul id="coursesDropdown" class="dropdown-content width-200">
+            <li><a asp-controller="MyCourse" asp-action="LearningMaterials" class="waves-effect waves-light">Learning Materials</a></li>
+            <li><a asp-controller="MyCourse" asp-action="SharedDocuments" class="waves-effect waves-light">Shared Documents</a></li>
+            <li><a asp-controller="MyCourse" asp-action="Hyperlinks" class="waves-effect waves-light">Hyperlinks</a></li>
+            <li><a asp-controller="MyCourse" asp-action="Assignments" class="waves-effect waves-light">Assignments</a></li>
+            <li><a asp-controller="MyCourse" asp-action="Announcement" class="waves-effect waves-light">Announcements</a></li>
+            <li><a asp-controller="" asp-action="" class="waves-effect waves-light">Emails</a></li>
+            <li><a asp-controller="" asp-action="" class="waves-effect waves-light">Discussion Forum</a></li>
+            <li><a asp-controller="MyCourse" asp-action="MediaLibrary" class="waves-effect waves-light">Media Library</a></li>
+            <li><a asp-controller="MyCourse" asp-action="Literature" class="waves-effect waves-light">Literarture</a></li>
+        </ul>
+    }
     <nav class="blue darken-3" role="navigation">
         <div class="nav-wrapper">
             <a href="#!" class="brand-logo margin-left-20">L2P Mobile</a>
             <a href="#" data-activates="mobile" class="button-collapse show-on-large"><i class="material-icons">menu</i></a>
             <ul class="right">
                 <!-- Dropdown Trigger -->
-                <li><a class="dropdown-button" href="#!" data-activates="coursesDropdown"><i class="material-icons right">more_vert</i></a></li>
+                <li><a class="dropdown-button" href="#!"  data-constrainwidth="false" data-activates="coursesDropdown"><i class="material-icons right">more_vert</i></a></li>
             </ul>
             <ul class="side-nav" id="mobile">
                 <li><a class="waves-effect waves-light" asp-controller="Home" asp-action="MyCourses">My Courses</a></li>
@@ -37,21 +51,6 @@
             </ul>
         </div>
     </nav>
-
-    @if (Tools.cId != null)
-            {
-        <ul id="coursesDropdown" class="dropdown-content waves-effect waves-teal">
-            <li><a asp-controller="MyCourse" asp-action="LearningMaterials" class="waves-effect waves-light" >Learning Materials</a></li>
-            <li><a asp-controller="MyCourse" asp-action="SharedDocuments" class="waves-effect waves-light" >Shared Documents</a></li>
-            <li><a asp-controller="MyCourse" asp-action="Hyperlinks" class="waves-effect waves-light" >Hyperlinks</a></li>
-            <li><a asp-controller="MyCourse" asp-action="Assignments" class="waves-effect waves-light" >Assignments</a></li>
-            <li><a asp-controller="MyCourse" asp-action="Announcement" class="waves-effect waves-light" >Announcements</a></li>
-            <li><a asp-controller=""         asp-action="" class="waves-effect waves-light" >Emails</a></li>
-            <li><a asp-controller=""         asp-action="" class="waves-effect waves-light" >Discussion Forum</a> Forum</li>
-            <li><a asp-controller="MyCourse" asp-action="MediaLibrary" class="waves-effect waves-light" >Media Library</a></li>
-            <li><a asp-controller="MyCourse" asp-action="Literature" class="waves-effect waves-light" >Literarture</a></li>
-        </ul>
-    }
 
     <main class="layout__content">
         <div class="page-container">
@@ -72,6 +71,9 @@
 
     <script>
         $(document).ready(function () {
+
+            $(".dropdown-button").dropdown();
+
             $('.button-collapse').sideNav({
                 menuWidth: 300, // Default is 240
                 edge: 'left', // Choose the horizontal origin
@@ -79,7 +81,7 @@
             }
             );
 
-            $(".dropdown-button").dropdown();
+           
         })
     </script>
 

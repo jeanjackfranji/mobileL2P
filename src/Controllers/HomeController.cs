@@ -5,32 +5,40 @@ using L2PAPIClient;
 using System;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Http;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Grp.L2PSite.MobileApp.Controllers
 {
     public class HomeController : Controller
     {
-        public async Task<IActionResult> MyCourses(String id)
+        public async Task<IActionResult> MyCourses(String semId)
         {
             try
             {
                 int isLoggedIn = -1;
                 Tools.checkIfTokenCookieExists(Request.Cookies, Context);
-
                 if (Context.Session.GetInt32("LoggedIn").HasValue)
                     isLoggedIn = Context.Session.GetInt32("LoggedIn").Value;
 
                 if (isLoggedIn == 1)
                 {
-                    Tools.cId = null;
+                    //remove previously save course id
+                    Context.Session.Remove("CourseId");
                     if (Tools.hasCookieToken)
                         await AuthenticationManager.CheckAccessTokenAsync();
 
                     L2PCourseInfoSetData result = L2PAPIClient.api.Calls.L2PviewAllCourseInfoAsync().Result;
-                    ViewData["semesters"] = result.dataset;
-                    ViewData["chosenSemesterCode"] = id;
+                    L2PCourseInfoSetData resultBySemester = null;
+                    if (semId != null)
+                    {
+                        ViewData["chosenSemesterCode"] = semId;
+                        resultBySemester = L2PAPIClient.api.Calls.L2PviewAllCourseIfoBySemesterAsync(semId).Result;
+                    }
+                    else
+                    {
+                        resultBySemester = L2PAPIClient.api.Calls.L2PviewAllCourseInfoByCurrentSemester().Result;
+                    }
+                    ViewData["semestersList"] = result.dataset;
+                    ViewData["currentSemesterCourses"] = resultBySemester.dataset;
                     return View();
                 }
                 else
