@@ -103,7 +103,6 @@ namespace Grp.L2PSite.MobileApp.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult LogOff()
         {
-
             Context.Session.SetInt32("LoggedIn", 0);
             Response.Cookies.Delete("CRTID");
             Response.Cookies.Delete("CRAID");

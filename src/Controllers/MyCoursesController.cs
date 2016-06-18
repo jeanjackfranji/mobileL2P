@@ -28,7 +28,9 @@ namespace Grp.L2PSite.MobileApp.Controllers
             try
             {
                 Context.Session.SetString("CourseId", id);
+                ViewData["ChosenCourse"] = L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(id).Result;
                 ViewData["CourseWhatsNew"] = L2PAPIClient.api.Calls.L2PwhatsNewSinceAsync(id,180000).Result;
+                ViewData["Assignments"] = L2PAPIClient.api.Calls.L2PviewAllAssignments(id).Result;
             }
             catch (Exception ex)
             {

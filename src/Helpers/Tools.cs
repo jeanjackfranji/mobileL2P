@@ -52,5 +52,12 @@ namespace Grp.L2PSite.MobileApp.Helpers
         {
             return code.Replace("ss", "Summer Semester ").Replace("ws", "Winter Semester ");
         }
+
+        public static String toDateTime(double dateNb)
+        {
+            DateTime date = new DateTime(1970, 1, 1);
+            date = date.AddDays(Math.Floor(dateNb / 60 / 60 / 24));
+            return date.ToShortDateString();
+        }
     }
 }
