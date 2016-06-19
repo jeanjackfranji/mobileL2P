@@ -1,7 +1,23 @@
 ﻿@{
     ViewData["Title"] = "Error";
 }
-
-<h3>Error.</h3>
-<h4>An error occurred while processing your request.</h4>
-<p>@ViewData["error"]</p>
+<div class="container">
+    <div class="row">
+        <div class="col s12">
+            <div class="card blue-grey darken-1">
+                <div class="card-content white-text">
+                    <span class="card-title">Error</span>
+                    <p>
+                        An error occurred while processing your request. See below:
+                        <br/><br/>
+                        <span class="red" >@ViewData["error"]</span>
+                    </p>
+                </div>
+                <div class="card-action">
+                    <a asp-controller="Home" asp-action="MyCourses">Go to Main Page</a>
+                    <a asp-controller="Account" asp-action="Login">Go to Login Page</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,6 +1,5 @@
-﻿@using Grp.L2PSite.MobileApp.Helpers
-@using Microsoft.AspNet.Http;
-@if (L2PAPIClient.AuthenticationManager.getState() == L2PAPIClient.AuthenticationManager.AuthenticationState.ACTIVE && Context.Session.GetInt32("LoggedIn") == 1)
+﻿@using Grp.L2PSite.MobileApp.Services
+@if (Tools.isUserLoggedInAndAPIActive(Context))
 {
     <form asp-controller="Account" asp-action="LogOff" method="post" id="logoutForm">
         <!--<a asp-controller="Manage" asp-action="Index" title="Manage" class="mdl-navigation__link">Data Here!</a>-->

@@ -1,48 +1,58 @@
 ﻿@using L2PAPIClient.DataModel;
 @{
     ViewData["Title"] = "Hyperlinks";
-    string courseId = ViewData["CourseId"].ToString();
-    L2PCourseInfoData course = L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(courseId).Result;
+    L2PCourseInfoData course = ViewData["ChosenCourse"] as L2PCourseInfoData;
+    L2PRole userRole = ViewData["userRole"] as L2PRole;
+    List<L2PHyperlinkElement> hyperlinks = ViewData["CourseHyperlinks"] as List<L2PHyperlinkElement>;
 }
 
-<div class="mdl-cell mdl-cell--12-col">
-
-    <h4>@ViewData["Title"]</h4>
-    <hr />
-
-    <table align="left">
-        <tr>
-            <td style="align-content:flex-end">
-                <a asp-controller="MyCourse" asp-action="AddHyperlink" class="mdl-navigation__link" asp-route-id="@course.uniqueid">
-                    <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab" title="Add Assignment">
-                        <i class="material-icons">add</i>
-                    </button>
-                </a>
-            </td>
-            <td>
-                <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab" title="Corrected Assignments">
-                    <i class="material-icons">delete</i>
-                </button>
-            </td>
-        </tr>
-    </table>
-</div>
-<div class="mdl-cell mdl-cell--12-col">
-    <table align="center" class="mdl-data-table mdl-js-data-table mdl-data-table--selectable">
-        <thead>
-            <tr>
-                <th class="mdl-data-table__cell--non-numeric">Url</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td class="mdl-data-table__cell--non-numeric"><a href="https://www.cs.umd.edu/users/ben/goldenrules.html">8 Golden Rules of Design</a></td>
-            </tr>
-            <tr>
-                <td class="mdl-data-table__cell--non-numeric"><a href="https://www.cs.umd.edu/users/ben/goldenrules.html">Low- vs. High-fidelity Prototyping Debate</a></td>
-            </tr>
-        </tbody>
-    </table>
+<div class="container">
+    <div class="row" style="margin-bottom: 0px !important">
+        <div class="col s12 center-align">
+            <div class="chip"><i class="material-icons">link</i><b>Hyperlinks</b> | @course.courseTitle </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s12">
+            <table class="bordered highlight">
+                <thead>
+                    <tr>
+                        <th data-field="name">URL</th>
+                        <th data-field="notes">Notes</th>
+                        <th class="center-align" data-field="oLink">Open Link</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (hyperlinks != null)
+                    {
+                        foreach (L2PHyperlinkElement hpl in hyperlinks)
+                        {
+                            <tr>
+                                @if (!String.IsNullOrEmpty(hpl.description))
+                                {
+                                    <td><a asp-controller="L2PCRUD" asp-action="ViewHyperlink" asp-route-cId="@course.uniqueid" asp-route-hId="@hpl.itemId">@hpl.description</a></td>
+                                }
+                                else
+                                {
+                                    <td><a asp-controller="L2PCRUD" asp-action="ViewHyperlink" asp-route-cId="@course.uniqueid" asp-route-hId="@hpl.itemId">@hpl.url</a></td>
+                                }
+                                <td>@Html.Raw(hpl.notes)</td>
+                                <td class="center-align"><a href="@hpl.url"><i class="material-icons">pageview</i></a></td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    @if (userRole.role.Contains("managers") || userRole.role.Contains("tutors"))
+    {
+        <div class="fixed-action-btn" style="bottom: 45px; right: 24px;">
+            <a class="btn-floating btn-large blue darken-3" asp-controller="L2PAdd" asp-action="AddHyperlink" asp-route-cId="@course.uniqueid">
+                <i class="large material-icons">add</i>
+            </a>
+        </div>
+    }
 </div>
 
 

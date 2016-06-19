@@ -7,8 +7,8 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Mvc;
 using System.Threading;
 using System;
-using Grp.L2PSite.MobileApp.Helpers;
 using Microsoft.AspNet.Http;
+using static Grp.L2PSite.MobileApp.Services.Tools;
 
 namespace Grp.L2PSite.MobileApp.Controllers
 {
@@ -43,7 +43,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
         public IActionResult Login(string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
-            Tools.checkIfTokenCookieExists(Request.Cookies, Context);
+            Tools.getAndSetUserToken(Request.Cookies, Context);
             if (!Tools.hasCookieToken)
             {
                 //Init the Auth Process
@@ -88,7 +88,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
                     Response.Cookies.Append("CRAID", Encryptor.Encrypt(L2PAPIClient.Config.getAccessToken()), cOptions);
                     
                     //Set logged in to true
-                    Context.Session.SetInt32("LoggedIn", 1);
+                    Context.Session.Set("LoggedIn", Tools.ObjectToByteArray(LoginStatus.LoggedIn));
                     return RedirectToLocal(returnUrl);
                 }
             }

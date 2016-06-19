@@ -1,4 +1,7 @@
 ﻿@using Microsoft.AspNet.Http;
+@{
+    String cId = Context.Session.GetString("CourseId");
+}
 <!DOCTYPE html>
 
 <html>
@@ -20,18 +23,18 @@
    
 </head>
 <body>
-    @if (Context.Session.GetString("CourseId") != null)
-    {
+    @if (cId != null)
+    {      
         <ul id="coursesDropdown" class="dropdown-content width-200">
-            <li><a asp-controller="MyCourse" asp-action="LearningMaterials" class="waves-effect waves-light">Learning Materials</a></li>
-            <li><a asp-controller="MyCourse" asp-action="SharedDocuments" class="waves-effect waves-light">Shared Documents</a></li>
-            <li><a asp-controller="MyCourse" asp-action="Hyperlinks" class="waves-effect waves-light">Hyperlinks</a></li>
-            <li><a asp-controller="MyCourse" asp-action="Assignments" class="waves-effect waves-light">Assignments</a></li>
-            <li><a asp-controller="MyCourse" asp-action="Announcement" class="waves-effect waves-light">Announcements</a></li>
-            <li><a asp-controller="" asp-action="" class="waves-effect waves-light">Emails</a></li>
-            <li><a asp-controller="" asp-action="" class="waves-effect waves-light">Discussion Forum</a></li>
-            <li><a asp-controller="MyCourse" asp-action="MediaLibrary" class="waves-effect waves-light">Media Library</a></li>
-            <li><a asp-controller="MyCourse" asp-action="Literature" class="waves-effect waves-light">Literarture</a></li>
+            <li><a asp-controller="MyCourses" asp-action="LearningMaterials" asp-route-cId="@cId" class="waves-effect waves-light">Learning Materials</a></li>
+            <li><a asp-controller="MyCourses" asp-action="SharedDocuments" asp-route-cId="@cId"  class="waves-effect waves-light">Shared Documents</a></li>
+            <li><a asp-controller="MyCourses" asp-action="Hyperlinks" asp-route-cId="@cId"  class="waves-effect waves-light">Hyperlinks</a></li>
+            <li><a asp-controller="MyCourses" asp-action="Assignments" asp-route-cId="@cId"  class="waves-effect waves-light">Assignments</a></li>
+            <li><a asp-controller="MyCourses" asp-action="Announcement" asp-route-cId="@cId"  class="waves-effect waves-light">Announcements</a></li>
+            <li><a asp-controller="" asp-action="" asp-route-cId="@cId"  class="waves-effect waves-light">Emails</a></li>
+            <li><a asp-controller="" asp-action="" asp-route-cId="@cId"  class="waves-effect waves-light">Discussion Forum</a></li>
+            <li><a asp-controller="MyCourses" asp-action="MediaLibrary" asp-route-cId="@cId" class="waves-effect waves-light">Media Library</a></li>
+            <li><a asp-controller="MyCourses" asp-action="Literature" asp-route-cId="@cId" class="waves-effect waves-light">Literarture</a></li>
         </ul>
     }
     <nav class="blue darken-3" role="navigation">
@@ -80,8 +83,6 @@
                 closeOnClick: true // Closes side-nav on <a> clicks, useful for Angular/Meteor
             }
             );
-
-           
         })
     </script>
 

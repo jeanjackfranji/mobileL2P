@@ -1,26 +1,14 @@
 ﻿@using L2PAPIClient.DataModel;
-@using Grp.L2PSite.MobileApp.Helpers;
+@using Grp.L2PSite.MobileApp.Services;
 @{
     ViewData["Title"] = "My Courses";
     List<L2PCourseInfoData> semestersList = new List<L2PCourseInfoData>();
-    List<L2PCourseInfoData> currentSemesterCourses = new List<L2PCourseInfoData>();
-    String semCode = null;
+    List<L2PCourseInfoData> currentSemesterCourses = (List<L2PCourseInfoData>)ViewData["currentSemesterCourses"];
+    Object semCode = ViewData["chosenSemesterCode"];
 
-    if (ViewData["semestersList"] != null)
-    {
-        semestersList = (List<L2PCourseInfoData>)ViewData["semestersList"];
-    }
-    if (ViewData["currentSemesterCourses"] != null)
-    {
-        currentSemesterCourses = (List<L2PCourseInfoData>)ViewData["currentSemesterCourses"];
-    }
+    semestersList = (List<L2PCourseInfoData>)ViewData["semestersList"];
     var semesters = (from a in semestersList
                      select new { code = a.semester, name = Tools.formatSemesterCode(a.semester) }).Distinct();
-
-    if (ViewData["chosenSemesterCode"] != null)
-    {
-        semCode = ViewData["chosenSemesterCode"].ToString();
-    }
 }
 
 <div class="container">
@@ -40,7 +28,7 @@
                         {
                             if (sem.code.Equals(semCode))
                             {
-                                <option value="@semCode" selected>@Tools.formatSemesterCode(semCode)</option>
+                                <option value="@semCode" selected>@Tools.formatSemesterCode(semCode.ToString())</option>
                             }
                             else
                             {
@@ -50,25 +38,24 @@
                     </select>
                     <label>Choose your semester</label>
                 </div>
-
-                        <ul class="collection with-header">
-                            <li class="collection-header center-align"><h4>@ViewData["Title"]</h4></li>
-                            @{
-                                foreach (L2PCourseInfoData course in currentSemesterCourses)
-                                {
-                                    <li class="collection-item avatar">
-                                        <i class="material-icons circle">school</i>
-                                        <span class="title"><a asp-controller="MyCourses" asp-action="WhatsNew" asp-route-id="@course.uniqueid">@course.courseTitle</a></span>
-                                        <p>
-                                            @course.courseStatus <br>
-                                            @course.description
-                                        </p>
-                                        <a id="a-secondary-content" class="secondary-content" asp-controller="MyCourses" asp-action="WhatsNew" asp-route-id="@course.uniqueid"><i class="material-icons">send</i></a>
-                                    </li>
-                                }
-                            }
-                        </ul>
-             }                   
+                <ul class="collection with-header">
+                    <li class="collection-header center-align"><h4>@ViewData["Title"]</h4></li>
+                    @{
+                        foreach (L2PCourseInfoData course in currentSemesterCourses)
+                        {
+                            <li class="collection-item avatar">
+                                <i class="material-icons circle">school</i>
+                                <span class="title"><a asp-controller="MyCourses" asp-action="WhatsNew" asp-route-cId="@course.uniqueid">@course.courseTitle</a></span>
+                                <p>
+                                    @course.courseStatus <br>
+                                    @course.description
+                                </p>
+                                <a id="a-secondary-content" class="secondary-content" asp-controller="MyCourses" asp-action="WhatsNew" asp-route-cId="@course.uniqueid"><i class="material-icons blue-text">send</i></a>
+                            </li>
+                        }
+                    }
+                </ul>
+            }                   
         </div>
     </div>
 </div>

@@ -16,6 +16,12 @@
     }
 }
 
+@media only screen and (min-width : 992px) {
+    .container{
+        margin-top: 20px;
+    }
+}
+
 .page-content {
     margin: 5px;
     padding: 5px;
@@ -42,6 +48,15 @@
         padding: 0 !important;
     }
 
+
+.margin-bottom-0{
+    margin-bottom: 0px !important;
+}
+
+.margin-top-10{
+    margin-top: 10px !important;
+}
+
 #bottom-right {
     right: 10%;
     bottom: 10%;
@@ -52,7 +67,15 @@ nav .brand-logo {
     left: 50px;
 }
 
-/*.width-200 {
-    width: 200px !important;
-    left: 260px !important;
-}*/
+table p {
+    margin: 0px;
+}
+
+.collapsible-body p {
+    padding: 6px;
+}
+
+
+* :before{
+    color: black !important;
+}

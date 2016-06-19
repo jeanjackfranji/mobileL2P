@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNet.Mvc;
 using L2PAPIClient.DataModel;
-using Grp.L2PSite.MobileApp.Helpers;
 using L2PAPIClient;
 using System;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Http;
+using Grp.L2PSite.MobileApp.Services;
+using static Grp.L2PSite.MobileApp.Services.Tools;
 
 namespace Grp.L2PSite.MobileApp.Controllers
 {
@@ -14,12 +15,12 @@ namespace Grp.L2PSite.MobileApp.Controllers
         {
             try
             {
-                int isLoggedIn = -1;
-                Tools.checkIfTokenCookieExists(Request.Cookies, Context);
-                if (Context.Session.GetInt32("LoggedIn").HasValue)
-                    isLoggedIn = Context.Session.GetInt32("LoggedIn").Value;
+                LoginStatus lStatus = LoginStatus.Waiting;
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Context.Session.Get("LoggedIn") != null)
+                    lStatus = (LoginStatus)Tools.ByteArrayToObject(Context.Session["LoggedIn"]);
 
-                if (isLoggedIn == 1)
+                if (lStatus == LoginStatus.LoggedIn)
                 {
                     //remove previously save course id
                     Context.Session.Remove("CourseId");
@@ -49,11 +50,11 @@ namespace Grp.L2PSite.MobileApp.Controllers
                     }
                 }
             }
-            catch
+            catch(Exception ex)
             {
                 Response.Cookies.Delete("CRTID");
                 Response.Cookies.Delete("CRAID");
-                return View();
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
             }
             return RedirectToAction(nameof(AccountController.Login), "Account");
         }
@@ -69,9 +70,12 @@ namespace Grp.L2PSite.MobileApp.Controllers
             return View();
         }
 
-        public IActionResult Error()
+        
+        public IActionResult Error(string error)
         {
+            ViewData["error"] = error;
             return View("~/Views/Shared/Error.cshtml");
         }
+
     }
 }
