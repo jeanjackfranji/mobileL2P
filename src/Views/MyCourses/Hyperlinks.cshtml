@@ -48,7 +48,7 @@
     @if (userRole.role.Contains("managers") || userRole.role.Contains("tutors"))
     {
         <div class="fixed-action-btn" style="bottom: 45px; right: 24px;">
-            <a class="btn-floating btn-large blue darken-3" asp-controller="L2PAdd" asp-action="AddHyperlink" asp-route-cId="@course.uniqueid">
+            <a class="btn-floating btn-large blue darken-3" asp-controller="L2PCRUD" asp-action="AddHyperlink" asp-route-cId="@course.uniqueid">
                 <i class="large material-icons">add</i>
             </a>
         </div>
