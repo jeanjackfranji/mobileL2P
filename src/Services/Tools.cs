@@ -110,6 +110,14 @@ namespace Grp.L2PSite.MobileApp.Services
             }
         }
 
+        public static object GetPropertyValue(object obj, string propertyName)
+        {
+            var objType = obj.GetType();
+            var prop = objType.GetProperty(propertyName);
+
+            return prop.GetValue(obj, null);
+        }
+
         public enum LoginStatus:int
         {
             Waiting = -1,

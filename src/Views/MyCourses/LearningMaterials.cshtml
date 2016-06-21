@@ -1,69 +1,53 @@
-﻿@{
+﻿@using L2PAPIClient.DataModel;
+@using Grp.L2PSite.MobileApp.Services;
+@{
     ViewData["Title"] = "Learning Materials";
+    L2PCourseInfoData course = ViewData["ChosenCourse"] as L2PCourseInfoData;
+    L2PRole userRole = ViewData["userRole"] as L2PRole;
+    List<L2PLearningMaterialElement> learningMaterial = ViewData["CourseLearningMaterials"] as List<L2PLearningMaterialElement>;
 }
 
-<div class="mdl-cell mdl-cell--12-col">
-    <h4>@ViewData["Title"]</h4>
-    <hr />
+@*<div class="mdl-cell mdl-cell--12-col">
+        <h4>@ViewData["Title"]</h4>
+        <hr />
+    </div>*@
+
+<div class="container">
+    <div class="row" style="margin-bottom: 0px !important">
+        <div class="col s12 center-align">
+            <div class="chip"><i class="material-icons">link</i><b>Learning Materials</b> | @course.courseTitle </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s12">
+            <table class="bordered highlight">
+                <thead>
+                    <tr>
+                        <th data-field="name">Name</th>
+                        <th data-field="notes">Lecture Date</th>
+                        <th data-field="oLink">Modified</th>
+                        <th data-field="notes">File Size</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (learningMaterial != null)
+                    {
+                        var learnMat = (from lm in learningMaterial
+                                        where lm.isDirectory == false
+                                        orderby lm.created descending
+                                        select lm);
+                        foreach (L2PLearningMaterialElement lm in learningMaterial)
+                        {
+                               <tr>
+                                   <td>@Html.Raw(lm.name)</td>
+                                   <td>@Tools.toDateTime(lm.created)</td>
+                                   <td>@Tools.toDateTime(lm.lastModified)</td>
+                                   @*<td>@Tools.GetPropertyValue(lm.fileInformation, "fileSize")</td>*@
+                               </tr>
+                         }
+                      }
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
-
-<div class="mdl-cell mdl-cell--12-col">
-
-    <table align="left">
-        <tr>
-            <td style="align-content:flex-end">
-
-                <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab" title="Add Assignment">
-                    <i class="material-icons">add</i>
-                </button>
-
-            </td>
-            <td>
-                <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab" title="Corrected Assignments">
-                    <i class="material-icons">delete</i>
-                </button>
-            </td>
-            <td>
-                <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab" title="Corrected Assignments">
-                    <i class="material-icons">file_download</i>
-                </button>
-            </td>
-        </tr>
-    </table>
-</div>
-
-<div class="mdl-cell mdl-cell--12-col" style="width:100%;">
-    <table align="center" class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
-        <thead>
-            <tr style="text-align:center">
-                <th class="mdl-data-table__cell--non-numeric">Name</th>
-                <th class="mdl-data-table__cell--non-numeric">Lecture Date</th>
-                <th class="mdl-data-table__cell--non-numeric">Modified</th>
-                <th class="mdl-data-table__cell--non-numeric">File Size</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td class="mdl-data-table__cell--non-numeric">S02–GEL, BWS</td>
-                <td class="mdl-data-table__cell--non-numeric">4/11/2016 10:05 AM</td>
-                <td class="mdl-data-table__cell--non-numeric">April 18</td>
-                <td class="mdl-data-table__cell--non-numeric">239 KB</td>
-            </tr>
-            <tr>
-                <td class="mdl-data-table__cell--non-numeric">S03–WM, UITK</td>
-                <td class="mdl-data-table__cell--non-numeric">4/15/2016 2:10 PM</td>
-                <td class="mdl-data-table__cell--non-numeric">April 22</td>
-                <td class="mdl-data-table__cell--non-numeric">7578 KB</td>
-            </tr>
-            <tr>
-                <td class="mdl-data-table__cell--non-numeric">S04–UITK, Wayland</td>
-                <td class="mdl-data-table__cell--non-numeric">4/19/2016 10:30 PM</td>
-                <td class="mdl-data-table__cell--non-numeric">April 25</td>
-                <td class="mdl-data-table__cell--non-numeric">5821 KB</td>
-            </tr>
-        </tbody>
-    </table>
-
-</div>
-
-
