@@ -7,7 +7,7 @@ using Grp.L2PSite.MobileApp.Models;
 
 namespace Grp.L2PSite.MobileApp.Controllers
 {
-    public class L2PCRUDController : Controller
+    public class L2PController : Controller
     {
         // Get Method to add a new Hyperlink in a course
         // GET: /L2PAdd/AddHyperlink
@@ -130,7 +130,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
                             model.Notes = hyperlink.notes;
                         }
                         return View("~/Views/L2PAdd/AddHyperlink.cshtml", model);
-                        //return RedirectToAction(nameof(L2PCRUDController.AddHyperlink),"L2PCRUD", new { model = model, cId= cId});
+                        //return RedirectToAction(nameof(L2PController.AddHyperlink),"L2P", new { model = model, cId= cId});
                     }
                     else
                     {

@@ -13,7 +13,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
     public class MyCoursesController : Controller
     {
         [HttpGet] // Get Method to retrieve the course What's New Page
-        public async Task<IActionResult> WhatsNew(string cId)
+        public async Task<IActionResult> WhatsNew(String cId)
         {
             try
             {
@@ -48,7 +48,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
         }
 
         [HttpGet] // Get Method to show the subject info of a course.
-        public IActionResult ShowSubject(string cId)
+        public IActionResult ShowSubject(String cId)
         {
             try
             {
@@ -69,10 +69,40 @@ namespace Grp.L2PSite.MobileApp.Controllers
             }
         }
 
-        public IActionResult LearningMaterials()
+        [HttpGet] // Get Method to show the learning material of a course.
+        public async Task<IActionResult> LearningMaterials(String cId)
         {
-            return View();
+            try
+            {
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
+                {
+                    ViewData["ChosenCourse"] = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    ViewData["userRole"] = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
+                    L2PLearningMaterialList lmList = await L2PAPIClient.api.Calls.L2PviewAllLearningMaterials(cId);
+                    List<L2PLearningMaterialElement> learningMaterial = new List<L2PLearningMaterialElement>();
+                    if (lmList.dataSet != null)
+                    {
+                        learningMaterial = lmList.dataSet;
+                        // Put directories first DESC
+                        learningMaterial.Sort((x, y) => y.isDirectory.CompareTo(x.isDirectory));
+
+                    }
+                    ViewData["CourseLearningMaterials"] = learningMaterial;
+                    return View();
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
         }
+
         public IActionResult SharedDocuments()
         {
             return View();
