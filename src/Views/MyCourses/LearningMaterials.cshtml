@@ -1,5 +1,6 @@
 ﻿@using L2PAPIClient.DataModel;
 @using Grp.L2PSite.MobileApp.Services;
+@using Newtonsoft.Json;
 @{
     ViewData["Title"] = "Learning Materials";
     L2PCourseInfoData course = ViewData["ChosenCourse"] as L2PCourseInfoData;
@@ -7,12 +8,15 @@
     List<L2PLearningMaterialElement> learningMaterial = ViewData["CourseLearningMaterials"] as List<L2PLearningMaterialElement>;
 }
 
-<div class="container">
-    <div class="row" style="margin-bottom: 0px !important">
-        <div class="col s12 center-align">
-            <div class="chip"><i class="material-icons">link</i><b>Learning Materials</b> | @course.courseTitle </div>
+<nav>
+    <div class="nav-wrapper white">
+        <div class="col s12">
+            <a asp-controller="MyCourses" asp-action="WhatsNew" asp-route-cId="@course.uniqueid" class="breadcrumb blue-text" style="font-size: 12px; margin-left: 10px;">@Tools.truncateString(course.courseTitle, 20)...</a>
+            <a asp-controller="MyCourses" asp-action="LearningMaterials" asp-route-cId="@course.uniqueid" class="breadcrumb blue-text" style="font-size: 12px">@ViewData["Title"]</a>
         </div>
     </div>
+</nav>
+<div class="container">
     <div class="row">
         <div class="col s12">
             <table class="bordered highlight">
@@ -29,11 +33,13 @@
                     {
                         foreach (L2PLearningMaterialElement lm in learningMaterial)
                         {
+                            L2PFileInformationElement fileInfo = Tools.DeserializeObject<L2PFileInformationElement>(lm.fileInformation);
+
                             <tr>
-                                <td>@Html.Raw(lm.name)</td>
+                                <td>@lm.name</td>
                                 <td>@Tools.toDateTime(lm.created)</td>
                                 <td>@Tools.toDateTime(lm.lastModified)</td>
-                                @*<td>@Tools.GetPropertyValue(lm.fileInformation, "fileSize")</td>*@
+                                <td>@(fileInfo != null ? Tools.ToFileSize(fileInfo.fileSize) : "")</td>
                             </tr>
                         }
                     }

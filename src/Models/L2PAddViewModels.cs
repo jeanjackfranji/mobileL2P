@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNet.Mvc.Rendering;
 
 namespace Grp.L2PSite.MobileApp.Models
 {
@@ -18,12 +17,6 @@ namespace Grp.L2PSite.MobileApp.Models
         [Display(Name = "Notes")]
         public string Notes { get; set; }
     }
-
-
-
-
-
-
 
     public class LoginViewModel
     {

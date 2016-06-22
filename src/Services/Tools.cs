@@ -4,6 +4,7 @@ using System.Linq;
 using L2PAPIClient;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using Newtonsoft.Json;
 
 namespace Grp.L2PSite.MobileApp.Services
 {
@@ -117,5 +118,19 @@ namespace Grp.L2PSite.MobileApp.Services
             LoggedIn = 1
                  
         };
+
+        public static T DeserializeObject<T>(Object obj)
+        {
+            if(obj != null)
+            {
+                return JsonConvert.DeserializeObject<T>(obj.ToString());
+            }
+            return default(T);
+        }
+
+        public static string ToFileSize(this long l)
+        {
+            return String.Format(new FileSizeFormatProvider(), "{0:fs}", l);
+        }
     }
 }

@@ -336,6 +336,16 @@ namespace L2PAPIClient.DataModel
         public List<L2PAssignmentElement> dataSet;
     }
 
+    public class L2PFileInformationElement
+    {
+        public string downloadUrl;
+        public string fileName;
+        public int fileSize;
+        public int itemId;
+        public long modifiedTimestamp;
+
+    }
+
     public class L2PAnnouncementElement
     {
         public List<L2PAttachmentElement> attachments;
