@@ -1,6 +1,5 @@
 ﻿@using L2PAPIClient.DataModel;
 @using Grp.L2PSite.MobileApp.Services;
-@using Newtonsoft.Json;
 @{
     ViewData["Title"] = "Learning Materials";
     L2PCourseInfoData course = ViewData["ChosenCourse"] as L2PCourseInfoData;
@@ -16,35 +15,36 @@
         </div>
     </div>
 </nav>
-<div class="container">
-    <div class="row">
-        <div class="col s12">
-            <table class="bordered highlight">
-                <thead>
-                    <tr>
-                        <th data-field="name">Name</th>
-                        <th data-field="notes">Lecture Date</th>
-                        <th data-field="oLink">Modified</th>
-                        <th data-field="notes">File Size</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (learningMaterial != null)
-                    {
-                        foreach (L2PLearningMaterialElement lm in learningMaterial)
+    <div class="col s12">
+        <ul class="collection with-header">
+            <li class="collection-header center-align"><h4>@ViewData["Title"]</h4></li>
+            @{
+                foreach (L2PLearningMaterialElement lm in learningMaterial)
+                {
+                    L2PFileInformationElement fileInfo = Tools.DeserializeObject<L2PFileInformationElement>(lm.fileInformation);
+                    <li class="collection-item avatar">
+                        @if (lm.isDirectory)
                         {
-                            L2PFileInformationElement fileInfo = Tools.DeserializeObject<L2PFileInformationElement>(lm.fileInformation);
-
-                            <tr>
-                                <td>@lm.name</td>
-                                <td>@Tools.toDateTime(lm.created)</td>
-                                <td>@Tools.toDateTime(lm.lastModified)</td>
-                                <td>@(fileInfo != null ? Tools.ToFileSize(fileInfo.fileSize) : "")</td>
-                            </tr>
+                            <i class="large material-icons circle white grey-text" style="font-size: 40px">folder_open</i>
+                                <span class="title"><a asp-controller="MyCourses" asp-action="LearningMaterials" asp-route-cId="@course.uniqueid" asp-route-ExtdDir="@lm.name">@lm.name</a></span>
+                                <a id="a-secondary-content" class="secondary-content" asp-controller="MyCourses" asp-action="LearningMaterials" asp-route-cId="@course.uniqueid" asp-route-ExtdDir="@lm.name"><i class="material-icons blue-text">send</i></a>
                         }
-                    }
-                </tbody>
-            </table>
-        </div>
-    </div>
+                        else
+                        {
+                            <img src="@Tools.getImagePathByFileName(lm.name)" class="circle" style="background-size: 80% !important" />
+                                <span class="title"><a asp-controller="MyCourses" asp-action="Downloads" asp-route-url="@lm.selfUrl" asp-route-filename="@lm.name">@lm.name</a></span>
+                                <a id="a-secondary-content" class="secondary-content" asp-controller="MyCourses" asp-action="Downloads" asp-route-url="@lm.selfUrl" asp-route-filename="@lm.name"><i class="material-icons blue-text">get_app</i></a>
+                        }
+                        <p>
+                            @if (lm.relatedLectureDates != null && lm.relatedLectureDates.Count() > 0)
+                            {
+                                @Tools.toDateTime(lm.relatedLectureDates.First());
+                            }
+                            @(fileInfo != null ? Tools.ToFileSize(fileInfo.fileSize) : "")
+                        </p>
+
+                    </li>
+                }
+            }
+        </ul>
 </div>

@@ -1,13 +1,13 @@
-﻿using Microsoft.AspNet.Mvc;
-using Microsoft.AspNet.Http;
-using System;
-using L2PAPIClient;
-using System.Net;
+﻿using L2PAPIClient;
 using L2PAPIClient.DataModel;
-using System.Collections.Generic;
-using Grp.L2PSite.MobileApp.Services;
-using System.Threading.Tasks;
+using System;
+using System.Net;
 using System.Linq;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using Microsoft.AspNet.Mvc;
+using Microsoft.AspNet.Http;
+using Grp.L2PSite.MobileApp.Services;
 
 namespace Grp.L2PSite.MobileApp.Controllers
 {
@@ -65,7 +65,8 @@ namespace Grp.L2PSite.MobileApp.Controllers
                     return RedirectToAction(nameof(AccountController.Login), "Account");
                 }
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
             }
         }
@@ -86,7 +87,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
                     List<L2PLearningMaterialElement> learningMaterials = new List<L2PLearningMaterialElement>();
                     if (lmList.dataSet != null)
                     {
-                        String sourceDirectory = "/" + course.semester + "/" + course.uniqueid + "/Lists/StructuredMaterials";
+                        string sourceDirectory = "/" + course.semester + "/" + course.uniqueid + "/Lists/StructuredMaterials";
                         sourceDirectory += ExtdDir;
                         var materials = from elts in lmList.dataSet
                                         where elts.sourceDirectory.Equals(sourceDirectory)
@@ -94,7 +95,6 @@ namespace Grp.L2PSite.MobileApp.Controllers
                                         select elts;
                         learningMaterials = materials.ToList();
                     }
-
                     ViewData["CourseLearningMaterials"] = learningMaterials;
                     return View();
                 }
@@ -139,7 +139,8 @@ namespace Grp.L2PSite.MobileApp.Controllers
                     return RedirectToAction(nameof(AccountController.Login), "Account");
                 }
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
             }
         }
@@ -180,6 +181,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
         {
             try
             {
+
                 string callURL = Config.L2PEndPoint + "/downloadFile/" + filename + "?accessToken=" + Config.getAccessToken() + "&cid=" + Context.Session.GetString("CourseId") + "&downloadUrl=|" + url;
                 HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(callURL);
                 myHttpWebRequest.MaximumAutomaticRedirections = 1;

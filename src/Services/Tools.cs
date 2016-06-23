@@ -5,6 +5,7 @@ using L2PAPIClient;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using Newtonsoft.Json;
+using System.Text.RegularExpressions;
 
 namespace Grp.L2PSite.MobileApp.Services
 {
@@ -128,9 +129,54 @@ namespace Grp.L2PSite.MobileApp.Services
             return default(T);
         }
 
-        public static string ToFileSize(this long l)
+        public static string ToFileSize(long size)
         {
-            return String.Format(new FileSizeFormatProvider(), "{0:fs}", l);
+            return String.Format(new FileSizeFormatProvider(), "{0:fs}", size);
+        }
+
+        public static string getImagePathByFileName(string fileName)
+        {
+            if (fileName != null)
+            {
+                Match match = Regex.Match(fileName, ".pdf", RegexOptions.IgnoreCase);
+                if (match.Success)
+                {
+                    return "../images/learning_material/PDF.png";
+                }
+                else if (Regex.Match(fileName, ".png|.jpg|.jpeg|.gif|.bmp", RegexOptions.IgnoreCase).Success)
+                {
+                    return "../images/learning_material/Full_Images.png";
+                }
+                else if (Regex.Match(fileName, ".3g2|.3gp|.asf|.asx|.avi|.flv|.mov|.mp4|.mpg|.rm|.swf|.vob|.wmv", RegexOptions.IgnoreCase).Success)
+                {
+                    return "../images/learning_material/Video_Message.png";
+                }
+                else if (Regex.Match(fileName, ".doc|.docx|.rtf", RegexOptions.IgnoreCase).Success)
+                {
+                    return "../images/learning_material/MS_Word.png";
+                }
+                else if (Regex.Match(fileName, ".log|.txt|.wpd|.wps", RegexOptions.IgnoreCase).Success)
+                {
+                    return "images/learning_material/Text_Document.png";
+                }
+                else if (Regex.Match(fileName, ".csv|.xls|.xlsx", RegexOptions.IgnoreCase).Success)
+                {
+                    return "../images/learning_material/MS_Excel.png";
+                }
+                else if (Regex.Match(fileName, ".ppt|.pptx|.pps", RegexOptions.IgnoreCase).Success)
+                {
+                    return "../images/learning_material/MS_PowerPoint.png";
+                }
+                else if (Regex.Match(fileName, ".zip|.rar|.7z|.tar.gz", RegexOptions.IgnoreCase).Success)
+                {
+                    return "../images/learning_material/ZIP.png";
+                }
+                else
+                {
+                    return "../images/learning_material/File.png";
+                }
+            }
+            return "../images/learning_material/File.png";
         }
     }
 }

@@ -42,7 +42,7 @@
         "L2PAPIClient": "1.0.0-*"
       }
     }
-  },
+    },
 
   "exclude": [
     "wwwroot",
