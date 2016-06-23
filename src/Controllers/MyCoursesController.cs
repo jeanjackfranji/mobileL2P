@@ -12,12 +12,20 @@ using System.Linq;
 using System.IO;
 using System.IO.Compression;
 using ICSharpCode.SharpZipLib.Zip;
-
+using Microsoft.Framework.Runtime;
+using System.Threading;
 
 namespace Grp.L2PSite.MobileApp.Controllers
 {
-    public class MyCoursesController : Controller
-    {
+    public class MyCoursesController : Controller {
+
+        private readonly IApplicationEnvironment _appEnvironment;
+
+        public MyCoursesController(IApplicationEnvironment appEnvironment)
+        {
+            _appEnvironment = appEnvironment;
+        }
+    
         [HttpGet] // Get Method to retrieve the course What's New Page
         public async Task<IActionResult> WhatsNew(String cId)
         {
@@ -243,7 +251,6 @@ namespace Grp.L2PSite.MobileApp.Controllers
         {
             try
             {
-
                 L2PAssignmentList assnList = await L2PAPIClient.api.Calls.L2PviewAssignment(caid, int.Parse(aid));
                 List<L2PAssignmentElement> assignments = new List<L2PAssignmentElement>();
                 if (assnList.dataSet != null)
@@ -251,64 +258,69 @@ namespace Grp.L2PSite.MobileApp.Controllers
                     assignments = assnList.dataSet;
                 }
 
+                string tempFilePath = Path.GetTempPath() + "Grp.L2PSite.MobileApp" + DateTime.Now.ToString("dd.MM.yyyy.hh_mm_ss");
+                string tempDownloadFilesPath = tempFilePath  + "/downloadFiles/";
+                string tempZipPath = tempFilePath + "/downloadZip/";
+
+                if (!Directory.Exists(tempDownloadFilesPath))
+                {
+                    Directory.CreateDirectory(tempDownloadFilesPath);
+                }
+                if (!Directory.Exists(tempZipPath))
+                {
+                    Directory.CreateDirectory(tempZipPath);
+                }
+
                 foreach (L2PAssignmentElement a in assignments)
                 {
-
-                    System.IO.Compression.ZipFile.CreateFromDirectory("","sample.zip");
-                    ZipArchive aa = System.IO.Compression.ZipFile.Open("",ZipArchiveMode.Read);
-                    
-
                     List<L2PAttachmentElement> filePaths = a.assignmentDocuments;
-                    using (var zipStream = new ZipOutputStream(new FileStream(a.title + ".zip", FileMode.Create)))
+                    foreach (L2PAttachmentElement filePath in filePaths)
                     {
-                        foreach (L2PAttachmentElement filePath in filePaths)
-                        {
+                        string callURL = Config.L2PEndPoint + "/downloadFile/" + filePath.fileName + "?accessToken=" + Config.getAccessToken() + "&cid=" + caid + "&downloadUrl=" + filePath.downloadUrl;
+                        HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(callURL);
+                        myHttpWebRequest.MaximumAutomaticRedirections = 1;
+                        myHttpWebRequest.AllowAutoRedirect = true;
+                        HttpWebResponse myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
+                        FileStreamResult file = File(myHttpWebResponse.GetResponseStream(), myHttpWebResponse.ContentType, filePath.fileName);
 
-                            string callURL = Config.L2PEndPoint + "/downloadFile/" + filePath.fileName + "?accessToken=" + Config.getAccessToken() + "&cid=" + Context.Session.GetString("CourseId") + "&downloadUrl=|" + filePath.downloadUrl;
-                            HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(callURL);
-                            myHttpWebRequest.MaximumAutomaticRedirections = 1;
-                            myHttpWebRequest.AllowAutoRedirect = true;
-                            HttpWebResponse myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
-                            FileStreamResult file = File(myHttpWebResponse.GetResponseStream(), myHttpWebResponse.ContentType, filePath.fileName);
-
-                            StreamWriter w = new StreamWriter("/temp123/" + filePath.fileName);
-                            Directory.CreateDirectory("/temp123");
-                            w.Write(file.FileStream.read);
-
-                            using (StreamWriter _testData = new StreamWriter(file.FileStream))
-                            {
-                               _testData.
-                            }
-
-
-                            byte[] fileBytes = System.IO.File.ReadAllBytes(filePath.downloadUrl);
-
-                            var fileEntry = new ZipEntry(Path.GetFileName(filePath.fileName))
-                            {
-                                Size = fileBytes.Length
-                            };
-
-                            zipStream.PutNextEntry(fileEntry);
-                            zipStream.Write(fileBytes, 0, fileBytes.Length);
-                        }
-                        zipStream.Flush();
-                        zipStream.Close();
-                        //return File(zipStream, Response.ContentType, CFN);
-
-
+                        Stream s = myHttpWebResponse.GetResponseStream();
+                        FileStream s1 = new FileStream(tempDownloadFilesPath + filePath.fileName, FileMode.Create);
+                        Tools.CopyStream(s, s1);
+                        s1.Close();
                     }
+
+                    FileStream fsOut = System.IO.File.Create(tempZipPath + a.title + ".zip");
+                    ZipOutputStream zipStream = new ZipOutputStream(fsOut);
+
+                    zipStream.SetLevel(3); //0-9, 9 being the highest level of compression
+
+                    // This setting will strip the leading part of the folder path in the entries, to
+                    // make the entries relative to the starting folder.
+                    // To include the full path for each entry up to the drive root, assign folderOffset = 0.
+                    int folderOffset = tempDownloadFilesPath.Length + 0;
+
+                    Tools.CompressFolder(tempDownloadFilesPath, zipStream, folderOffset);
+
+                    zipStream.IsStreamOwner = true; // Makes the Close also Close the underlying stream
+                    zipStream.Close();
+
+                    //Wait 10 seconds to delete the files in temp folder
+                    Task t = Task.Run(async delegate {
+                        await Task.Delay(TimeSpan.FromSeconds(10));
+                        Directory.Delete(tempDownloadFilesPath, true);
+                        Directory.Delete(tempZipPath, true);
+                        Directory.Delete(tempFilePath, true);
+                    });
+                    return File(tempZipPath + a.title + ".zip", "application/zip", a.title + ".zip");
+
                 }
-                return new EmptyResult();
+                return RedirectToAction(nameof(MyCoursesController.Assignments), "MyCourses");
             }
             catch (Exception ex)
             {
                 ViewData["error"] = ex.Message;
                 return RedirectToAction(nameof(HomeController.Error), "Error");
             }
-
         }
-
-
     }
-
 }
