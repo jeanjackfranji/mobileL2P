@@ -31,4 +31,21 @@ namespace Grp.L2PSite.MobileApp.Models
         [Display(Name = "Remember me?")]
         public bool RememberMe { get; set; }
     }
+
+    public class AssignmentViewModel
+    {
+        [Required]
+        [DataType(DataType.Url)]
+        [Display(Name = "Hyperlink URL")]
+        public string URL { get; set; }
+
+        [StringLength(50)]
+        [Display(Name = "Title")]
+        public string Title { get; set; }
+
+        [StringLength(200)]
+        [Display(Name = "Notes")]
+        public string Notes { get; set; }
+    }
+
 }
