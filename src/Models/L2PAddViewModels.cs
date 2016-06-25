@@ -16,6 +16,8 @@ namespace Grp.L2PSite.MobileApp.Models
         [StringLength(200)]
         [Display(Name = "Notes")]
         public string Notes { get; set; }
+
+        public int itemId { get; set; }
     }
 
     public class LoginViewModel

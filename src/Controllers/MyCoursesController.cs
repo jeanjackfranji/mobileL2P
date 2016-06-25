@@ -124,7 +124,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
         }
 
         [HttpGet] // Get Method to show all the hyperlinks of a course
-        public async Task<IActionResult> Hyperlinks(string cId, int deleted)
+        public async Task<IActionResult> Hyperlinks(string cId, string msg)
         {
             try
             {
@@ -140,10 +140,8 @@ namespace Grp.L2PSite.MobileApp.Controllers
                     {
                         hyperlinks = hpList.dataSet;
                     }
-                    if(deleted == 1) 
-                    {
-                        ViewData["Message"] = "Selected Hyperlink(s) were successfully deleted.";
-                    }
+
+                    ViewData["Message"] = msg;
                     ViewData["CourseHyperlinks"] = hyperlinks;
                     return View();
                 }
