@@ -1,0 +1,90 @@
+﻿@using L2PAPIClient.DataModel
+@using Grp.L2PSite.MobileApp.Services
+@model HyperLinkViewModel
+@{
+    ViewData["Title"] = "Add Hyperlink";
+    L2PRole userRole = ViewData["userRole"] as L2PRole;
+    bool? isViewMode = ViewData["viewMode"] as bool?;
+    L2PCourseInfoData course = ViewData["ChosenCourse"] as L2PCourseInfoData;
+    HyperLinkViewModel hyperlink = ViewData["HyperlinkModel"] as HyperLinkViewModel;
+    if (hyperlink == null) { hyperlink = new HyperLinkViewModel(); }
+    
+}
+
+<nav>
+    <div class="nav-wrapper white">
+        <div class="col s12">
+            <a asp-controller="MyCourses" asp-action="WhatsNew" asp-route-cId="@course.uniqueid" class="breadcrumb blue-text" style="font-size: 12px; margin-left: 10px;">@Tools.truncateString(course.courseTitle, 20)</a>
+            <a asp-controller="MyCourses" asp-action="Hyperlinks" asp-route-cId="@course.uniqueid" class="breadcrumb blue-text" style="font-size: 12px">Hyperlinks</a>
+            <a href="#!" class="breadcrumb blue-text" style="font-size: 12px">@(isViewMode.HasValue ? "View" : "Add")</a>
+        </div>
+    </div>
+</nav>
+<div class="row">
+    <form class="col s12" asp-controller="L2PAdd"
+          asp-action="AddHyperlink" asp-route-cId="@course.uniqueid" method="post" role="form">
+        <div class="row">
+            <div asp-validation-summary="ValidationSummary.All"></div>
+        </div>
+        <div class="row">
+            <div class="input-field col s11">
+                <input asp-for="URL" class="validate" type="text" placeholder="http://"/>
+                <label asp-for="URL">URL*</label>
+                <span asp-validation-for="URL" class="red-text"></span>
+            </div>
+            <div class="col s1 valign-wrapper">
+                <a id="url_link" href=""><i class="material-icons" style="margin-top:100%">pageview</i></a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12">
+                <label asp-for="Title">Title</label>
+                <input asp-for="Title" class="validate" type="text" />
+                <span asp-validation-for="Title" class="red-text"></span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12">
+                <label asp-for="Notes">Notes</label>
+                <textarea asp-for="Notes" class="materialize-textarea validate" ></textarea>
+                <br/><br />
+                <div id="divNotes" class="grey-text" hidden="hidden"></div>
+                <span asp-validation-for="Notes" class="red-text"></span>
+            </div>
+        </div>
+        @if (!isViewMode.HasValue)
+        {
+            <div class="row">
+                <button class="btn waves-effect waves-light" type="submit" name="action">
+                    Submit
+                    <i class="material-icons right">send</i>
+                </button>
+            </div>
+        }
+    </form>
+</div>
+
+<script>
+    $(function () {
+
+        var isViewMode = @isViewMode.HasValue.ToString().ToLower();
+        if(isViewMode){
+
+            $("input#URL").attr('disabled','disabled');
+            $("input#Title").attr('disabled','disabled');
+            $("textarea#Notes").attr('disabled','disabled');
+            $("textarea#Notes").attr('hidden','hidden');
+            $("#url_link").removeAttr('hidden');
+            $("#divNotes").removeAttr('hidden');
+
+            $("input#URL").val('@hyperlink.URL');
+            $("input#Title").val('@hyperlink.Title');
+            $("#divNotes").html("@Html.Raw(hyperlink.Notes)");
+            $("#url_link").attr("href",'@hyperlink.URL');
+        } else{
+
+        }
+
+    });
+</script>
+

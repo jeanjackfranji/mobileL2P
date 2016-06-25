@@ -145,7 +145,7 @@ namespace Grp.L2PSite.MobileApp.Services
                 }
                 else if (Regex.Match(fileName, ".png|.jpg|.jpeg|.gif|.bmp", RegexOptions.IgnoreCase).Success)
                 {
-                    return "../images/learning_material/Full_Images.png";
+                    return "../images/learning_material/Full_Image.png";
                 }
                 else if (Regex.Match(fileName, ".3g2|.3gp|.asf|.asx|.avi|.flv|.mov|.mp4|.mpg|.rm|.swf|.vob|.wmv", RegexOptions.IgnoreCase).Success)
                 {

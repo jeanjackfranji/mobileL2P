@@ -10,9 +10,9 @@ namespace Grp.L2PSite.MobileApp.Controllers
     public class L2PController : Controller
     {
         // Get Method to add a new Hyperlink in a course
-        // GET: /L2PAdd/AddHyperlink
+        // GET: /L2P/AddHyperlink
         [HttpGet]
-        public async Task<IActionResult> AddHyperlink(String cId)
+        public async Task<IActionResult> AddHyperlink(string cId)
         {
             try
             {
@@ -26,7 +26,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
                     {
                         ViewData["ChosenCourse"] = course;
                         ViewData["userRole"] = userRole;
-                        return View();
+                        return View("~/Views/L2P/AddEditHyperlink.cshtml");
                     }
                     else
                     {
@@ -45,11 +45,11 @@ namespace Grp.L2PSite.MobileApp.Controllers
             }
         }
 
-        // Get Method to add a new Hyperlink in a course
-        // POST: /L2PAdd/AddHyperlink?
+        // Post Method to add a new Hyperlink in a course
+        // POST: /L2P/AddHyperlink?
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddHyperlink(HyperLinkViewModel model, String cId)
+        public async Task<IActionResult> AddHyperlink(HyperLinkViewModel model, string cId)
         {
             try
             {
@@ -89,7 +89,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
                     }
                     else
                     {
-                        String errorMessage = "You do not have the sufficient rights to add a hyperlink";
+                        string errorMessage = "You do not have the sufficient rights to add a hyperlink";
                         return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
                     }
                 }
@@ -105,9 +105,9 @@ namespace Grp.L2PSite.MobileApp.Controllers
         }
 
         // View Hyperlink with Privilege Validation
-        // GET: /L2PAdd/ViewHyperlink?
+        // GET: /L2P/ShowHyperlink?
         [HttpGet]
-        public async Task<IActionResult> ViewHyperlink(String cId, int hId)
+        public async Task<IActionResult> ShowHyperlink(string cId, int hId)
         {
             try
             {
@@ -117,7 +117,6 @@ namespace Grp.L2PSite.MobileApp.Controllers
                 {
                     ViewData["ChosenCourse"] = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
                     ViewData["userRole"] = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
-                    ViewData["viewMode"] = true;
 
                     L2PHyperlinkList hlList = await L2PAPIClient.api.Calls.L2PviewHyperlink(cId, hId);
                     if(hlList != null)
@@ -129,12 +128,60 @@ namespace Grp.L2PSite.MobileApp.Controllers
                             model.Title = hyperlink.description;
                             model.Notes = hyperlink.notes;
                         }
-                        return View("~/Views/L2PAdd/AddHyperlink.cshtml", model);
-                        //return RedirectToAction(nameof(L2PController.AddHyperlink),"L2P", new { model = model, cId= cId});
+                        ViewData["HyperlinkModel"] = model;
+                        return View();
                     }
                     else
                     {
-                        String errorMessage = "You do not have the sufficient rights to view the hyperlink";
+                        string errorMessage = "You do not have the sufficient rights to view the hyperlink";
+                        return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
+                    }
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
+        }
+
+        // Get Method to add a new Hyperlink in a course
+        // GET: /L2P/DeleteHyperlinks
+        [HttpGet]
+        public async Task<IActionResult> DeleteHyperlinks(string cId, string hIds)
+        {
+            try
+            {
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context))
+                {
+                    if (String.IsNullOrEmpty(cId) || String.IsNullOrEmpty(hIds))
+                    {
+                        string errorMessage = "You were redirected to this page with missing parameters.<br/> Please go back to the home page and try again.";
+                        return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
+                    }
+
+                    L2PCourseInfoData course = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    L2PRole userRole = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
+                    if (userRole != null && (userRole.role.Contains("manager") || userRole.role.Contains("tutors")))
+                    {
+                        hIds = hIds.TrimEnd('-');
+                        string[] hyperlinkIds = hIds.Split('-');
+                        foreach(string hId in hyperlinkIds)
+                        {
+                            int id = -1;
+                            int.TryParse(hId, out id);
+                            await L2PAPIClient.api.Calls.L2PDeleteHyperlink(cId, id);
+                        }
+                        return RedirectToAction(nameof(MyCoursesController.Hyperlinks), "MyCourses", new { @cId = cId , @deleted = 1 });
+                    }
+                    else
+                    {
+                        string errorMessage = "You do not have the sufficient rights to delete hyperlinks";
                         return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
                     }
                 }

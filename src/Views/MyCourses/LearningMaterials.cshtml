@@ -15,36 +15,35 @@
         </div>
     </div>
 </nav>
-    <div class="col s12">
-        <ul class="collection with-header">
-            <li class="collection-header center-align"><h4>@ViewData["Title"]</h4></li>
-            @{
-                foreach (L2PLearningMaterialElement lm in learningMaterial)
-                {
-                    L2PFileInformationElement fileInfo = Tools.DeserializeObject<L2PFileInformationElement>(lm.fileInformation);
-                    <li class="collection-item avatar">
-                        @if (lm.isDirectory)
+<div class="col s12">
+    <ul class="collection with-header">
+        <li class="collection-header center-align"><h4>@ViewData["Title"]</h4></li>
+        @{
+            foreach (L2PLearningMaterialElement lm in learningMaterial)
+            {
+                L2PFileInformationElement fileInfo = Tools.DeserializeObject<L2PFileInformationElement>(lm.fileInformation);
+                <li class="collection-item avatar">
+                    @if (lm.isDirectory)
+                    {
+                        <i class="large material-icons circle white grey-text" style="font-size: 40px">folder_open</i>
+                            <span class="title"><a asp-controller="MyCourses" asp-action="LearningMaterials" asp-route-cId="@course.uniqueid" asp-route-ExtdDir="@lm.name">@lm.name</a></span>
+                            <a id="a-secondary-content" class="secondary-content" asp-controller="MyCourses" asp-action="LearningMaterials" asp-route-cId="@course.uniqueid" asp-route-ExtdDir="@lm.name"><i class="material-icons blue-text">send</i></a>
+                    }
+                    else
+                    {
+                        <img src="@Tools.getImagePathByFileName(lm.name)" class="circle" style="background-size: 80% !important" />
+                            <span class="title"><a asp-controller="MyCourses" asp-action="Downloads" asp-route-url="@lm.selfUrl" asp-route-filename="@lm.name">@lm.name</a></span>
+                            <a id="a-secondary-content" class="secondary-content" asp-controller="MyCourses" asp-action="Downloads" asp-route-url="@lm.selfUrl" asp-route-filename="@lm.name"><i class="material-icons blue-text">get_app</i></a>
+                    }
+                    <p>
+                        @if (lm.relatedLectureDates != null && lm.relatedLectureDates.Count() > 0)
                         {
-                            <i class="large material-icons circle white grey-text" style="font-size: 40px">folder_open</i>
-                                <span class="title"><a asp-controller="MyCourses" asp-action="LearningMaterials" asp-route-cId="@course.uniqueid" asp-route-ExtdDir="@lm.name">@lm.name</a></span>
-                                <a id="a-secondary-content" class="secondary-content" asp-controller="MyCourses" asp-action="LearningMaterials" asp-route-cId="@course.uniqueid" asp-route-ExtdDir="@lm.name"><i class="material-icons blue-text">send</i></a>
+                            @Tools.toDateTime(lm.relatedLectureDates.First());
                         }
-                        else
-                        {
-                            <img src="@Tools.getImagePathByFileName(lm.name)" class="circle" style="background-size: 80% !important" />
-                                <span class="title"><a asp-controller="MyCourses" asp-action="Downloads" asp-route-url="@lm.selfUrl" asp-route-filename="@lm.name">@lm.name</a></span>
-                                <a id="a-secondary-content" class="secondary-content" asp-controller="MyCourses" asp-action="Downloads" asp-route-url="@lm.selfUrl" asp-route-filename="@lm.name"><i class="material-icons blue-text">get_app</i></a>
-                        }
-                        <p>
-                            @if (lm.relatedLectureDates != null && lm.relatedLectureDates.Count() > 0)
-                            {
-                                @Tools.toDateTime(lm.relatedLectureDates.First());
-                            }
-                            @(fileInfo != null ? Tools.ToFileSize(fileInfo.fileSize) : "")
-                        </p>
-
-                    </li>
-                }
+                        @(fileInfo != null ? Tools.ToFileSize(fileInfo.fileSize) : "")
+                    </p>
+                </li>
             }
-        </ul>
+        }
+    </ul>
 </div>

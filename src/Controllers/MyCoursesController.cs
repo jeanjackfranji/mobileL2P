@@ -88,7 +88,16 @@ namespace Grp.L2PSite.MobileApp.Controllers
                     if (lmList.dataSet != null)
                     {
                         string sourceDirectory = "/" + course.semester + "/" + course.uniqueid + "/Lists/StructuredMaterials";
-                        sourceDirectory += ExtdDir;
+                        if(ExtdDir != null)
+                        {
+                            var element = from elts in lmList.dataSet
+                                          where elts.isDirectory == true && elts.name.Equals(ExtdDir)
+                                          select elts;
+                            if (element.Any())
+                            {
+                                sourceDirectory = element.First().selfUrl;
+                            }
+                        }
                         var materials = from elts in lmList.dataSet
                                         where elts.sourceDirectory.Equals(sourceDirectory)
                                         orderby elts.isDirectory descending
@@ -115,7 +124,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
         }
 
         [HttpGet] // Get Method to show all the hyperlinks of a course
-        public async Task<IActionResult> Hyperlinks(String cId)
+        public async Task<IActionResult> Hyperlinks(string cId, int deleted)
         {
             try
             {
@@ -130,6 +139,10 @@ namespace Grp.L2PSite.MobileApp.Controllers
                     if (hpList.dataSet != null)
                     {
                         hyperlinks = hpList.dataSet;
+                    }
+                    if(deleted == 1) 
+                    {
+                        ViewData["Message"] = "Selected Hyperlink(s) were successfully deleted.";
                     }
                     ViewData["CourseHyperlinks"] = hyperlinks;
                     return View();

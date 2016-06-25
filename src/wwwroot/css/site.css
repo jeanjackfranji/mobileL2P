@@ -79,3 +79,14 @@ table p {
 * :before{
     color: black !important;
 }
+
+input[type="text"][disabled] {
+   color: darkgrey;
+}
+
+#div_text_area{
+    margin-top: 40px;
+    border-bottom: 1px solid #9e9e9e;
+    box-sizing: content-box;
+    height: 3rem;
+}

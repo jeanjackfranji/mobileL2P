@@ -1,0 +1,40 @@
+﻿@using L2PAPIClient.DataModel
+@using Grp.L2PSite.MobileApp.Services
+@{
+    ViewData["Title"] = "Add Hyperlink";
+    L2PRole userRole = ViewData["userRole"] as L2PRole;
+    L2PCourseInfoData course = ViewData["ChosenCourse"] as L2PCourseInfoData;
+    HyperLinkViewModel hyperlink = ViewData["HyperlinkModel"] as HyperLinkViewModel;
+    if (hyperlink == null) { hyperlink = new HyperLinkViewModel(); }
+    
+}
+
+<nav>
+    <div class="nav-wrapper white">
+        <div class="col s12">
+            <a asp-controller="MyCourses" asp-action="WhatsNew" asp-route-cId="@course.uniqueid" class="breadcrumb blue-text" style="font-size: 12px; margin-left: 10px;">@Tools.truncateString(course.courseTitle, 20)</a>
+            <a asp-controller="MyCourses" asp-action="Hyperlinks" asp-route-cId="@course.uniqueid" class="breadcrumb blue-text" style="font-size: 12px">Hyperlinks</a>
+            <a href="#!" class="breadcrumb blue-text" style="font-size: 12px">View</a>
+        </div>
+    </div>
+</nav>
+
+<div class="row"></div>
+<div class="row">
+    <div class="input-field col s12" style="margin-top: 0px">
+        <label for="URL">URL*</label>
+        <div id="div_text_area"><a href="@hyperlink.URL">@hyperlink.URL</a></div>
+    </div>
+</div>
+<div class="row">
+    <div class="input-field col s12" style="margin-top: 0px">
+        <label for="Title">Title</label>
+        <div id="div_text_area">@hyperlink.Title</div>
+    </div>
+</div>
+<div class="row">
+    <div class="input-field col s12" style="margin-top: 0px">
+        <label for="div_text_area">Notes</label>
+        <div id="div_text_area">@Html.Raw(hyperlink.Notes)</div>
+    </div>
+</div>
