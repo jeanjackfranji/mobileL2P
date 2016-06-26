@@ -118,9 +118,52 @@ namespace Grp.L2PSite.MobileApp.Controllers
             }
         }
 
-        public IActionResult SharedDocuments()
+        [HttpGet] // Get Method to show the shared documents material of a course.
+        public async Task<IActionResult> SharedDocuments(String cId, String ExtdDir)
         {
-            return View();
+            try
+            {
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
+                {
+                    L2PCourseInfoData course = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    ViewData["ChosenCourse"] = course;
+                    ViewData["userRole"] = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
+                    L2PLearningMaterialList sdList = await L2PAPIClient.api.Calls.L2PviewAllSharedDocuments(cId);
+                    List<L2PLearningMaterialElement> sharedDocuments = new List<L2PLearningMaterialElement>();
+                    if (sdList.dataSet != null)
+                    {
+                        string sourceDirectory = "/" + course.semester + "/" + course.uniqueid + "/collaboration/Lists/SharedDocuments";
+                        sourceDirectory += ExtdDir;
+                        if (ExtdDir != null)
+                        {
+                            var element = from elts in sdList.dataSet
+                                          where elts.isDirectory == true && elts.name.Equals(ExtdDir)
+                                          select elts;
+                            if (element.Any())
+                            {
+                                sourceDirectory = element.First().selfUrl;
+                            }
+                        }
+                        var materials = from elts in sdList.dataSet
+                                        where elts.sourceDirectory.Equals(sourceDirectory)
+                                        orderby elts.isDirectory descending
+                                        select elts;
+                        sharedDocuments = materials.ToList();
+                    }
+                    ViewData["CourseSharedDocuments"] = sharedDocuments;
+                    return View();
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }            
         }
 
         [HttpGet] // Get Method to show all the hyperlinks of a course
@@ -160,9 +203,52 @@ namespace Grp.L2PSite.MobileApp.Controllers
         {
             return View();
         }
-        public IActionResult MediaLibrary()
+
+        [HttpGet] // Get Method to show the Media Library of a course.
+        public async Task<IActionResult> MediaLibrary(String cId, String ExtdDir)
         {
-            return View();
+            try
+            {
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
+                {
+                    L2PCourseInfoData course = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    ViewData["ChosenCourse"] = course;
+                    ViewData["userRole"] = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
+                    L2PMediaLibraryList mdList = await L2PAPIClient.api.Calls.L2PviewAllMediaLibraries(cId);
+                    List<L2PMediaLibraryElement> mediaLibrary = new List<L2PMediaLibraryElement>();
+                    if (mdList.dataSet != null)
+                    {
+                        string sourceDirectory = "/" + course.semester + "/" + course.uniqueid + "/Lists/MediaLibrary";
+                        if (ExtdDir != null)
+                        {
+                            var element = from elts in mdList.dataSet
+                                          where elts.isDirectory == true && elts.name.Equals(ExtdDir)
+                                          select elts;
+                            if (element.Any())
+                            {
+                                sourceDirectory = element.First().selfUrl;
+                            }
+                        }
+                        var materials = from elts in mdList.dataSet
+                                        where elts.sourceDirectory.Equals(sourceDirectory)
+                                        orderby elts.isDirectory descending
+                                        select elts;
+                        mediaLibrary = materials.ToList();
+                    }
+                    ViewData["CourseMediaLibrary"] = mediaLibrary;
+                    return View();
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
         }
 
         public IActionResult Assignments()
