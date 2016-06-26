@@ -336,6 +336,16 @@ namespace L2PAPIClient.DataModel
         public List<L2PAssignmentElement> dataSet;
     }
 
+    public class L2PFileInformationElement
+    {
+        public string downloadUrl;
+        public string fileName;
+        public int fileSize;
+        public int itemId;
+        public long modifiedTimestamp;
+
+    }
+
     public class L2PAnnouncementElement
     {
         public List<L2PAttachmentElement> attachments;
@@ -520,7 +530,7 @@ namespace L2PAPIClient.DataModel
     {
         public List<customKVPair> pairs;
         public customKVList() { pairs = new List<customKVPair>(); }
-        public Dictionary<string,string> ToDictionary()
+        public Dictionary<string, string> ToDictionary()
         {
             Dictionary<string, string> dict = new Dictionary<string, string>();
             foreach (var item in pairs)
@@ -589,7 +599,7 @@ namespace L2PAPIClient.DataModel
         public bool Status;
     }
 
-    
+
 
     #endregion
 

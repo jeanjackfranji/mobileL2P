@@ -4,6 +4,8 @@ using System.Linq;
 using L2PAPIClient;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using Newtonsoft.Json;
+using System.Text.RegularExpressions;
 
 namespace Grp.L2PSite.MobileApp.Services
 {
@@ -13,20 +15,21 @@ namespace Grp.L2PSite.MobileApp.Services
         public static String pWd = "Integr$atorPa%ss123!@#$5";
         public static Boolean hasCookieToken = false;
 
-        public static void getAndSetUserToken(IReadableStringCollection cookies, HttpContext context){
+        public static void getAndSetUserToken(IReadableStringCollection cookies, HttpContext context)
+        {
 
             hasCookieToken = false;
             var cookiesList = from cookieToken in cookies
-                         where cookieToken.Key == "CRTID" || cookieToken.Key == "CRAID"
-                         select cookieToken;
+                              where cookieToken.Key == "CRTID" || cookieToken.Key == "CRAID"
+                              select cookieToken;
             if (cookiesList.Any())
             {
-                foreach(var cookie in cookiesList)
+                foreach (var cookie in cookiesList)
                 {
                     if (cookie.Key == "CRTID")
                         Config.setRefreshToken(Encryptor.Decrypt(cookie.Value.First()));
                     else
-                        Config.setAccessToken(Encryptor.Decrypt(cookie.Value.First()));         
+                        Config.setAccessToken(Encryptor.Decrypt(cookie.Value.First()));
                 }
                 if (cookiesList.Count() == 2)
                 {
@@ -48,7 +51,7 @@ namespace Grp.L2PSite.MobileApp.Services
         {
             LoginStatus login_status = (LoginStatus)Tools.ByteArrayToObject(context.Session["LoggedIn"]);
             bool l2pStatus = AuthenticationManager.getState() == AuthenticationManager.AuthenticationState.ACTIVE;
-            return  (login_status.Equals(LoginStatus.LoggedIn) && l2pStatus);
+            return (login_status.Equals(LoginStatus.LoggedIn) && l2pStatus);
         }
 
         public static String formatSemesterCode(String code)
@@ -58,7 +61,7 @@ namespace Grp.L2PSite.MobileApp.Services
 
         public static String truncateString(String str, int truncateLength)
         {
-            if(str.Length >= truncateLength)
+            if (str.Length >= truncateLength)
             {
                 return str.Substring(0, truncateLength);
             }
@@ -110,20 +113,71 @@ namespace Grp.L2PSite.MobileApp.Services
             }
         }
 
-        public static object GetPropertyValue(object obj, string propertyName)
-        {
-            var objType = obj.GetType();
-            var prop = objType.GetProperty(propertyName);
-
-            return prop.GetValue(obj, null);
-        }
-
-        public enum LoginStatus:int
+        public enum LoginStatus : int
         {
             Waiting = -1,
             LoggedOff = 0,
             LoggedIn = 1
-                 
+
         };
+
+        public static T DeserializeObject<T>(Object obj)
+        {
+            if (obj != null)
+            {
+                return JsonConvert.DeserializeObject<T>(obj.ToString());
+            }
+            return default(T);
+        }
+
+        public static string ToFileSize(long size)
+        {
+            return String.Format(new FileSizeFormatProvider(), "{0:fs}", size);
+        }
+
+        public static string getImagePathByFileName(string fileName)
+        {
+            if (fileName != null)
+            {
+                Match match = Regex.Match(fileName, ".pdf", RegexOptions.IgnoreCase);
+                if (match.Success)
+                {
+                    return "../images/learning_material/PDF.png";
+                }
+                else if (Regex.Match(fileName, ".png|.jpg|.jpeg|.gif|.bmp", RegexOptions.IgnoreCase).Success)
+                {
+                    return "../images/learning_material/Full_Image.png";
+                }
+                else if (Regex.Match(fileName, ".3g2|.3gp|.asf|.asx|.avi|.flv|.mov|.mp4|.mpg|.rm|.swf|.vob|.wmv", RegexOptions.IgnoreCase).Success)
+                {
+                    return "../images/learning_material/Video_Message.png";
+                }
+                else if (Regex.Match(fileName, ".doc|.docx|.rtf", RegexOptions.IgnoreCase).Success)
+                {
+                    return "../images/learning_material/MS_Word.png";
+                }
+                else if (Regex.Match(fileName, ".log|.txt|.wpd|.wps", RegexOptions.IgnoreCase).Success)
+                {
+                    return "images/learning_material/Text_Document.png";
+                }
+                else if (Regex.Match(fileName, ".csv|.xls|.xlsx", RegexOptions.IgnoreCase).Success)
+                {
+                    return "../images/learning_material/MS_Excel.png";
+                }
+                else if (Regex.Match(fileName, ".ppt|.pptx|.pps", RegexOptions.IgnoreCase).Success)
+                {
+                    return "../images/learning_material/MS_PowerPoint.png";
+                }
+                else if (Regex.Match(fileName, ".zip|.rar|.7z|.tar.gz", RegexOptions.IgnoreCase).Success)
+                {
+                    return "../images/learning_material/ZIP.png";
+                }
+                else
+                {
+                    return "../images/learning_material/File.png";
+                }
+            }
+            return "../images/learning_material/File.png";
+        }
     }
 }

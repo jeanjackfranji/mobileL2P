@@ -149,49 +149,49 @@ namespace Grp.L2PSite.MobileApp.Controllers
             }
         }
 
-        // View Learning Materials with Privilege Validation
-        // GET: /L2PAdd/ViewHyperlink?
-        [HttpGet]
-        public async Task<IActionResult> ViewLearningMaterials(String cId, int lId)
-        {
-            try
-            {
-                // This method must be used before every L2P API call
-                Tools.getAndSetUserToken(Request.Cookies, Context);
-                if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
-                {
-                    ViewData["ChosenCourse"] = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
-                    ViewData["userRole"] = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
-                    ViewData["viewMode"] = true;
+        //// View Learning Materials with Privilege Validation
+        //// GET: /L2PAdd/ViewHyperlink?
+        //[HttpGet]
+        //public async Task<IActionResult> ViewLearningMaterials(String cId, int lId)
+        //{
+        //    try
+        //    {
+        //        // This method must be used before every L2P API call
+        //        Tools.getAndSetUserToken(Request.Cookies, Context);
+        //        if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
+        //        {
+        //            ViewData["ChosenCourse"] = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+        //            ViewData["userRole"] = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
+        //            ViewData["viewMode"] = true;
 
-                    L2PLearningMaterialList learningMaterialList = await L2PAPIClient.api.Calls.L2PviewLearningMaterial(cId, lId);
-                    if (learningMaterialList != null)
-                    {
-                        LearningMaterialViewModel model = new LearningMaterialViewModel();
-                        foreach (L2PLearningMaterialElement learning in learningMaterialList.dataSet)
-                        {
-                            model.Name = learning.name;
-                            model.LectureDate = learning.created;
-                            model.Modified = learning.lastModified;
-                            model.FileSize = Tools.GetPropertyValue(learning.fileInformation, "fileSize").ToString();
-                        }
-                        return View("~/Views/L2PAdd/AddLearningMaterial.cshtml", model);
-                    }
-                    else
-                    {
-                        String errorMessage = "You do not have the sufficient rights to view the learning materials";
-                        return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
-                    }
-                }
-                else
-                {
-                    return RedirectToAction(nameof(AccountController.Login), "Account");
-                }
-            }
-            catch (Exception ex)
-            {
-                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
-            }
-        }
+        //            L2PLearningMaterialList learningMaterialList = await L2PAPIClient.api.Calls.L2PviewLearningMaterial(cId, lId);
+        //            if (learningMaterialList != null)
+        //            {
+        //                LearningMaterialViewModel model = new LearningMaterialViewModel();
+        //                foreach (L2PLearningMaterialElement learning in learningMaterialList.dataSet)
+        //                {
+        //                    model.Name = learning.name;
+        //                    model.LectureDate = learning.created;
+        //                    model.Modified = learning.lastModified;
+        //                    model.FileSize = Tools.GetPropertyValue(learning.fileInformation, "fileSize").ToString();
+        //                }
+        //                return View("~/Views/L2PAdd/AddLearningMaterial.cshtml", model);
+        //            }
+        //            else
+        //            {
+        //                String errorMessage = "You do not have the sufficient rights to view the learning materials";
+        //                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
+        //            }
+        //        }
+        //        else
+        //        {
+        //            return RedirectToAction(nameof(AccountController.Login), "Account");
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+        //    }
+        //}
     }
 }

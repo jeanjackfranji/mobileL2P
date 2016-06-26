@@ -7,47 +7,44 @@
     List<L2PLearningMaterialElement> learningMaterial = ViewData["CourseLearningMaterials"] as List<L2PLearningMaterialElement>;
 }
 
-@*<div class="mdl-cell mdl-cell--12-col">
-        <h4>@ViewData["Title"]</h4>
-        <hr />
-    </div>*@
-
-<div class="container">
-    <div class="row" style="margin-bottom: 0px !important">
-        <div class="col s12 center-align">
-            <div class="chip"><i class="material-icons">link</i><b>Learning Materials</b> | @course.courseTitle </div>
-        </div>
-    </div>
-    <div class="row">
+<nav>
+    <div class="nav-wrapper white">
         <div class="col s12">
-            <table class="bordered highlight">
-                <thead>
-                    <tr>
-                        <th data-field="name">Name</th>
-                        <th data-field="notes">Lecture Date</th>
-                        <th data-field="oLink">Modified</th>
-                        <th data-field="notes">File Size</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (learningMaterial != null)
-                    {
-                        var learnMat = (from lm in learningMaterial
-                                        where lm.isDirectory == false
-                                        orderby lm.created descending
-                                        select lm);
-                        foreach (L2PLearningMaterialElement lm in learningMaterial)
-                        {
-                               <tr>
-                                   <td>@Html.Raw(lm.name)</td>
-                                   <td>@Tools.toDateTime(lm.created)</td>
-                                   <td>@Tools.toDateTime(lm.lastModified)</td>
-                                   @*<td>@Tools.GetPropertyValue(lm.fileInformation, "fileSize")</td>*@
-                               </tr>
-                         }
-                      }
-                </tbody>
-            </table>
+            <a asp-controller="MyCourses" asp-action="WhatsNew" asp-route-cId="@course.uniqueid" class="breadcrumb blue-text" style="font-size: 12px; margin-left: 10px;">@Tools.truncateString(course.courseTitle, 20)...</a>
+            <a asp-controller="MyCourses" asp-action="LearningMaterials" asp-route-cId="@course.uniqueid" class="breadcrumb blue-text" style="font-size: 12px">@ViewData["Title"]</a>
         </div>
     </div>
+</nav>
+<div class="col s12">
+    <ul class="collection with-header">
+        <li class="collection-header center-align"><h4>@ViewData["Title"]</h4></li>
+        @{
+            foreach (L2PLearningMaterialElement lm in learningMaterial)
+            {
+                L2PFileInformationElement fileInfo = Tools.DeserializeObject<L2PFileInformationElement>(lm.fileInformation);
+                <li class="collection-item avatar">
+                    @if (lm.isDirectory)
+                    {
+                        <i class="large material-icons circle white grey-text" style="font-size: 40px">folder_open</i>
+                            <span class="title"><a asp-controller="MyCourses" asp-action="LearningMaterials" asp-route-cId="@course.uniqueid" asp-route-ExtdDir="@lm.name">@lm.name</a></span>
+                                <a id="a-secondary-content" class="secondary-content" asp-controller="MyCourses" asp-action="LearningMaterials" asp-route-cId="@course.uniqueid" asp-route-ExtdDir="@lm.name"><i class="material-icons blue-text">send</i></a>
+                    }
+                    else
+                    {
+                        <img src="@Tools.getImagePathByFileName(lm.name)" class="circle" style="background-size: 80% !important" />
+                            <span class="title"><a asp-controller="MyCourses" asp-action="Downloads" asp-route-url="@lm.selfUrl" asp-route-filename="@lm.name">@lm.name</a></span>
+                                <a id="a-secondary-content" class="secondary-content" asp-controller="MyCourses" asp-action="Downloads" asp-route-url="@lm.selfUrl" asp-route-filename="@lm.name"><i class="material-icons blue-text">get_app</i></a>
+                    }
+                    <p>
+                        @if (lm.relatedLectureDates != null && lm.relatedLectureDates.Count() > 0)
+                        {
+                            @Tools.toDateTime(lm.relatedLectureDates.First());
+                        }
+                        @(fileInfo != null ? Tools.ToFileSize(fileInfo.fileSize) : "")
+                    </p>
+
+                </li>
+            }
+        }
+    </ul>
 </div>

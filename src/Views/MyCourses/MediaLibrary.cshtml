@@ -1,51 +1,42 @@
-﻿@{
+﻿@using L2PAPIClient.DataModel;
+@using Grp.L2PSite.MobileApp.Services;
+@{
     ViewData["Title"] = "Media Library";
+    L2PCourseInfoData course = ViewData["ChosenCourse"] as L2PCourseInfoData;
+    L2PRole userRole = ViewData["userRole"] as L2PRole;
+    List<L2PMediaLibraryElement> mediaLibrary = ViewData["CourseMediaLibrary"] as List<L2PMediaLibraryElement>;
 }
 
-<div class="mdl-cell mdl-cell--12-col">
-    
-    <h3>@ViewData["Title"]</h3>
-    <hr />
-    <table align="left">
-        <tr>
-            <td style="align-content:flex-end">
-                <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab" title="Add Assignment">
-                    <i class="material-icons">add</i>
-                </button>
-            </td>
-            <td>
-                <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab">
-                    <i class="material-icons">delete</i>
-                </button>
-            </td>
-            <td>
-                <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab">
-                    <i class="material-icons">file_download</i>
-                </button>
-            </td>
-        </tr>
-    </table>
-
-
-</div>
-<div class="mdl-cell mdl-cell--12-col">
-    <table align="left" class="mdl-data-table mdl-js-data-table mdl-data-table--selectable">
-        <thead>
-            <tr>
-                <th class="mdl-data-table__cell--non-numeric">File</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td class="mdl-data-table__cell--non-numeric">Video 1</td>
-            </tr>
-            <tr>
-                <td class="mdl-data-table__cell--non-numeric">Video 2</td>
-            </tr>
-            <tr>
-                <td class="mdl-data-table__cell--non-numeric">Video 3</td>
-            </tr>
-        </tbody>
-    </table>
-
+<nav>
+    <div class="nav-wrapper white">
+        <div class="col s12">
+            <a asp-controller="MyCourses" asp-action="WhatsNew" asp-route-cId="@course.uniqueid" class="breadcrumb blue-text" style="font-size: 12px; margin-left: 10px;">@Tools.truncateString(course.courseTitle, 20)...</a>
+            <a asp-controller="MyCourses" asp-action="MediaLibrary" asp-route-cId="@course.uniqueid" class="breadcrumb blue-text" style="font-size: 12px">@ViewData["Title"]</a>
+        </div>
+    </div>
+</nav>
+<div class="col s12">
+    <ul class="collection with-header">
+        <li class="collection-header center-align"><h4>@ViewData["Title"]</h4></li>
+        @{
+            foreach (L2PMediaLibraryElement md in mediaLibrary)
+            {
+                L2PFileInformationElement fileInfo = Tools.DeserializeObject<L2PFileInformationElement>(md.fileInformation);
+                <li class="collection-item avatar">
+                    @if (md.isDirectory)
+                    {
+                        <i class="large material-icons circle white grey-text" style="font-size: 40px">folder_open</i>
+                        <span class="title"><a asp-controller="MyCourses" asp-action="MediaLibrary" asp-route-cId="@course.uniqueid" asp-route-ExtdDir="@md.name">@md.name</a></span>
+                        <a id="a-secondary-content" class="secondary-content" asp-controller="MyCourses" asp-action="MediaLibrary" asp-route-cId="@course.uniqueid" asp-route-ExtdDir="@md.name"><i class="material-icons blue-text">send</i></a>
+                    }
+                    else
+                    {
+                        <img src="@Tools.getImagePathByFileName(md.name)" class="circle" style="background-size: 80% !important" />
+                        <span class="title"><a asp-controller="MyCourses" asp-action="Downloads" asp-route-url="@md.selfUrl" asp-route-filename="@md.name">@md.name</a></span>
+                        <a id="a-secondary-content" class="secondary-content" asp-controller="MyCourses" asp-action="Downloads" asp-route-url="@md.selfUrl" asp-route-filename="@md.name"><i class="material-icons blue-text">get_app</i></a>
+                    }
+                </li>
+            }
+        }
+    </ul>
 </div>
