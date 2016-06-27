@@ -72,7 +72,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
         }
 
         [HttpGet] // Get Method to show the learning material of a course.
-        public async Task<IActionResult> LearningMaterials(String cId, String ExtdDir)
+        public async Task<IActionResult> LearningMaterials(string cId, string ExtdDir, string msg)
         {
             try
             {
@@ -103,7 +103,9 @@ namespace Grp.L2PSite.MobileApp.Controllers
                                         orderby elts.isDirectory descending
                                         select elts;
                         learningMaterials = materials.ToList();
+                        ViewData["CurrentDirectory"] = sourceDirectory;
                     }
+                    ViewData["Message"] = msg;
                     ViewData["CourseLearningMaterials"] = learningMaterials;
                     return View();
                 }
@@ -274,12 +276,12 @@ namespace Grp.L2PSite.MobileApp.Controllers
         }
 
         // Function used to download files from the L2P Client API
-        public ActionResult Downloads(string url, string filename)
+        public ActionResult Downloads(string cId, string url, string filename)
         {
             try
             {
 
-                string callURL = Config.L2PEndPoint + "/downloadFile/" + filename + "?accessToken=" + Config.getAccessToken() + "&cid=" + Context.Session.GetString("CourseId") + "&downloadUrl=|" + url;
+                string callURL = Config.L2PEndPoint + "/downloadFile/" + filename + "?accessToken=" + Config.getAccessToken() + "&cid=" + cId + "&downloadUrl=|" + url;
                 HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(callURL);
                 myHttpWebRequest.MaximumAutomaticRedirections = 1;
                 myHttpWebRequest.AllowAutoRedirect = true;

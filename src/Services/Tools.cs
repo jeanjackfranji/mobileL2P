@@ -112,14 +112,6 @@ namespace Grp.L2PSite.MobileApp.Services
             }
         }
 
-        public enum LoginStatus:int
-        {
-            Waiting = -1,
-            LoggedOff = 0,
-            LoggedIn = 1
-                 
-        };
-
         public static T DeserializeObject<T>(Object obj)
         {
             if(obj != null)
@@ -157,7 +149,7 @@ namespace Grp.L2PSite.MobileApp.Services
                 }
                 else if (Regex.Match(fileName, ".log|.txt|.wpd|.wps", RegexOptions.IgnoreCase).Success)
                 {
-                    return "images/learning_material/Text_Document.png";
+                    return "../images/learning_material/Text_Document.png";
                 }
                 else if (Regex.Match(fileName, ".csv|.xls|.xlsx", RegexOptions.IgnoreCase).Success)
                 {
@@ -178,5 +170,21 @@ namespace Grp.L2PSite.MobileApp.Services
             }
             return "../images/learning_material/File.png";
         }
+
+        public enum LoginStatus : int
+        {
+            Waiting = -1,
+            LoggedOff = 0,
+            LoggedIn = 1
+
+        };
+
+        public enum ModuleNumber : int
+        {
+            LearningMaterials = 0,
+            MediaLibrary = 1,
+            SharedDocuments = 2
+        };
+
     }
 }

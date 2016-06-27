@@ -11,52 +11,50 @@
                      select new { code = a.semester, name = Tools.formatSemesterCode(a.semester) }).Distinct();
 }
 
-<div class="container">
-    <div class="row">
-        <div class="col s12">
-            <br />
-            @if (semesters != null && semesters.Any())
+<div class="row">
+    <div class="col s12">
+        <br/>
+        @if (semesters != null && semesters.Any())
+        {
+            if (semCode == null)
             {
-                if (semCode == null)
-                {
-                    semCode = semesters.First().code;
-                }
-                <div class="input-field col s12">
-                    <select>
-                        <option value="" disabled>Semester Select</option>
-                        @foreach (var sem in semesters.ToList())
+                semCode = semesters.First().code;
+            }
+            <div class="input-field col s12">
+                <select>
+                    <option value="" disabled>Semester Select</option>
+                    @foreach (var sem in semesters.ToList())
+                    {
+                        if (sem.code.Equals(semCode))
                         {
-                            if (sem.code.Equals(semCode))
-                            {
-                                <option value="@semCode" selected>@Tools.formatSemesterCode(semCode.ToString())</option>
-                            }
-                            else
-                            {
-                                <option value="@sem.code">@sem.name</option>
-                            }
+                            <option value="@semCode" selected>@Tools.formatSemesterCode(semCode.ToString())</option>
                         }
-                    </select>
-                    <label>Choose your semester</label>
-                </div>
-                <ul class="collection with-header">
-                    <li class="collection-header center-align"><h4>@ViewData["Title"]</h4></li>
-                    @{
-                        foreach (L2PCourseInfoData course in currentSemesterCourses)
+                        else
                         {
-                            <li class="collection-item avatar">
-                                <i class="material-icons circle">school</i>
-                                <span class="title"><a asp-controller="MyCourses" asp-action="WhatsNew" asp-route-cId="@course.uniqueid">@course.courseTitle</a></span>
-                                <p>
-                                    @course.courseStatus <br>
-                                    @course.description
-                                </p>
-                                <a id="a-secondary-content" class="secondary-content" asp-controller="MyCourses" asp-action="WhatsNew" asp-route-cId="@course.uniqueid"><i class="material-icons blue-text">send</i></a>
-                            </li>
+                            <option value="@sem.code">@sem.name</option>
                         }
                     }
-                </ul>
-            }                   
-        </div>
+                </select>
+                <label>Choose your semester</label>
+            </div>
+            <ul class="collection with-header">
+                <li class="collection-header center-align"><h4>@ViewData["Title"]</h4></li>
+                @{
+                    foreach (L2PCourseInfoData course in currentSemesterCourses)
+                    {
+                        <li class="collection-item avatar">
+                            <i class="material-icons circle">school</i>
+                            <span class="title"><a asp-controller="MyCourses" asp-action="WhatsNew" asp-route-cId="@course.uniqueid">@course.courseTitle</a></span>
+                            <p>
+                                @course.courseStatus <br>
+                                @course.description
+                            </p>
+                            <a id="a-secondary-content" class="secondary-content" asp-controller="MyCourses" asp-action="WhatsNew" asp-route-cId="@course.uniqueid"><i class="material-icons blue-text">send</i></a>
+                        </li>
+                    }
+                }
+            </ul>
+        }                   
     </div>
 </div>
 

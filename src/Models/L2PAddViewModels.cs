@@ -20,6 +20,16 @@ namespace Grp.L2PSite.MobileApp.Models
         public int itemId { get; set; }
     }
 
+    public class FolderViewModel
+    {
+        [Required]
+        [StringLength(50)]
+        [Display(Name = "Name")]
+        public string Name { get; set; }
+
+    }
+
+
     public class LoginViewModel
     {
         [Required]

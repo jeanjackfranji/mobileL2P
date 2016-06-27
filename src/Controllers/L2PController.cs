@@ -4,6 +4,9 @@ using L2PAPIClient.DataModel;
 using Grp.L2PSite.MobileApp.Services;
 using System.Threading.Tasks;
 using Grp.L2PSite.MobileApp.Models;
+using Microsoft.AspNet.Http;
+using static Grp.L2PSite.MobileApp.Services.Tools;
+using Microsoft.Net.Http.Headers;
 
 namespace Grp.L2PSite.MobileApp.Controllers
 {
@@ -90,6 +93,127 @@ namespace Grp.L2PSite.MobileApp.Controllers
                     else
                     {
                         string errorMessage = "You do not have the sufficient rights to add a hyperlink";
+                        return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
+                    }
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
+        }
+
+        // Post Method to add a new folder in the intended view (Learning Material,...)
+        // POST: /L2P/AddFolder
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddFolder(string cId, int ModelNb, string curDir, FolderViewModel model)
+        {
+            try
+            {
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
+                {
+                    string currentFolder = null;
+                    if (curDir != null && curDir.Contains("/"))
+                        currentFolder = curDir.Substring(curDir.LastIndexOf('/') + 1);
+                    else if (curDir != null && curDir.Length > 0)
+                        currentFolder = curDir;
+
+                    L2PCourseInfoData course = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    L2PRole userRole = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
+                    if (userRole != null && (userRole.role.Contains("manager") || userRole.role.Contains("tutors")))
+                    {
+                        ViewData["ChosenCourse"] = course;
+                        ViewData["userRole"] = userRole;
+
+                        if (!ModelState.IsValid) // Check if the model was filled correctly (Always add)
+                        {
+                            return RedirectToAction(nameof(MyCoursesController.LearningMaterials), "MyCourses", new { cId = cId, ExtdDir = currentFolder, @msg = "Invalid Folder Name!" });
+                        }
+
+                        //ModelID (0 = Learning Material, 1 = Media Library, 2 = SharedDocuments
+                        await L2PAPIClient.api.Calls.L2PCreateFolder(cId, ModelNb, model.Name, curDir);
+                        return RedirectToAction(nameof(MyCoursesController.LearningMaterials), "MyCourses", new { cId = cId, ExtdDir = currentFolder, @msg = "Folder was successfully added!" });
+                    }
+                    else
+                    {
+                        string errorMessage = "You do not have the sufficient rights to add a folder";
+                        return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
+                    }
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
+        }
+
+        // Post Method to add a new file in the intended view (Learning Material,...)
+        // POST: /L2P/AddFile
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddFile(IFormFile file, string cId, int ModelNb, string curDir)
+        {
+            try
+            {
+
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
+                {
+                    string currentFolder = null;
+                    if (curDir != null && curDir.Contains("/"))
+                        currentFolder = curDir.Substring(curDir.LastIndexOf('/') + 1);
+                    else if (curDir != null && curDir.Length > 0)
+                        currentFolder = curDir;
+
+                    L2PCourseInfoData course = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    L2PRole userRole = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
+                    if (userRole != null && (userRole.role.Contains("manager") || userRole.role.Contains("tutors")))
+                    {
+                        ViewData["ChosenCourse"] = course;
+                        ViewData["userRole"] = userRole;
+
+                        if (file == null) // Check if the model was filled correctly (Always add)
+                        {
+                            return RedirectToAction(nameof(MyCoursesController.LearningMaterials), "MyCourses", new { cId = cId, ExtdDir = currentFolder, @msg = "No file was selected!" });
+                        }
+
+                        //moduleNb (0 = Learning Material, 1 = Media Library, 2 = SharedDocuments
+                        ModuleNumber module = (ModuleNumber)Enum.ToObject(typeof(ModuleNumber), ModelNb);
+                        if(module == ModuleNumber.LearningMaterials)
+                        {
+                            L2PUploadRequest data = new L2PUploadRequest();
+                            data.fileName = ContentDispositionHeaderValue
+                                .Parse(file.ContentDisposition)
+                                .FileName
+                                .Trim('"');// FileName returns "fileName.ext"(with double quotes) in beta 3
+                            
+                            using (System.IO.Stream stream = file.OpenReadStream()) {
+                                byte[] buffer = new byte[stream.Length];
+                                await stream.ReadAsync(buffer, 0, (int)stream.Length);
+                                data.stream = Convert.ToBase64String(buffer);
+                            }
+
+                            await L2PAPIClient.api.Calls.L2PuploadInLearningMaterials(cId, curDir, data);
+                            return RedirectToAction(nameof(MyCoursesController.LearningMaterials), "MyCourses", new { cId = cId, ExtdDir = currentFolder, @msg = "File was successfully added!" });
+                        }
+                        return RedirectToAction(nameof(MyCoursesController.LearningMaterials), "MyCourses", new { cId = cId, ExtdDir = currentFolder, @msg = "File was successfully added!" });
+
+                    }
+                    else
+                    {
+                        string errorMessage = "You do not have the sufficient rights to add a folder";
                         return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
                     }
                 }
@@ -314,5 +438,64 @@ namespace Grp.L2PSite.MobileApp.Controllers
                 return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
             }
         }
+
+        // Get Method to delete learning materials in a course
+        // GET: /L2P/DeleteLearningMaterials
+        [HttpGet]
+        public async Task<IActionResult> DeleteLearningMaterials(string cId, string LMIds, string curDir)
+        {
+            try
+            {
+                string currentFolder = null;
+                if (curDir != null && curDir.Contains("/"))
+                    currentFolder = curDir.Substring(curDir.LastIndexOf('/') + 1);
+                else if (curDir != null && curDir.Length > 0)
+                    currentFolder = curDir;
+
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context))
+                {
+                    if (String.IsNullOrEmpty(cId))
+                    {
+                        string errorMessage = "You were redirected to this page with missing parameters.<br/> Please go back to the home page and try again.";
+                        return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
+                    }
+                    else if (String.IsNullOrEmpty(LMIds))
+                    {
+                        return RedirectToAction(nameof(MyCoursesController.LearningMaterials), "MyCourses", new { @cId = cId });
+                    }
+
+                    L2PCourseInfoData course = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    L2PRole userRole = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
+                    if (userRole != null && (userRole.role.Contains("manager") || userRole.role.Contains("tutors")))
+                    {
+                        LMIds = LMIds.TrimEnd('-');
+                        string[] hyperlinkIds = LMIds.Split('-');
+                        foreach (string hId in hyperlinkIds)
+                        {
+                            int id = -1;
+                            int.TryParse(hId, out id);
+                            await L2PAPIClient.api.Calls.L2PDeleteLearningMaterial(cId, id);
+                        }
+                        return RedirectToAction(nameof(MyCoursesController.LearningMaterials), "MyCourses", new { @cId = cId, @ExtdDir = currentFolder, @msg = "Material(s)/Folder(s) successfully deleted!" });
+                    }
+                    else
+                    {
+                        string errorMessage = "You do not have the sufficient rights to delete hyperlinks";
+                        return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
+                    }
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
+        }
+
     }
 }
