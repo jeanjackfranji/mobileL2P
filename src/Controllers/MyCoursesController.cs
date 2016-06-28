@@ -1,14 +1,14 @@
-﻿using Microsoft.AspNet.Mvc;
-using Microsoft.AspNet.Http;
+﻿using L2PAPIClient;
+using L2PAPIClient.DataModel;
 using System;
-using L2PAPIClient;
 using ICSharpCode.SharpZipLib;
 using System.Net;
-using L2PAPIClient.DataModel;
-using System.Collections.Generic;
-using Grp.L2PSite.MobileApp.Services;
-using System.Threading.Tasks;
 using System.Linq;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using Microsoft.AspNet.Mvc;
+using Microsoft.AspNet.Http;
+using Grp.L2PSite.MobileApp.Services;
 using System.IO;
 using System.IO.Compression;
 using ICSharpCode.SharpZipLib.Zip;
@@ -17,8 +17,7 @@ using System.Threading;
 
 namespace Grp.L2PSite.MobileApp.Controllers
 {
-    public class MyCoursesController : Controller {
-
+    {
         private readonly IApplicationEnvironment _appEnvironment;
 
         public MyCoursesController(IApplicationEnvironment appEnvironment)
@@ -85,7 +84,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
         }
 
         [HttpGet] // Get Method to show the learning material of a course.
-        public async Task<IActionResult> LearningMaterials(String cId, String ExtdDir)
+        public async Task<IActionResult> LearningMaterials(string cId, string ExtdDir, string msg)
         {
             try
             {
@@ -100,15 +99,26 @@ namespace Grp.L2PSite.MobileApp.Controllers
                     List<L2PLearningMaterialElement> learningMaterials = new List<L2PLearningMaterialElement>();
                     if (lmList.dataSet != null)
                     {
-                        String sourceDirectory = "/" + course.semester + "/" + course.uniqueid + "/Lists/StructuredMaterials";
-                        sourceDirectory += ExtdDir;
+
+                        string sourceDirectory = "/" + course.semester + "/" + course.uniqueid + "/Lists/StructuredMaterials";
+                        if(ExtdDir != null)
+                        {
+                            var element = from elts in lmList.dataSet
+                                          where elts.isDirectory == true && elts.name.Equals(ExtdDir)
+                                          select elts;
+                            if (element.Any())
+                            {
+                                sourceDirectory = element.First().selfUrl;
+                            }
+                        }
                         var materials = from elts in lmList.dataSet
                                         where elts.sourceDirectory.Equals(sourceDirectory)
                                         orderby elts.isDirectory descending
                                         select elts;
                         learningMaterials = materials.ToList();
+                        ViewData["CurrentDirectory"] = sourceDirectory;
                     }
-
+                    ViewData["Message"] = msg;
                     ViewData["CourseLearningMaterials"] = learningMaterials;
                     return View();
                 }
@@ -123,16 +133,93 @@ namespace Grp.L2PSite.MobileApp.Controllers
             }
         }
 
-        public IActionResult SharedDocuments()
-        {
-            return View();
-        }
 
-        [HttpGet] // Get Method to show all the hyperlinks of a course
-        public async Task<IActionResult> Literature(String cId)
+        [HttpGet] // Get Method to show the shared documents material of a course.
+        public async Task<IActionResult> SharedDocuments(string cId, string ExtdDir, string msg)
         {
 
             try
+            {
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
+                {
+                    L2PCourseInfoData course = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    ViewData["ChosenCourse"] = course;
+                    ViewData["userRole"] = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
+                    L2PLearningMaterialList sdList = await L2PAPIClient.api.Calls.L2PviewAllSharedDocuments(cId);
+                    List<L2PLearningMaterialElement> sharedDocuments = new List<L2PLearningMaterialElement>();
+                    if (sdList.dataSet != null)
+                    {
+                        string sourceDirectory = "/" + course.semester + "/" + course.uniqueid + "/collaboration/Lists/SharedDocuments";
+                        if (ExtdDir != null)
+                        {
+                            var element = from elts in sdList.dataSet
+                                          where elts.isDirectory == true && elts.name.Equals(ExtdDir)
+                                          select elts;
+                            if (element.Any())
+                            {
+                                sourceDirectory = element.First().selfUrl;
+                            }
+                        }
+                        var materials = from elts in sdList.dataSet
+                                        where elts.sourceDirectory.Equals(sourceDirectory)
+                                        orderby elts.isDirectory descending
+                                        select elts;
+                        sharedDocuments = materials.ToList();
+                        ViewData["CurrentDirectory"] = sourceDirectory;
+                    }
+                    ViewData["Message"] = msg;
+                    ViewData["CourseSharedDocuments"] = sharedDocuments;
+                    return View();
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }            
+        }
+
+        [HttpGet] // Get Method to show all the hyperlinks of a course
+        public async Task<IActionResult> Hyperlinks(string cId, string msg)
+        {
+            try
+            {
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
+                {
+                    ViewData["ChosenCourse"] = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    ViewData["userRole"] = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
+                    L2PHyperlinkList hpList = await L2PAPIClient.api.Calls.L2PviewAllHyperlinks(cId);
+                    List<L2PHyperlinkElement> hyperlinks = new List<L2PHyperlinkElement>();
+                    if (hpList.dataSet != null)
+                    {
+                        hyperlinks = hpList.dataSet;
+                    }
+
+                    ViewData["Message"] = msg;
+                    ViewData["CourseHyperlinks"] = hyperlinks;
+                    return View();
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
+        }
+
+        public IActionResult Literature(){
+
+try
             {
                 // This method must be used before every L2P API call
                 Tools.getAndSetUserToken(Request.Cookies, Context);
@@ -164,40 +251,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
 
         }
 
-
-        
-
-        [HttpGet] // Get Method to show all the hyperlinks of a course
-        public async Task<IActionResult> Hyperlinks(String cId)
-        {
-            try
-            {
-                // This method must be used before every L2P API call
-                Tools.getAndSetUserToken(Request.Cookies, Context);
-                if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
-                {
-                    ViewData["ChosenCourse"] = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
-                    ViewData["userRole"] = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
-                    L2PHyperlinkList hpList = await L2PAPIClient.api.Calls.L2PviewAllHyperlinks(cId);
-                    List<L2PHyperlinkElement> hyperlinks = new List<L2PHyperlinkElement>();
-                    if (hpList.dataSet != null)
-                    {
-                        hyperlinks = hpList.dataSet;
-                    }
-                    ViewData["CourseHyperlinks"] = hyperlinks;
-                    return View();
-                }
-                else
-                {
-                    return RedirectToAction(nameof(AccountController.Login), "Account");
-                }
-            }
-            catch (Exception ex)
-            {
-                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
-            }
-        }
-
+}
 
 
         [HttpGet] // Get Method to show all the hyperlinks of a course
@@ -233,9 +287,57 @@ namespace Grp.L2PSite.MobileApp.Controllers
             }
         }
 
+        [HttpGet] // Get Method to show the Media Library of a course.
+        public async Task<IActionResult> MediaLibrary(string cId, string ExtdDir, string msg)
+        {
 
-        [HttpGet] // Get Method to show specific assignments
-        public async Task<IActionResult> ViewAssignment(String cId, string aid)
+
+            try
+            {
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
+                {
+                    L2PCourseInfoData course = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    ViewData["ChosenCourse"] = course;
+                    ViewData["userRole"] = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
+                    L2PMediaLibraryList mdList = await L2PAPIClient.api.Calls.L2PviewAllMediaLibraries(cId);
+                    List<L2PMediaLibraryElement> mediaLibrary = new List<L2PMediaLibraryElement>();
+                    if (mdList.dataSet != null)
+                    {
+                        string sourceDirectory = "/" + course.semester + "/" + course.uniqueid + "/Lists/MediaLibrary";
+                        if (ExtdDir != null)
+                        {
+                            var element = from elts in mdList.dataSet
+                                          where elts.isDirectory == true && elts.name.Equals(ExtdDir)
+                                          select elts;
+                            if (element.Any())
+                            {
+                                sourceDirectory = element.First().selfUrl;
+                            }
+                        }
+                        var materials = from elts in mdList.dataSet
+                                        where elts.sourceDirectory.Equals(sourceDirectory)
+                                        orderby elts.isDirectory descending
+                                        select elts;
+                        mediaLibrary = materials.ToList();
+                        ViewData["CurrentDirectory"] = sourceDirectory;
+                    }
+                    ViewData["Message"] = msg;
+                    ViewData["CourseMediaLibrary"] = mediaLibrary;
+                    return View();
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
+        }
+		 public async Task<IActionResult> Announcement(String cId)
         {
             try
             {
@@ -245,16 +347,43 @@ namespace Grp.L2PSite.MobileApp.Controllers
                 {
                     ViewData["ChosenCourse"] = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
                     ViewData["userRole"] = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
-                    L2PAssignmentList assnList = await L2PAPIClient.api.Calls.L2PviewAssignment(cId, int.Parse(aid));
-                    ViewData["ChosenAssignment"] = assnList;
-                    List<L2PAssignmentElement> assignments = new List<L2PAssignmentElement>();
-                    if (assnList.dataSet != null)
+                    L2PAnnouncementList aList = await L2PAPIClient.api.Calls.L2PviewAllAnnouncements(cId);
+                    List<L2PAnnouncementElement> announcements = new List<L2PAnnouncementElement>();
+                    if (aList.dataSet != null)
                     {
-                        
-                        assignments = assnList.dataSet;
-               
+                        announcements = aList.dataSet;
                     }
-                    ViewData["ViewAssignment"] = assignments;
+                    ViewData["CourseAnnouncements"] = announcements;
+                    return View();
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
+        }
+        public async Task<IActionResult> Email(String cId)
+        {
+            try
+            {
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
+                {
+                    ViewData["ChosenCourse"] = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    ViewData["userRole"] = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
+                    L2PEmailList eList = await L2PAPIClient.api.Calls.L2PviewAllEmails(cId);
+                    List<L2PEmailElement> emails = new List<L2PEmailElement>();
+                    if (eList.dataSet != null)
+                    {
+                        emails = eList.dataSet;
+
+                    }
+                    ViewData["CourseEmails"] = emails;
                     return View();
                 }
                 else
@@ -268,17 +397,11 @@ namespace Grp.L2PSite.MobileApp.Controllers
             }
         }
 
-
-        public IActionResult MediaLibrary()
+        public IActionResult Assignments()
         {
             return View();
         }
 
-
-        public IActionResult Announcement()
-        {
-            return View();
-        }
         public IActionResult AddAnnouncement()
         {
             return View();
@@ -293,11 +416,13 @@ namespace Grp.L2PSite.MobileApp.Controllers
         }
 
         // Function used to download files from the L2P Client API
-        public ActionResult Downloads(string url, string filename)
+        public ActionResult Downloads(string cId, string url, string filename)
         {
             try
             {
-                string callURL = Config.L2PEndPoint + "/downloadFile/" + filename + "?accessToken=" + Config.getAccessToken() + "&cid=" + Context.Session.GetString("CourseId") + "&downloadUrl=|" + url;
+                if (filename != null && !filename.StartsWith("|"))
+                    filename = "|" + filename;
+                string callURL = Config.L2PEndPoint + "/downloadFile/" + filename + "?accessToken=" + Config.getAccessToken() + "&cid=" + cId + "&downloadUrl=" + url;
                 HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(callURL);
                 myHttpWebRequest.MaximumAutomaticRedirections = 1;
                 myHttpWebRequest.AllowAutoRedirect = true;
@@ -406,5 +531,40 @@ namespace Grp.L2PSite.MobileApp.Controllers
                 return RedirectToAction(nameof(HomeController.Error), "Error");
             }
         }
+
+[HttpGet] // Get Method to show specific assignments
+        public async Task<IActionResult> ViewAssignment(String cId, string aid)
+        {
+            try
+            {
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
+                {
+                    ViewData["ChosenCourse"] = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    ViewData["userRole"] = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
+                    L2PAssignmentList assnList = await L2PAPIClient.api.Calls.L2PviewAssignment(cId, int.Parse(aid));
+                    ViewData["ChosenAssignment"] = assnList;
+                    List<L2PAssignmentElement> assignments = new List<L2PAssignmentElement>();
+                    if (assnList.dataSet != null)
+                    {
+                        
+                        assignments = assnList.dataSet;
+               
+                    }
+                    ViewData["ViewAssignment"] = assignments;
+                    return View();
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
+}
+
     }
 }

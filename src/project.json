@@ -28,7 +28,8 @@
     "Microsoft.Framework.Logging.Console": "1.0.0-beta5",
     "Microsoft.VisualStudio.Web.BrowserLink.Loader": "14.0.0-beta5",
     "System.Xml.XDocument": "4.0.11-rc2-24027",
-    "System.Collections": "4.0.11-rc2-24027"
+    "System.Collections": "4.0.11-rc2-24027",
+    "HtmlAgilityPack": "1.4.9"
   },
 
   "commands": {
@@ -52,7 +53,7 @@
         "System.Web": "4.0.0.0"
       }
     }
-  },
+    },
 
   "exclude": [
     "wwwroot",

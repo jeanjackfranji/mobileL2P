@@ -65,7 +65,6 @@ namespace Grp.L2PSite.MobileApp.Controllers
         {
             EnsureDatabaseCreated(_applicationDbContext);
             ViewData["ReturnUrl"] = returnUrl;
-             
             // Wait for authentication
             bool done = false;
             while (!done)  // so far, not authenticated

@@ -7,132 +7,131 @@
     List<L2PAssignmentElement> assignments = ViewData["Assignments"] as List<L2PAssignmentElement>;
 }
 
-    <div class="row" style="margin-bottom: 0px !important">
-        <div class="col s12 center-align">
-            <div class="chip"><i class="material-icons">new_releases</i><b>What's New</b> | @course.courseTitle</div>
-        </div>
+<div class="row" style="margin-bottom: 0px !important">
+    <div class="col s12 center-align">
+        <div class="chip"><i class="material-icons">new_releases</i><b>What's New</b> | @course.courseTitle</div>
     </div>
-    <div class="row">
-        <div class="col s12 m6">
-            <div class="card indigo lighten-5">
-                <div class="card-content black-text hoverable">
-                    <span class="card-title">Learning Materials</span>
-                    <table class="bordered highlight responsive-table">
-                        <thead>
-                            <tr>
-                                <th data-field="name">Name</th>
-                                <th data-field="created">Publish Date</th>
-                                <th data-field="lastModified">Last Modified</th>
-                                <th data-field="lastModified"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (cWhatsNew.learningMaterials != null)
-                            {
-                                var learnMat = (from elt in cWhatsNew.learningMaterials
-                                                where elt.isDirectory == false
-                                                orderby elt.created descending
-                                                select elt).Take(5);
-                                foreach (L2PLearningMaterialElement lm in learnMat)
-                                {
-                                
-                                    <tr>
-                                        <td><a asp-controller="MyCourses" asp-action="Downloads" asp-route-url="@lm.selfUrl" asp-route-filename="@lm.name">@lm.name</a></td>
-                                        <td>@Tools.toDateTime(@lm.created)</td>
-                                        <td>@Tools.toDateTime(@lm.lastModified)</td>
-                                        <td class="center-align"><a asp-controller="MyCourses" asp-action="Downloads" asp-route-url="@lm.selfUrl" asp-route-filename="@lm.name"><i class="material-icons">get_app</i></a></td>
-                                    </tr>
-                                }
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="col s12 m6">
-            <div class="card indigo lighten-5">
-                <div class="card-content black-text hoverable">
-                    <span class="card-title">Assignments</span>
-                    <table class="bordered highlight responsive-table">
-                        <thead>
-                            <tr>
-                                <th data-field="done">Completed</th>
-                                <th data-field="name">Name</th>
-                                <th data-field="created">Publish Date</th>
-                                <th data-field="lastModified">Due Date</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (assignments != null)
-                            {
-                                @foreach (L2PAssignmentElement assign in assignments)
-                                {
-                                    <tr>
-                                        <td>
-                                            @if (assign.solution != null)
-                                            {
-                                                <i class="material-icons circle green accent-3">done</i>
-                                            }
-                                            else
-                                            {
-                                                <i class="material-icons circle red accent-3">clear</i>
-                                            }
-                                        </td>
-                                        <td><a asp-controller="MyCourses" asp-action="Assignments" asp-route-id="@assign.itemId">@assign.title</a></td>
-                                        <td>@Tools.toDateTime(@assign.assignmentPublishDate)</td>
-                                        <td>@Tools.toDateTime(@assign.dueDate)</td>
-                                    </tr>
-                                }
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <div class="col s12 m6">
-            <div class="card indigo lighten-5">
-                <div class="card-content black-text hoverable">
-                    <span class="card-title">Recent Announcements</span>
-                    <ul class="collapsible popout" data-collapsible="accordion">
-                        @if (cWhatsNew.announcements != null)
+</div>
+<div class="row">
+    <div class="col s12 m6">
+        <div class="card indigo lighten-5 dismissable">
+            <div class="card-content black-text hoverable">
+                <span class="card-title">Learning Materials</span>
+                <table class="bordered highlight responsive-table">
+                    <thead>
+                        <tr>
+                            <th data-field="name">Name</th>
+                            <th data-field="created">Publish Date</th>
+                            <th data-field="lastModified">Last Modified</th>
+                            <th data-field="lastModified"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (cWhatsNew.learningMaterials != null)
                         {
-                            var anncmts = (from elt in cWhatsNew.announcements
-                                           orderby elt.created descending
-                                           select elt).Take(5);
-                            foreach (L2PAnnouncementElement anm in anncmts)
+                            var learnMat = (from elt in cWhatsNew.learningMaterials
+                                            where elt.isDirectory == false
+                                            orderby elt.created descending
+                                            select elt).Take(5);
+                            foreach (L2PLearningMaterialElement lm in learnMat)
                             {
-                                <li>
-                                    <div class="collapsible-header"><i class="material-icons">filter_drama</i><a asp-controller="MyCourses" asp-action="Announcements" asp-route-id="@anm.itemId">@anm.title</a></div>
-                                    <div class="collapsible-body"><p>@Html.Raw(@anm.body)</p></div>
-                                </li>
+                                <tr>
+                                    <td><a asp-controller="MyCourses" asp-action="Downloads" asp-route-url="@lm.selfUrl" asp-route-filename="@lm.name">@lm.name</a></td>
+                                    <td>@Tools.toDateTime(@lm.created)</td>
+                                    <td>@Tools.toDateTime(@lm.lastModified)</td>
+                                    <td class="center-align"><a asp-controller="MyCourses" asp-action="Downloads" asp-route-url="@lm.selfUrl" asp-route-filename="@lm.name"><i class="material-icons">get_app</i></a></td>
+                                </tr>
                             }
                         }
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <div class="col s12 m6">
-            <div class="card indigo lighten-5">
-                <div class="card-content black-text hoverable">
-                    <span class="card-title">Recent Discussions</span>
-                    <ul class="collapsible popout" data-collapsible="accordion">
-                        @if (cWhatsNew.discussionItems != null)
-                        {
-                            var discussions = (from elt in cWhatsNew.discussionItems
-                                               orderby elt.created descending
-                                               select elt).Take(5);
-                            foreach (L2PDiscussionItemElement disc in discussions)
-                            {
-                                <li>
-                                    <div class="collapsible-header"><i class="material-icons">filter_drama</i><a asp-controller="MyCourses" asp-action="Discussions" asp-route-id="@disc.selfId">@disc.subject</a></div>
-                                    <div class="collapsible-body"><p>@Html.Raw(@disc.body)</p></div>
-                                </li>
-                            }
-                        }
-                    </ul>
-                </div>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
+    <div class="col s12 m6">
+        <div class="card indigo lighten-5 dismissable">
+            <div class="card-content black-text hoverable">
+                <span class="card-title">Assignments</span>
+                <table class="bordered highlight responsive-table">
+                    <thead>
+                        <tr>
+                            <th data-field="done">Completed</th>
+                            <th data-field="name">Name</th>
+                            <th data-field="created">Publish Date</th>
+                            <th data-field="lastModified">Due Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (assignments != null)
+                        {
+                            @foreach (L2PAssignmentElement assign in assignments)
+                            {
+                                <tr>
+                                    <td>
+                                        @if (assign.solution != null)
+                                        {
+                                            <i class="material-icons circle green accent-3">done</i>
+                                        }
+                                        else
+                                        {
+                                            <i class="material-icons circle red accent-3">clear</i>
+                                        }
+                                    </td>
+                                    <td><a asp-controller="MyCourses" asp-action="Assignments" asp-route-id="@assign.itemId">@assign.title</a></td>
+                                    <td>@Tools.toDateTime(@assign.assignmentPublishDate)</td>
+                                    <td>@Tools.toDateTime(@assign.dueDate)</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col s12 m6">
+        <div class="card indigo lighten-5 dismissable">
+            <div class="card-content black-text hoverable">
+                <span class="card-title">Recent Announcements</span>
+                <ul class="collapsible popout" data-collapsible="accordion">
+                    @if (cWhatsNew.announcements != null)
+                    {
+                        var anncmts = (from elt in cWhatsNew.announcements
+                                        orderby elt.created descending
+                                        select elt).Take(5);
+                        foreach (L2PAnnouncementElement anm in anncmts)
+                        {
+                            <li>
+                                <div class="collapsible-header"><i class="material-icons">filter_drama</i><a asp-controller="MyCourses" asp-action="Announcements" asp-route-id="@anm.itemId">@anm.title</a></div>
+                                <div class="collapsible-body"><p>@Html.Raw(@anm.body)</p></div>
+                            </li>
+                        }
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="col s12 m6">
+        <div class="card indigo lighten-5 dismissable">
+            <div class="card-content black-text hoverable">
+                <span class="card-title">Recent Discussions</span>
+                <ul class="collapsible popout" data-collapsible="accordion">
+                    @if (cWhatsNew.discussionItems != null)
+                    {
+                        var discussions = (from elt in cWhatsNew.discussionItems
+                                            orderby elt.created descending
+                                            select elt).Take(5);
+                        foreach (L2PDiscussionItemElement disc in discussions)
+                        {
+                            <li>
+                                <div class="collapsible-header"><i class="material-icons">filter_drama</i><a asp-controller="MyCourses" asp-action="Discussions" asp-route-id="@disc.selfId">@disc.subject</a></div>
+                                <div class="collapsible-body"><p>@Html.Raw(@disc.body)</p></div>
+                            </li>
+                        }
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

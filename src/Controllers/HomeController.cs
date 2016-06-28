@@ -73,6 +73,10 @@ namespace Grp.L2PSite.MobileApp.Controllers
         
         public IActionResult Error(string error)
         {
+            if(error != null && error.Contains("401 (Unauthorized)"))
+            {
+                error = "The page you are trying to visit does not exist. Please choose from the options below.";
+            }
             ViewData["error"] = error;
             return View("~/Views/Shared/Error.cshtml");
         }
