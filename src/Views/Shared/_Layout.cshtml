@@ -45,10 +45,13 @@
         <div class="nav-wrapper">
             <a href="#!" class="brand-logo margin-left-20">L2P Mobile</a>
             <a href="#" data-activates="mobile" class="button-collapse show-on-large"><i class="material-icons">menu</i></a>
-            <ul class="right">
-                <!-- Dropdown Trigger -->
-                <li><a class="dropdown-button" href="#!"  data-constrainwidth="false" data-activates="coursesDropdown"><i class="material-icons right">more_vert</i></a></li>
-            </ul>
+            @if (cId != null)
+            {
+                <ul class="right">
+                    <!-- Dropdown Trigger -->
+                    <li><a class="dropdown-button" href="#!"  data-constrainwidth="false" data-activates="coursesDropdown"><i class="material-icons right">more_vert</i></a></li>
+                </ul>
+            }
             <ul class="side-nav" id="mobile">
                 <li><a class="waves-effect waves-light" asp-controller="Home" asp-action="MyCourses">My Courses</a></li>
                 <li><a class="waves-effect waves-light" asp-controller="Home" asp-action="Calendar">Calendar</a></li>

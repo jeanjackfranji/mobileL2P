@@ -539,7 +539,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
         public async Task<IActionResult> ViewAssignment(String cId, string aid)
         {
             try
-            {
+            {                 
                 // This method must be used before every L2P API call
                 Tools.getAndSetUserToken(Request.Cookies, Context);
                 if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
