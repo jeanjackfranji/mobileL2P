@@ -1,6 +1,7 @@
 ﻿/// <autosync enabled="true" />
 /// <reference path="../gulpfile.js" />
 /// <reference path="config.js" />
+/// <reference path="css/lolliclock.js" />
 /// <reference path="js/materialize.js" />
 /// <reference path="js/site.js" />
 /// <reference path="js/validate-scripts.js" />

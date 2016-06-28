@@ -74,6 +74,12 @@ namespace Grp.L2PSite.MobileApp.Services
             date = date.AddDays(Math.Floor(dateNb / 60 / 60 / 24));
             return date.ToShortDateString();
         }
+        public static DateTime toDate(double dateNb)
+        {
+            DateTime date = new DateTime(1970, 1, 1);
+            date = date.AddDays(Math.Floor(dateNb / 60 / 60 / 24));
+            return date;
+        }
 
         public static bool checkURLValidity(string url)
         {
@@ -190,6 +196,10 @@ namespace Grp.L2PSite.MobileApp.Services
             {
                 CompressFolder(folder, zipStream, folderOffset);
             }
+        }
+        public static string convertBooltoString(bool value)
+        {
+            return value.ToString(); 
         }
     }
 }

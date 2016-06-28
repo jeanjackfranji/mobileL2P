@@ -129,14 +129,43 @@ namespace Grp.L2PSite.MobileApp.Controllers
         }
 
         [HttpGet] // Get Method to show all the hyperlinks of a course
-        public IActionResult Literature()
+        public async Task<IActionResult> Literature(String cId)
         {
 
-            return View();
+            try
+            {
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
+                {
+                    ViewData["ChosenCourse"] = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    ViewData["userRole"] = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
+                    L2PLiteratureSetDataType LList = await L2PAPIClient.api.Calls.L2PviewAllLiteratureAsync(cId);
+                   // L2PLiteratureViewDataType LVList = new L2PLiteratureViewDataType();
+                 
+                    List<L2PLiteratureElementDataType> literatures = new List<L2PLiteratureElementDataType>();
+                    if (LList != null)
+                    {
+                        //L2PLiteratureElementDataType
+                        literatures = LList.dataSet;
+                    }
+                    ViewData["CourseLiterature"] = literatures;
+                    return View();
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
 
         }
 
 
+        
 
         [HttpGet] // Get Method to show all the hyperlinks of a course
         public async Task<IActionResult> Hyperlinks(String cId)
@@ -205,6 +234,41 @@ namespace Grp.L2PSite.MobileApp.Controllers
         }
 
 
+        [HttpGet] // Get Method to show specific assignments
+        public async Task<IActionResult> ViewAssignment(String cId, string aid)
+        {
+            try
+            {
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
+                {
+                    ViewData["ChosenCourse"] = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    ViewData["userRole"] = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
+                    L2PAssignmentList assnList = await L2PAPIClient.api.Calls.L2PviewAssignment(cId, int.Parse(aid));
+                    ViewData["ChosenAssignment"] = assnList;
+                    List<L2PAssignmentElement> assignments = new List<L2PAssignmentElement>();
+                    if (assnList.dataSet != null)
+                    {
+                        
+                        assignments = assnList.dataSet;
+               
+                    }
+                    ViewData["ViewAssignment"] = assignments;
+                    return View();
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
+        }
+
+
         public IActionResult MediaLibrary()
         {
             return View();
@@ -246,6 +310,26 @@ namespace Grp.L2PSite.MobileApp.Controllers
                 return RedirectToAction(nameof(HomeController.Error), "Error");
             }
         }
+
+
+        public ActionResult DownloadsUsingCID(string url, string filename, string cId)
+        {
+            try
+            {
+                string callURL = Config.L2PEndPoint + "/downloadFile/" + filename + "?accessToken=" + Config.getAccessToken() + "&cid=" + cId + "&downloadUrl=" + url;
+                HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(callURL);
+                myHttpWebRequest.MaximumAutomaticRedirections = 1;
+                myHttpWebRequest.AllowAutoRedirect = true;
+                HttpWebResponse myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
+                return File(myHttpWebResponse.GetResponseStream(), myHttpWebResponse.ContentType, filename);
+            }
+            catch (Exception ex)
+            {
+                ViewData["error"] = ex.Message;
+                return RedirectToAction(nameof(HomeController.Error), "Error");
+            }
+        }
+
 
         public async Task<ActionResult> DownloadsZip(string caid, string aid)
         {

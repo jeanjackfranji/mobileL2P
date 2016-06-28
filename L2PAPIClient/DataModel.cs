@@ -302,7 +302,7 @@ namespace L2PAPIClient.DataModel
         public long assignmentPublishDate;
         public bool groupSubmissionAllowed;
         public List<L2PAttachmentElement> assignmentDocuments;
-        public object correction;
+        public L2PAssignmentCorrection correction;
         public L2PAssignmentSolution solution;
         public List<L2PAttachmentElement> SampleSolutionDocuments;
     }
@@ -312,7 +312,6 @@ namespace L2PAPIClient.DataModel
         public List<L2PAttachmentElement> correctionDocuments;
         public long creationTimestamp;
         public long modifiedTimestamp;
-        public int itemid;
         public double obtainedPoint;
         public string tutorComment;
     }
@@ -365,9 +364,10 @@ namespace L2PAPIClient.DataModel
 
     public class L2PLiteratureSetDataType : L2PBaseData
     {
-        public List<L2PLiteratureViewDataType> dataSet;
+        public List<L2PLiteratureElementDataType> dataSet; //changed from L2PLiteratureViewDataType to L2PLiteratureElementDataType
     }
 
+   
     public class L2PLiteratureElementDataType
     {
         public string state;

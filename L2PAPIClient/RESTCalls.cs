@@ -377,19 +377,36 @@ namespace L2PAPIClient.api
             }
         }
 
-        public async static Task<L2PLiteratureViewDataType> L2PviewLiteratureAsync(string cid, int itemid)
-        {
+        //public async static Task<L2PLiteratureViewDataType> L2PviewLiteratureAsync(string cid, int itemid)
+        //{
+        //    try
+        //    {
+        //        await AuthenticationManager.CheckAccessTokenAsync();
+        //        string callURL = Config.L2PEndPoint + "/viewLiterature?accessToken=" + Config.getAccessToken() + "&cid=" + cid + "&itemid=" + itemid.ToString();
+
+        //        var answer = await RestCallAsync<L2PLiteratureViewDataType>("", callURL, false);
+        //        return answer;
+        //    }
+        //    catch
+        //    {
+        //        return new L2PLiteratureViewDataType();
+        //    }
+        //}
+
+        public async static Task<L2PLiteratureSetDataType> L2PviewLiteratureAsync(string cid, int itemid)
+        {//added 
             try
             {
                 await AuthenticationManager.CheckAccessTokenAsync();
                 string callURL = Config.L2PEndPoint + "/viewLiterature?accessToken=" + Config.getAccessToken() + "&cid=" + cid + "&itemid=" + itemid.ToString();
 
-                var answer = await RestCallAsync<L2PLiteratureViewDataType>("", callURL, false);
+
+                var answer = await RestCallAsync<L2PLiteratureSetDataType>("", callURL, false);
                 return answer;
             }
             catch
             {
-                return new L2PLiteratureViewDataType();
+                return new L2PLiteratureSetDataType();
             }
         }
 
@@ -398,7 +415,7 @@ namespace L2PAPIClient.api
             try
             {
                 await AuthenticationManager.CheckAccessTokenAsync();
-                string callURL = Config.L2PEndPoint + "/viewLiterature?accessToken=" + Config.getAccessToken() + "&cid=" + cid;
+                string callURL = Config.L2PEndPoint + "/viewAllLiterature?accessToken=" + Config.getAccessToken() + "&cid=" + cid; ///changed from view Literature to view all literature 
 
                 var answer = await RestCallAsync<L2PLiteratureSetDataType>("", callURL, false);
                 return answer;
@@ -468,6 +485,11 @@ namespace L2PAPIClient.api
             {
                 return new L2PCourseInfoSetData();
             }
+        }
+
+        public static Task L2PprovideAssignmentSolution(string cId, int assignID, string groupAlias, L2PAssignmentSolution sol)
+        {
+            throw new NotImplementedException();
         }
 
 

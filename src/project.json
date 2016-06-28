@@ -39,6 +39,7 @@
   "frameworks": {
     "dnx451": {
       "dependencies": {
+        "HtmlAgilityPack": "1.0.0-*",
         "ICSharpCode.SharpZipLib": "1.0.0-*",
         "L2PAPIClient": "1.0.0-*"
       },
