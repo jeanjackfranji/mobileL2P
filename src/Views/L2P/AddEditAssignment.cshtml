@@ -1,0 +1,150 @@
+﻿@using L2PAPIClient.DataModel
+@using Grp.L2PSite.MobileApp.Services
+@model AssignmentViewModel
+@{
+    L2PCourseInfoData course = ViewData["ChosenCourse"] as L2PCourseInfoData;
+
+    bool? isEditMode = ViewData["EditMode"] as bool?;
+    if (isEditMode.HasValue)
+    {
+        ViewData["Title"] = "Edit Assignment";
+    }
+    else
+    {
+        ViewData["Title"] = "Add Add Assignment";
+    }
+
+    string currentDirectory = ViewData["CurrentDirectory"] as string;
+}
+
+<nav>
+    <div class="nav-wrapper white">
+        <div class="col s12">
+            <a asp-controller="MyCourses" asp-action="WhatsNew" asp-route-cId="@course.uniqueid" class="breadcrumb blue-text" style="font-size: 12px; margin-left: 10px;">@Tools.truncateString(course.courseTitle, 20)</a>
+            <a asp-controller="MyCourses" asp-action="Assignment" asp-route-cId="@course.uniqueid" class="breadcrumb blue-text" style="font-size: 12px">Literature</a>
+            <a href="#!" class="breadcrumb blue-text" style="font-size: 12px">@(isEditMode.HasValue ? "Edit" : "Add")</a>
+        </div>
+    </div>
+</nav>
+<div class="row">
+    <form class="col s12" asp-controller="L2PAdd"
+          asp-action="AddAssignment" asp-route-cId="@course.uniqueid" method="post" role="form">
+        <div class="row">
+            <div asp-validation-summary="ValidationSummary.All"></div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12">
+                <input asp-for="Title" class="validate" type="text" />
+                <label asp-for="Title">Title*</label>
+                <span asp-validation-for="Title" class="red-text"></span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12">
+                <label asp-for="Description">Description</label>
+                <input asp-for="Description" class="validate" type="text" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12">
+                <input asp-for="groupSubmissionAllowed" type="checkbox" />
+                <label asp-for="groupSubmissionAllowed">Allow Group Submission</label>
+                <br />
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12">
+                <input asp-for="totalPoint" class="validate" type="number" />
+                <label asp-for="totalPoint">Total Point*</label>
+                <span asp-validation-for="totalPoint" class="red-text"></span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12">
+
+                <input type="date" class="datepicker" asp-for="assignmentPublishDate" />
+
+                <label asp-for="assignmentPublishDate">Publish Date</label>
+                <input id="pick-a-time" asp-for="assignmentPublishDatehours" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12">
+
+                <input type="date" class="datepicker" asp-for="DueDate" />
+                <label asp-for="DueDate">Due Date</label>
+                <input id="pick-a-time" asp-for="DueDatehours" />
+
+            </div>
+        </div>
+
+        @*<div id="newFileModal" >
+            <form asp-controller="L2P" asp-action="AddFile" asp-route-cId="@course.uniqueid" asp-route-ModelNb="0" asp-route-curDir="@currentDirectory" method="post" enctype="multipart/form-data">
+                <div class="modal-content">
+                    <h4>New File</h4>
+                    <div class="row">
+                        <p>Please choose a file to upload in learning materials</p>
+                        <div class="file-field input-field">
+                            <div class="btn blue">
+                                <span>Upload File</span>
+                                <input type="file" id="file" name="file">
+                            </div>
+                            <div class="file-path-wrapper">
+                                <input class="file-path validate" type="text">
+                            </div>
+                        </div>
+                    </div>
+                </div>*@
+
+
+                <div class="row">
+                    <div class="input-field col s12">
+
+                        <input type="date" class="datepicker" asp-for="solutionPublishDate" />
+                        <label asp-for="DueDate">Due Date</label>
+
+                        <input id="pick-a-time" asp-for="solutionPublishDatehours" />
+
+                    </div>
+                </div>
+
+
+                @*<div class="row">
+                    <div class="input-field col s12">
+                        <div class="file-field input-field">
+                            <div class="btn">
+                                <span>File</span>
+                                <input type="file">
+                            </div>
+                            <div class="file-path-wrapper">
+                                <input class="file-path validate" asp-for="AssignmentDocuments" type="text" placeholder="Upload one or more files"/>
+                                <label asp-for="AssignmentDocuments">Assignment Documents</label>
+                            </div>
+                        </div>
+                        </div>
+                    </div>*@
+
+
+
+                <div class="row">
+                    <button class="btn waves-effect waves-light" type="submit" name="action">
+                        Submit
+                        <i class="material-icons right">send</i>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+
+        <script>
+
+            $(function () {
+                $('#pick-a-time').lolliclock({ autoclose: true });
+            });
+
+            $('.datepicker').pickadate({
+                selectMonths: true, // Creates a dropdown to control month
+                selectYears: 16 // Creates a dropdown of 15 years to control year
+            });
+
+        </script>
