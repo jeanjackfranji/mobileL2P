@@ -28,7 +28,7 @@
             List<L2PAttachmentElement> fileInfo = assign.assignmentDocuments;
             L2PAssignmentCorrection corrInfo = assign.correction;
 
-            L2PAssignmentSolution soldoc = assign.solution ;
+            L2PAssignmentSolution soldoc = assign.solution;
 
             <div class="row">
                 <div class="col s12">
@@ -37,7 +37,7 @@
                         <tbody>
 
                             <tr>
-                                <td><b>Assignment Titel:</b></td>
+                                <td><b>Assignment Title:</b></td>
                                 <td>@assign.title</td>
                             </tr>
                             <tr>
@@ -111,7 +111,7 @@
                                     </tr>
                                     <tr>
                                         <td><b>Tutor Comment:</b></td>
-                                        <td>@corrInfo.tutorComment</td>
+                                        <td><p>@corrInfo.tutorComment</p></td>
                                     </tr>
                                     <tr>
                                         <td><b>Correction Document: </b></td>
@@ -146,21 +146,21 @@
                                     <td>
                                         @if (DateTime.Now > Tools.toDate(assign.dueDate))
                                         {
-                                           @if (soldoc != null)
-                                           {
-
-                                               List<L2PAttachmentElement> sodoc = soldoc.solutionDocuments ;
-
-                                            @foreach (L2PAttachmentElement s in sodoc)
+                                            @if (soldoc != null)
                                             {
 
-                                                <a asp-controller="MyCourses" asp-action="DownloadsUsingCID" asp-route-url="@s.downloadUrl" asp-route-filename="@s.fileName" asp-route-cId="@course.uniqueid">@s.fileName</a>
+                                                List<L2PAttachmentElement> sodoc = soldoc.solutionDocuments;
+
+                                                @foreach (L2PAttachmentElement s in sodoc)
+                                                {
+
+                                                    <a asp-controller="MyCourses" asp-action="DownloadsUsingCID" asp-route-url="@s.downloadUrl" asp-route-filename="@s.fileName" asp-route-cId="@course.uniqueid">@s.fileName</a>
                                                     <br />
                                                     @Tools.toDateTime(s.modifiedTimestamp)
                                                     <br />
 
+                                                }
                                             }
-                                           }
 
 
                                         }
@@ -184,7 +184,7 @@
                         <i class="material-icons">menu</i>
                     </a>
                     <ul>
-                       
+
                         <li><a href="#confirmModal" class="btn-floating waves-effect waves-light red modal-trigger"><i class="material-icons">delete</i></a></li>
                         <li><a asp-controller="L2P" asp-action="DeleteAssignment" asp-route-cId="@course.uniqueid" asp-route-aId="@assign.itemId-" class="btn-floating blue waves-effect waves-light"><i class="material-icons">mode_edit</i></a></li>
                     </ul>
@@ -198,7 +198,7 @@
                     </div>
                     <div class="modal-footer centered-content">
                         <a class="modal-action modal-close waves-effect waves-light btn-flat red white-text">No</a>
-                        <a asp-controller="L2P" asp-action="DeleteAssignment" asp-route-cId="@course.uniqueid" asp-route-aId="@assign.itemId"  class="modal-action modal-close waves-effect waves-light btn-flat green white-text ">Yes</a>
+                        <a asp-controller="L2P" asp-action="DeleteAssignment" asp-route-cId="@course.uniqueid" asp-route-aId="@assign.itemId" class="modal-action modal-close waves-effect waves-light btn-flat green white-text ">Yes</a>
                     </div>
                 </div>
             }
