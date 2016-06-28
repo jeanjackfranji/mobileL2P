@@ -121,7 +121,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
         }
 
         [HttpGet] // Get Method to show the shared documents material of a course.
-        public async Task<IActionResult> SharedDocuments(String cId, String ExtdDir)
+        public async Task<IActionResult> SharedDocuments(string cId, string ExtdDir, string msg)
         {
             try
             {
@@ -137,7 +137,6 @@ namespace Grp.L2PSite.MobileApp.Controllers
                     if (sdList.dataSet != null)
                     {
                         string sourceDirectory = "/" + course.semester + "/" + course.uniqueid + "/collaboration/Lists/SharedDocuments";
-                        sourceDirectory += ExtdDir;
                         if (ExtdDir != null)
                         {
                             var element = from elts in sdList.dataSet
@@ -153,7 +152,9 @@ namespace Grp.L2PSite.MobileApp.Controllers
                                         orderby elts.isDirectory descending
                                         select elts;
                         sharedDocuments = materials.ToList();
+                        ViewData["CurrentDirectory"] = sourceDirectory;
                     }
+                    ViewData["Message"] = msg;
                     ViewData["CourseSharedDocuments"] = sharedDocuments;
                     return View();
                 }
@@ -207,7 +208,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
         }
 
         [HttpGet] // Get Method to show the Media Library of a course.
-        public async Task<IActionResult> MediaLibrary(String cId, String ExtdDir)
+        public async Task<IActionResult> MediaLibrary(string cId, string ExtdDir, string msg)
         {
             try
             {
@@ -238,7 +239,9 @@ namespace Grp.L2PSite.MobileApp.Controllers
                                         orderby elts.isDirectory descending
                                         select elts;
                         mediaLibrary = materials.ToList();
+                        ViewData["CurrentDirectory"] = sourceDirectory;
                     }
+                    ViewData["Message"] = msg;
                     ViewData["CourseMediaLibrary"] = mediaLibrary;
                     return View();
                 }

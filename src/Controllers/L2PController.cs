@@ -127,7 +127,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
 
                     L2PCourseInfoData course = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
                     L2PRole userRole = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
-                    if (userRole != null && (userRole.role.Contains("manager") || userRole.role.Contains("tutors")))
+                    if (userRole != null && ((userRole.role.Contains("manager") || userRole.role.Contains("tutors")) || ModelNb == 2))
                     {
                         ViewData["ChosenCourse"] = course;
                         ViewData["userRole"] = userRole;
@@ -137,9 +137,18 @@ namespace Grp.L2PSite.MobileApp.Controllers
                             return RedirectToAction(nameof(MyCoursesController.LearningMaterials), "MyCourses", new { cId = cId, ExtdDir = currentFolder, @msg = "Invalid Folder Name!" });
                         }
 
-                        //ModelID (0 = Learning Material, 1 = Media Library, 2 = SharedDocuments
                         await L2PAPIClient.api.Calls.L2PCreateFolder(cId, ModelNb, model.Name, curDir);
-                        return RedirectToAction(nameof(MyCoursesController.LearningMaterials), "MyCourses", new { cId = cId, ExtdDir = currentFolder, @msg = "Folder was successfully added!" });
+
+                        //moduleNb (0 = Learning Material, 1 = Media Library, 2 = SharedDocuments
+                        ModuleNumber module = (ModuleNumber)Enum.ToObject(typeof(ModuleNumber), ModelNb);
+                        string actionName = nameof(MyCoursesController.SharedDocuments);
+
+                        if (module == ModuleNumber.LearningMaterials)
+                            actionName = nameof(MyCoursesController.LearningMaterials);
+                        else if (module == ModuleNumber.MediaLibrary)
+                            actionName = nameof(MyCoursesController.MediaLibrary);
+
+                        return RedirectToAction(actionName, "MyCourses", new { cId = cId, ExtdDir = currentFolder, @msg = "Folder was successfully added!" });
                     }
                     else
                     {
@@ -166,7 +175,6 @@ namespace Grp.L2PSite.MobileApp.Controllers
         {
             try
             {
-
                 // This method must be used before every L2P API call
                 Tools.getAndSetUserToken(Request.Cookies, Context);
                 if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
@@ -177,39 +185,54 @@ namespace Grp.L2PSite.MobileApp.Controllers
                     else if (curDir != null && curDir.Length > 0)
                         currentFolder = curDir;
 
+                    //moduleNb (0 = Learning Material, 1 = Media Library, 2 = SharedDocuments
+                    ModuleNumber module = (ModuleNumber)Enum.ToObject(typeof(ModuleNumber), ModelNb);
                     L2PCourseInfoData course = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
                     L2PRole userRole = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
-                    if (userRole != null && (userRole.role.Contains("manager") || userRole.role.Contains("tutors")))
+                    if (userRole != null && ((userRole.role.Contains("manager") || userRole.role.Contains("tutors")) || ModelNb == 2))
                     {
                         ViewData["ChosenCourse"] = course;
                         ViewData["userRole"] = userRole;
 
                         if (file == null) // Check if the model was filled correctly (Always add)
                         {
-                            return RedirectToAction(nameof(MyCoursesController.LearningMaterials), "MyCourses", new { cId = cId, ExtdDir = currentFolder, @msg = "No file was selected!" });
+                            if (module == ModuleNumber.LearningMaterials)
+                                return RedirectToAction(nameof(MyCoursesController.LearningMaterials), "MyCourses", new { cId = cId, ExtdDir = currentFolder, @msg = "No file was selected!" });
+                            else if (module == ModuleNumber.MediaLibrary)
+                                return RedirectToAction(nameof(MyCoursesController.MediaLibrary), "MyCourses", new { cId = cId, ExtdDir = currentFolder, @msg = "No file was selected!" });
+                            else if (module == ModuleNumber.SharedDocuments)
+                                return RedirectToAction(nameof(MyCoursesController.SharedDocuments), "MyCourses", new { cId = cId, ExtdDir = currentFolder, @msg = "No file was selected!" });
                         }
 
-                        //moduleNb (0 = Learning Material, 1 = Media Library, 2 = SharedDocuments
-                        ModuleNumber module = (ModuleNumber)Enum.ToObject(typeof(ModuleNumber), ModelNb);
-                        if(module == ModuleNumber.LearningMaterials)
-                        {
-                            L2PUploadRequest data = new L2PUploadRequest();
-                            data.fileName = ContentDispositionHeaderValue
-                                .Parse(file.ContentDisposition)
-                                .FileName
-                                .Trim('"');// FileName returns "fileName.ext"(with double quotes) in beta 3
-                            
-                            using (System.IO.Stream stream = file.OpenReadStream()) {
-                                byte[] buffer = new byte[stream.Length];
-                                await stream.ReadAsync(buffer, 0, (int)stream.Length);
-                                data.stream = Convert.ToBase64String(buffer);
-                            }
+                        L2PUploadRequest data = new L2PUploadRequest();
+                        data.fileName = ContentDispositionHeaderValue
+                            .Parse(file.ContentDisposition)
+                            .FileName
+                            .Trim('"');// FileName returns "fileName.ext"(with double quotes) in beta 3
 
+                        using (System.IO.Stream stream = file.OpenReadStream())
+                        {
+                            byte[] buffer = new byte[stream.Length];
+                            await stream.ReadAsync(buffer, 0, (int)stream.Length);
+                            data.stream = Convert.ToBase64String(buffer);
+                        }
+
+                        if (module == ModuleNumber.LearningMaterials)
+                        {
                             await L2PAPIClient.api.Calls.L2PuploadInLearningMaterials(cId, curDir, data);
                             return RedirectToAction(nameof(MyCoursesController.LearningMaterials), "MyCourses", new { cId = cId, ExtdDir = currentFolder, @msg = "File was successfully added!" });
                         }
-                        return RedirectToAction(nameof(MyCoursesController.LearningMaterials), "MyCourses", new { cId = cId, ExtdDir = currentFolder, @msg = "File was successfully added!" });
-
+                        else if (module == ModuleNumber.MediaLibrary)
+                        {
+                            await L2PAPIClient.api.Calls.L2PuploadInMediaLibrary(cId, curDir, data);
+                            return RedirectToAction(nameof(MyCoursesController.MediaLibrary), "MyCourses", new { cId = cId, ExtdDir = currentFolder, @msg = "File was successfully added!" });
+                        }
+                        else if (module == ModuleNumber.SharedDocuments)
+                        {
+                            await L2PAPIClient.api.Calls.L2PuploadInSharedDocuments(cId, curDir, data);
+                            return RedirectToAction(nameof(MyCoursesController.SharedDocuments), "MyCourses", new { cId = cId, ExtdDir = currentFolder, @msg = "File was successfully added!" });
+                        }
+                        return RedirectToAction(nameof(MyCoursesController.WhatsNew), "MyCourses", new { cId = cId});
                     }
                     else
                     {
@@ -471,8 +494,8 @@ namespace Grp.L2PSite.MobileApp.Controllers
                     if (userRole != null && (userRole.role.Contains("manager") || userRole.role.Contains("tutors")))
                     {
                         LMIds = LMIds.TrimEnd('-');
-                        string[] hyperlinkIds = LMIds.Split('-');
-                        foreach (string hId in hyperlinkIds)
+                        string[] lrnMaterialIds = LMIds.Split('-');
+                        foreach (string hId in lrnMaterialIds)
                         {
                             int id = -1;
                             int.TryParse(hId, out id);
@@ -483,6 +506,122 @@ namespace Grp.L2PSite.MobileApp.Controllers
                     else
                     {
                         string errorMessage = "You do not have the sufficient rights to delete hyperlinks";
+                        return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
+                    }
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
+        }
+
+        // Get Method to delete MediaLibrary in a course
+        // GET: /L2P/DeleteMediaLibrary
+        [HttpGet]
+        public async Task<IActionResult> DeleteMediaLibrary(string cId, string MLIds, string curDir)
+        {
+            try
+            {
+                string currentFolder = null;
+                if (curDir != null && curDir.Contains("/"))
+                    currentFolder = curDir.Substring(curDir.LastIndexOf('/') + 1);
+                else if (curDir != null && curDir.Length > 0)
+                    currentFolder = curDir;
+
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context))
+                {
+                    if (String.IsNullOrEmpty(cId))
+                    {
+                        string errorMessage = "You were redirected to this page with missing parameters.<br/> Please go back to the home page and try again.";
+                        return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
+                    }
+                    else if (String.IsNullOrEmpty(MLIds))
+                    {
+                        return RedirectToAction(nameof(MyCoursesController.MediaLibrary), "MyCourses", new { @cId = cId });
+                    }
+
+                    L2PCourseInfoData course = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    L2PRole userRole = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
+                    if (userRole != null && (userRole.role.Contains("manager") || userRole.role.Contains("tutors")))
+                    {
+                        MLIds = MLIds.TrimEnd('-');
+                        string[] mediaIds = MLIds.Split('-');
+                        foreach (string mId in mediaIds)
+                        {
+                            int id = -1;
+                            int.TryParse(mId, out id);
+                            await L2PAPIClient.api.Calls.L2PDeleteMediaLibrary(cId, id);
+                        }
+                        return RedirectToAction(nameof(MyCoursesController.MediaLibrary), "MyCourses", new { @cId = cId, @ExtdDir = currentFolder, @msg = "Media(s)/Folder(s) successfully deleted!" });
+                    }
+                    else
+                    {
+                        string errorMessage = "You do not have the sufficient rights to delete media in media library.";
+                        return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
+                    }
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
+        }
+
+        // Get Method to delete Shared Documents in a course
+        // GET: /L2P/DeleteSharedDocuments
+        [HttpGet]
+        public async Task<IActionResult> DeleteSharedDocuments(string cId, string SDIds, string curDir)
+        {
+            try
+            {
+                string currentFolder = null;
+                if (curDir != null && curDir.Contains("/"))
+                    currentFolder = curDir.Substring(curDir.LastIndexOf('/') + 1);
+                else if (curDir != null && curDir.Length > 0)
+                    currentFolder = curDir;
+
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context))
+                {
+                    if (String.IsNullOrEmpty(cId))
+                    {
+                        string errorMessage = "You were redirected to this page with missing parameters.<br/> Please go back to the home page and try again.";
+                        return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
+                    }
+                    else if (String.IsNullOrEmpty(SDIds))
+                    {
+                        return RedirectToAction(nameof(MyCoursesController.MediaLibrary), "MyCourses", new { @cId = cId });
+                    }
+
+                    L2PCourseInfoData course = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    L2PRole userRole = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
+                    if (userRole != null && (userRole.role.Contains("manager") || userRole.role.Contains("tutors") || userRole.role.Contains("students") || userRole.role.Contains("extra")))
+                    {
+                        SDIds = SDIds.TrimEnd('-');
+                        string[] mediaIds = SDIds.Split('-');
+                        foreach (string mId in mediaIds)
+                        {
+                            int id = -1;
+                            int.TryParse(mId, out id);
+                            await L2PAPIClient.api.Calls.L2PDeleteSharedDocument(cId, id);
+                        }
+                        return RedirectToAction(nameof(MyCoursesController.SharedDocuments), "MyCourses", new { @cId = cId, @ExtdDir = currentFolder, @msg = "Shared Document(s)/Folder(s) successfully deleted!" });
+                    }
+                    else
+                    {
+                        string errorMessage = "You do not have the sufficient rights to delete shared documents";
                         return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
                     }
                 }
