@@ -84,23 +84,24 @@ namespace Grp.L2PSite.MobileApp.Models
         [Display(Name = "Assignment Title")]
         public string Title { get; set; }
 
+        [Required]
         [StringLength(200)]
         [Display(Name = "Description")]
         public string Description { get; set; }
 
         [Display(Name = "Allow Group Submission")]
-        public bool groupSubmissionAllowed { get; set; }
+        public string groupSubmissionAllowed { get; set; }
 
         [Required]
         [Display(Name = "Total Point")]
         public double totalPoint { get; set; }
 
-
+        [Required]
         [StringLength(50)]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         [Display(Name = "Due Date")]
         public string DueDate { get; set; }
-
+        [Required]
         [StringLength(50)]
         [DisplayFormat(DataFormatString = "{0:hh:mm}", ApplyFormatInEditMode = true)]
         //[Display(Name = "Due Date Hours")]
@@ -136,7 +137,7 @@ namespace Grp.L2PSite.MobileApp.Models
         [Display(Name = "Sample Solution")]
         public string SampleSolution { get; set; }
 
-
+        public int itemId{ get;set;}
 
     }
 

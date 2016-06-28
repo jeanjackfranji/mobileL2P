@@ -629,9 +629,9 @@ namespace L2PAPIClient.DataModel
 
     public class L2PAddAssignmentRequest : L2PBaseRequestData
     {
-        public long duedate;
-        public bool groupsubmissionallowed;
-        public double totalmarks;
+        public long  dueDate;
+        public bool groupSubmissionAllowed;
+        public double totalMarks; //changed from totalmark to totalPoint
         public string description;
         public string title;
     }

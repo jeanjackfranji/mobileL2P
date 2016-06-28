@@ -22,4 +22,3 @@ C:\Users\amarb\OneDrive\Documents\Visual Studio 2015\Projects\mobileL2P\L2PAPICl
 C:\Users\amarb\OneDrive\Documents\Visual Studio 2015\Projects\mobileL2P\L2PAPIClient\bin\Debug\L2PAPIClient.pdb
 C:\Users\amarb\OneDrive\Documents\Visual Studio 2015\Projects\mobileL2P\L2PAPIClient\obj\Debug\L2PAPIClient.dll
 C:\Users\amarb\OneDrive\Documents\Visual Studio 2015\Projects\mobileL2P\L2PAPIClient\obj\Debug\L2PAPIClient.pdb
-C:\Users\amarb\OneDrive\Documents\Visual Studio 2015\Projects\mobileL2P\L2PAPIClient\obj\Debug\L2PAPIClient.csprojResolveAssemblyReference.cache
