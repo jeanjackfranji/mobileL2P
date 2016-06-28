@@ -7,6 +7,8 @@ using Grp.L2PSite.MobileApp.Models;
 using Microsoft.AspNet.Http;
 using static Grp.L2PSite.MobileApp.Services.Tools;
 using Microsoft.Net.Http.Headers;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Grp.L2PSite.MobileApp.Controllers
 {
@@ -698,9 +700,9 @@ namespace Grp.L2PSite.MobileApp.Controllers
                         L2PAddAnnouncementRequest newAnnouncement = new L2PAddAnnouncementRequest();
                         newAnnouncement.title = model.title;
                         newAnnouncement.body = model.body;
-                        
-                       
-                        await L2PAPIClient.api.Calls.L2PAddAnnouncement(cId, newAnnouncement);
+
+
+                        L2PAddUpdateResponse response = await L2PAPIClient.api.Calls.L2PAddAnnouncement(cId, newAnnouncement);
                         
                         if (file != null)
                         {
@@ -717,22 +719,13 @@ namespace Grp.L2PSite.MobileApp.Controllers
                                 await stream.ReadAsync(buffer, 0, (int)stream.Length);
                                 data.stream = Convert.ToBase64String(buffer);
                             }
-                           L2PAnnouncementList aList = await L2PAPIClient.api.Calls.L2PviewAllAnnouncements(cId);
-                            List<L2PAnnouncementElement> announcements = new List<L2PAnnouncementElement>();
-                            if (aList.dataSet != null)
+                            
+                            L2PAnnouncementList elem = await L2PAPIClient.api.Calls.L2PviewAnnouncement(cId, response.itemId);
+                            if(elem.dataSet != null && elem.dataSet.Any())
                             {
-                                announcements = aList.dataSet;
-
+                                await L2PAPIClient.api.Calls.L2PuploadInAnnouncements(cId, elem.dataSet.First().attachmentDirectory, data);
+                               
                             }
-                            int i = 0;
-                            L2PAnnouncementElement lastAnnouncement = new L2PAnnouncementElement();
-                            foreach(L2PAnnouncementElement a in announcements){
-                                lastAnnouncement = a;
-                            }
-                           
-
-                            await L2PAPIClient.api.Calls.L2PuploadInAnnouncements(cId, lastAnnouncement.attachmentDirectory, data);
-
                         }
                         return RedirectToAction(nameof(MyCoursesController.Announcement), "MyCourses", new { cId = cId, @msg = "Announcement was successfully added!" });
                     }

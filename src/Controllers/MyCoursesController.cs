@@ -338,8 +338,9 @@ namespace Grp.L2PSite.MobileApp.Controllers
         {
             try
             {
-
-                string callURL = Config.L2PEndPoint + "/downloadFile/" + filename + "?accessToken=" + Config.getAccessToken() + "&cid=" + cId + "&downloadUrl=|" + url;
+                if (filename != null && !filename.StartsWith("|"))
+                    filename = "|" + filename;
+                string callURL = Config.L2PEndPoint + "/downloadFile/" + filename + "?accessToken=" + Config.getAccessToken() + "&cid=" + cId + "&downloadUrl=" + url;
                 HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(callURL);
                 myHttpWebRequest.MaximumAutomaticRedirections = 1;
                 myHttpWebRequest.AllowAutoRedirect = true;
