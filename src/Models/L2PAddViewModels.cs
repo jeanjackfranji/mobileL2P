@@ -1,8 +1,4 @@
-﻿using L2PAPIClient.DataModel;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.IO;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Grp.L2PSite.MobileApp.Models
 {
@@ -47,8 +43,8 @@ namespace Grp.L2PSite.MobileApp.Models
         [Display(Name = "Remember me?")]
         public bool RememberMe { get; set; }
     }
-	
-	 public class AnnouncementViewModel
+
+    public class AnnouncementViewModel
     {
         [Required]
         [StringLength(100)]
@@ -58,9 +54,9 @@ namespace Grp.L2PSite.MobileApp.Models
         [StringLength(100)]
         public string body { get; set; }
 
-        public string folderName {get; set; }
+        public string folderName { get; set; }
         public int itemId { get; set; }
-        
+
     }
 
     public class EmailViewModel
@@ -75,14 +71,14 @@ namespace Grp.L2PSite.MobileApp.Models
 
         [Required]
         public string recipients { get; set; }
-        
+
         public string cc { get; set; }
         public string sender { get; set; }
         public int itemId { get; set; }
     }
-public class AssignmentViewModel
+    public class AssignmentViewModel
     {
-        
+
         [Required]
         [StringLength(100)]
         [Display(Name = "Assignment Title")]
@@ -120,7 +116,7 @@ public class AssignmentViewModel
         //[Display(Name = "Due Date Hours")]
         public string assignmentPublishDatehours { get; set; }
 
-        
+
         [DataType(DataType.Url)]
         [Display(Name = "Assignment Documents")]
         public string AssignmentDocuments { get; set; }

@@ -17,14 +17,16 @@ using System.Threading;
 
 namespace Grp.L2PSite.MobileApp.Controllers
 {
+    public class MyCoursesController : Controller
     {
+
         private readonly IApplicationEnvironment _appEnvironment;
 
         public MyCoursesController(IApplicationEnvironment appEnvironment)
         {
             _appEnvironment = appEnvironment;
         }
-    
+
         [HttpGet] // Get Method to retrieve the course What's New Page
         public async Task<IActionResult> WhatsNew(String cId)
         {
@@ -101,7 +103,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
                     {
 
                         string sourceDirectory = "/" + course.semester + "/" + course.uniqueid + "/Lists/StructuredMaterials";
-                        if(ExtdDir != null)
+                        if (ExtdDir != null)
                         {
                             var element = from elts in lmList.dataSet
                                           where elts.isDirectory == true && elts.name.Equals(ExtdDir)
@@ -181,7 +183,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
             catch (Exception ex)
             {
                 return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
-            }            
+            }
         }
 
         [HttpGet] // Get Method to show all the hyperlinks of a course
@@ -217,9 +219,11 @@ namespace Grp.L2PSite.MobileApp.Controllers
             }
         }
 
-        public IActionResult Literature(){
+        [HttpGet] // Get Method to show all the hyperlinks of a course
+        public async Task<IActionResult> Literature(String cId)
+        {
 
-try
+            try
             {
                 // This method must be used before every L2P API call
                 Tools.getAndSetUserToken(Request.Cookies, Context);
@@ -228,8 +232,8 @@ try
                     ViewData["ChosenCourse"] = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
                     ViewData["userRole"] = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
                     L2PLiteratureSetDataType LList = await L2PAPIClient.api.Calls.L2PviewAllLiteratureAsync(cId);
-                   // L2PLiteratureViewDataType LVList = new L2PLiteratureViewDataType();
-                 
+                    // L2PLiteratureViewDataType LVList = new L2PLiteratureViewDataType();
+
                     List<L2PLiteratureElementDataType> literatures = new List<L2PLiteratureElementDataType>();
                     if (LList != null)
                     {
@@ -250,8 +254,6 @@ try
             }
 
         }
-
-}
 
 
         [HttpGet] // Get Method to show all the hyperlinks of a course
@@ -337,7 +339,7 @@ try
                 return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
             }
         }
-		 public async Task<IActionResult> Announcement(String cId)
+        public async Task<IActionResult> Announcement(String cId)
         {
             try
             {
@@ -468,7 +470,7 @@ try
                 }
 
                 string tempFilePath = Path.GetTempPath() + "Grp.L2PSite.MobileApp" + DateTime.Now.ToString("dd.MM.yyyy.hh_mm_ss");
-                string tempDownloadFilesPath = tempFilePath  + "/downloadFiles/";
+                string tempDownloadFilesPath = tempFilePath + "/downloadFiles/";
                 string tempZipPath = tempFilePath + "/downloadZip/";
 
                 if (!Directory.Exists(tempDownloadFilesPath))
@@ -514,7 +516,8 @@ try
                     zipStream.Close();
 
                     //Wait 10 seconds to delete the files in temp folder
-                    Task t = Task.Run(async delegate {
+                    Task t = Task.Run(async delegate
+                    {
                         await Task.Delay(TimeSpan.FromSeconds(10));
                         Directory.Delete(tempDownloadFilesPath, true);
                         Directory.Delete(tempZipPath, true);
@@ -532,7 +535,7 @@ try
             }
         }
 
-[HttpGet] // Get Method to show specific assignments
+        [HttpGet] // Get Method to show specific assignments
         public async Task<IActionResult> ViewAssignment(String cId, string aid)
         {
             try
@@ -548,9 +551,9 @@ try
                     List<L2PAssignmentElement> assignments = new List<L2PAssignmentElement>();
                     if (assnList.dataSet != null)
                     {
-                        
+
                         assignments = assnList.dataSet;
-               
+
                     }
                     ViewData["ViewAssignment"] = assignments;
                     return View();
@@ -564,7 +567,7 @@ try
             {
                 return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
             }
-}
+        }
 
     }
 }
