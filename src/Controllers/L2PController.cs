@@ -635,6 +635,556 @@ namespace Grp.L2PSite.MobileApp.Controllers
                 return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
             }
         }
+// Get Method to add a new Announcement in a course
+        // GET: /L2P/AddAnnouncement
+        [HttpGet]
+        public async Task<IActionResult> AddAnnouncement(string cId)
+        {
+            try
+            {
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
+                {
+                    L2PCourseInfoData course = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    L2PRole userRole = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
+                    if (userRole != null && (userRole.role.Contains("manager") || userRole.role.Contains("tutors")))
+                    {
+                        ViewData["ChosenCourse"] = course;
+                        ViewData["userRole"] = userRole;
+                        return View("~/Views/L2P/AddEditAnnouncement.cshtml");
+                    }
+                    else
+                    {
+                        string errorMessage = "You do not have the sufficient rights to add an announcement";
+                        return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
+                    }
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
+        }
 
+        // Post Method to add a new Announcement in a course
+        // POST: /L2P/AddAnnouncement?
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddAnnouncement(AnnouncementViewModel model, string cId, IFormFile file)
+        {
+            try
+            {
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
+                {
+                    L2PCourseInfoData course = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    L2PRole userRole = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
+                    if (userRole != null && (userRole.role.Contains("manager") || userRole.role.Contains("tutors")))
+                    {
+                        ViewData["ChosenCourse"] = course;
+                        ViewData["userRole"] = userRole;
+
+                        if (!ModelState.IsValid) // Check if the model was filled correctly (Always add)
+                        {
+                            return View("~/Views/L2P/AddEditAnnouncement.cshtml", model);
+                        }
+                       
+                        L2PAddAnnouncementRequest newAnnouncement = new L2PAddAnnouncementRequest();
+                        newAnnouncement.title = model.title;
+                        newAnnouncement.body = model.body;
+                        
+                       
+                        await L2PAPIClient.api.Calls.L2PAddAnnouncement(cId, newAnnouncement);
+                        
+                        if (file != null)
+                        {
+
+                            L2PUploadRequest data = new L2PUploadRequest();
+                            data.fileName = ContentDispositionHeaderValue
+                                .Parse(file.ContentDisposition)
+                                .FileName
+                                .Trim('"');// FileName returns "fileName.ext"(with double quotes) in beta 3
+
+                            using (System.IO.Stream stream = file.OpenReadStream())
+                            {
+                                byte[] buffer = new byte[stream.Length];
+                                await stream.ReadAsync(buffer, 0, (int)stream.Length);
+                                data.stream = Convert.ToBase64String(buffer);
+                            }
+                           L2PAnnouncementList aList = await L2PAPIClient.api.Calls.L2PviewAllAnnouncements(cId);
+                            List<L2PAnnouncementElement> announcements = new List<L2PAnnouncementElement>();
+                            if (aList.dataSet != null)
+                            {
+                                announcements = aList.dataSet;
+
+                            }
+                            int i = 0;
+                            L2PAnnouncementElement lastAnnouncement = new L2PAnnouncementElement();
+                            foreach(L2PAnnouncementElement a in announcements){
+                                lastAnnouncement = a;
+                            }
+                           
+
+                            await L2PAPIClient.api.Calls.L2PuploadInAnnouncements(cId, lastAnnouncement.attachmentDirectory, data);
+
+                        }
+                        return RedirectToAction(nameof(MyCoursesController.Announcement), "MyCourses", new { cId = cId, @msg = "Announcement was successfully added!" });
+                    }
+                    else
+                    {
+                        string errorMessage = "You do not have the sufficient rights to add an announcement";
+                        return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
+                    }
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
+        }
+
+        // View Announcement with Privilege Validation
+        // GET: /L2P/ShowAnnouncement?
+        [HttpGet]
+        public async Task<IActionResult> ShowAnnouncement(string cId, int hId)
+        {
+            try
+            {
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
+                {
+                    ViewData["ChosenCourse"] = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    ViewData["userRole"] = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
+
+                    L2PAnnouncementList aList = await L2PAPIClient.api.Calls.L2PviewAnnouncement(cId, hId);
+                    if (aList != null)
+                    {
+                        AnnouncementViewModel model = new AnnouncementViewModel();
+                        foreach (L2PAnnouncementElement announcement in aList.dataSet)
+                        {
+                            model.title = announcement.title;
+                            model.body = announcement.body;
+                            model.itemId = announcement.itemId;
+                            model.folderName = announcement.attachmentDirectory;
+                            ViewData["attachments"] = announcement.attachments;
+                        }
+                        ViewData["AnnouncementModel"] = model;
+                        
+                        return View();
+                    }
+                    else
+                    {
+                        string errorMessage = "The Announcement you are trying to view does not exist.";
+                        return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
+                    }
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
+        }
+
+        // Get Method to Edit a Announcement in a course
+        // GET: /L2P/EditAnnouncement
+        [HttpGet]
+        public async Task<IActionResult> EditAnnouncement(string cId, int hId)
+        {
+            try
+            {
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
+                {
+                    L2PCourseInfoData course = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    L2PRole userRole = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
+                    if (userRole != null && (userRole.role.Contains("manager") || userRole.role.Contains("tutors")))
+                    {
+                        L2PAnnouncementList aList = await L2PAPIClient.api.Calls.L2PviewAnnouncement(cId, hId);
+                        if (aList != null)
+                        {
+
+                            HtmlConverter con = new HtmlConverter();
+                            AnnouncementViewModel model = new AnnouncementViewModel();
+                            foreach (L2PAnnouncementElement announcement in aList.dataSet)
+                            {
+                                model.title = announcement.title;
+                                model.body = con.ConvertHtml(announcement.body);
+                                model.itemId = announcement.itemId;
+                            }
+                            ViewData["EditMode"] = true;
+                            ViewData["ChosenCourse"] = course;
+                            ViewData["userRole"] = userRole;
+                            return View("~/Views/L2P/AddEditAnnouncement.cshtml", model);
+                        }
+                        else
+                        {
+                            string errorMessage = "The Announcement you are trying to view does not exist.";
+                            return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
+                        }
+                    }
+                    else
+                    {
+                        string errorMessage = "You do not have the sufficient rights to edit this announcement";
+                        return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
+                    }
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
+        }
+
+        // POST Method to Edit a Hyperlink in a course
+        // POST: /L2P/EditAnnouncement
+        [HttpPost]
+        public async Task<IActionResult> EditAnnouncement(AnnouncementViewModel model, string cId, IFormFile file)
+        {
+            try
+            {
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
+                {
+                    L2PCourseInfoData course = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    L2PRole userRole = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
+                    if (userRole != null && (userRole.role.Contains("manager") || userRole.role.Contains("tutors")))
+                    {
+                        ViewData["ChosenCourse"] = course;
+                        ViewData["userRole"] = userRole;
+
+                        if (!ModelState.IsValid) // Check if the model was filled correctly (Always add)
+                        {
+                            return View("~/Views/L2P/AddEditAnnouncement.cshtml", model);
+                        }
+                      
+                        L2PAddAnnouncementRequest editAnnouncement = new L2PAddAnnouncementRequest();
+                        editAnnouncement.title = model.title;
+                        editAnnouncement.body = model.body;
+                        
+
+                        await L2PAPIClient.api.Calls.L2PupdateAnnouncement(cId, model.itemId, editAnnouncement);
+                        if (file != null)
+                        {
+
+                            L2PUploadRequest data = new L2PUploadRequest();
+                            data.fileName = ContentDispositionHeaderValue
+                                .Parse(file.ContentDisposition)
+                                .FileName
+                                .Trim('"');// FileName returns "fileName.ext"(with double quotes) in beta 3
+
+                            using (System.IO.Stream stream = file.OpenReadStream())
+                            {
+                                byte[] buffer = new byte[stream.Length];
+                                await stream.ReadAsync(buffer, 0, (int)stream.Length);
+                                data.stream = Convert.ToBase64String(buffer);
+                            }
+
+                            String currDir = "/" + course.semester + "/" + cId + "/" + "Lists/AnnouncementDocuments/A" + model.itemId;
+                            await L2PAPIClient.api.Calls.L2PuploadInAnnouncements(cId, currDir , data);
+
+                        }
+
+                        return RedirectToAction(nameof(MyCoursesController.Announcement), "MyCourses", new { cId = cId, @msg = "Announcement was successfully edited!" });
+                    }
+                    else
+                    {
+                        string errorMessage = "You do not have the sufficient rights to edit a announcement";
+                        return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
+                    }
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
+        }
+
+        // Get Method to add a new Announcement in a course
+        // GET: /L2P/DeleteAnnouncements
+        [HttpGet]
+        public async Task<IActionResult> DeleteAnnouncements(string cId, string hIds)
+        {
+            try
+            {
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context))
+                {
+                    if (String.IsNullOrEmpty(cId))
+                    {
+                        string errorMessage = "You were redirected to this page with missing parameters.<br/> Please go back to the home page and try again.";
+                        return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
+                    }
+                    else if (String.IsNullOrEmpty(hIds))
+                    {
+                        return RedirectToAction(nameof(MyCoursesController.Announcement), "MyCourses", new { @cId = cId });
+                    }
+
+                    L2PCourseInfoData course = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    L2PRole userRole = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
+                    if (userRole != null && (userRole.role.Contains("manager") || userRole.role.Contains("tutors")))
+                    {
+                        hIds = hIds.TrimEnd('-');
+                        string[] announcementIds = hIds.Split('-');
+                        foreach (string hId in announcementIds)
+                        {
+                            int id = -1;
+                            int.TryParse(hId, out id);
+                            await L2PAPIClient.api.Calls.L2PDeleteAnnouncement(cId, id);
+                        }
+                        return RedirectToAction(nameof(MyCoursesController.Announcement), "MyCourses", new { @cId = cId, @msg = "Hyperlinks(s) successfully deleted!" });
+                    }
+                    else
+                    {
+                        string errorMessage = "You do not have the sufficient rights to delete announcements";
+                        return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
+                    }
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
+        }
+        // Get Method to add a new Email in a course
+        // GET: /L2P/AddEmail
+        [HttpGet]
+        public async Task<IActionResult> AddEmail(string cId)
+        {
+            try
+            {
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
+                {
+                    L2PCourseInfoData course = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    L2PRole userRole = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
+                    if (userRole != null && (userRole.role.Contains("manager") || userRole.role.Contains("tutors")))
+                    {
+                        ViewData["ChosenCourse"] = course;
+                        ViewData["userRole"] = userRole;
+                        return View("~/Views/L2P/AddEmail.cshtml");
+                    }
+                    else
+                    {
+                        string errorMessage = "You do not have the sufficient rights to add an email";
+                        return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
+                    }
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
+        }
+
+        // Post Method to add a new Email in a course
+        // POST: /L2P/AddEmail?
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddEmail(EmailViewModel model, string cId, IFormFile file)
+        {
+            try
+            {
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
+                {
+                    L2PCourseInfoData course = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    L2PRole userRole = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
+                   
+                    if (userRole != null && (userRole.role.Contains("manager") || userRole.role.Contains("tutors")))
+                    {
+                        ViewData["ChosenCourse"] = course;
+                        ViewData["userRole"] = userRole;
+
+                        if (!ModelState.IsValid) // Check if the model was filled correctly (Always add)
+                        {
+                            return View("~/Views/L2P/AddEmail.cshtml", model);
+                        }
+
+                        L2PAddEmailRequest newEmail = new L2PAddEmailRequest();
+                        newEmail.body = model.body;
+                        if (model.cc != null)
+                            newEmail.cc = model.cc;
+                        newEmail.recipients = model.recipients;
+
+                     
+                        if (file != null)
+                        {
+
+                            L2PUploadRequest data = new L2PUploadRequest();
+                            data.fileName = ContentDispositionHeaderValue
+                                .Parse(file.ContentDisposition)
+                                .FileName
+                                .Trim('"');// FileName returns "fileName.ext"(with double quotes) in beta 3
+
+                            using (System.IO.Stream stream = file.OpenReadStream())
+                            {
+                                byte[] buffer = new byte[stream.Length];
+                                await stream.ReadAsync(buffer, 0, (int)stream.Length);
+                                data.stream = Convert.ToBase64String(buffer);
+                            }
+
+                            List<L2PUploadRequest> listOfUploads = new List<L2PUploadRequest>();
+                            listOfUploads.Add(data);
+                            newEmail.attachmentsToUpload = listOfUploads;
+                        }
+                        await L2PAPIClient.api.Calls.L2PAddEmail(cId, newEmail);
+
+                        return RedirectToAction(nameof(MyCoursesController.Email), "MyCourses", new { cId = cId, @msg = "Email was successfully added!" });
+                    }
+                    else
+                    {
+                        string errorMessage = "You do not have the sufficient rights to add an Email";
+                        return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
+                    }
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
+        }
+
+        // View Email with Privilege Validation
+        // GET: /L2P/ShowEmail?
+        [HttpGet]
+        public async Task<IActionResult> ShowEmail(string cId, int hId)
+        {
+            try
+            {
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
+                {
+                    ViewData["ChosenCourse"] = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    ViewData["userRole"] = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
+
+                    L2PEmailList eList = await L2PAPIClient.api.Calls.L2PviewEmail(cId, hId);
+                    if (eList != null)
+                    {
+                        EmailViewModel model = new EmailViewModel();
+                        foreach (L2PEmailElement email in eList.dataSet)
+                        {
+                            model.recipients = email.recipients;
+                            model.body = email.body;
+                            model.itemId = email.itemId;
+                            model.cc = email.cc;
+                            model.sender = email.from;
+                            model.subject = email.subject;
+                            ViewData["attachments"] = email.attachments;
+                        }
+                        ViewData["EmailModel"] = model;
+
+                        return View();
+                    }
+                    else
+                    {
+                        string errorMessage = "The Email you are trying to view does not exist.";
+                        return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
+                    }
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
+        }
+
+
+
+        // Get Method to delete Emails in a course
+        // GET: /L2P/DeleteEmails
+        [HttpGet]
+        public async Task<IActionResult> DeleteEmails(string cId, string hIds)
+        {
+            try
+            {
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context))
+                {
+                    if (String.IsNullOrEmpty(cId))
+                    {
+                        string errorMessage = "You were redirected to this page with missing parameters.<br/> Please go back to the home page and try again.";
+                        return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
+                    }
+                    else if (String.IsNullOrEmpty(hIds))
+                    {
+                        return RedirectToAction(nameof(MyCoursesController.Email), "MyCourses", new { @cId = cId });
+                    }
+
+                    L2PCourseInfoData course = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    L2PRole userRole = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
+                    if (userRole != null && (userRole.role.Contains("manager") || userRole.role.Contains("tutors")))
+                    {
+                        hIds = hIds.TrimEnd('-');
+                        string[] emailIds = hIds.Split('-');
+                        foreach (string hId in emailIds)
+                        {
+                            int id = -1;
+                            int.TryParse(hId, out id);
+                            await L2PAPIClient.api.Calls.L2PDeleteEmail(cId, id);
+                        }
+                        return RedirectToAction(nameof(MyCoursesController.Email), "MyCourses", new { @cId = cId, @msg = "Hyperlinks(s) successfully deleted!" });
+                    }
+                    else
+                    {
+                        string errorMessage = "You do not have the sufficient rights to delete emails";
+                        return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
+                    }
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
+        }
     }
 }

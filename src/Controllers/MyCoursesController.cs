@@ -255,16 +255,71 @@ namespace Grp.L2PSite.MobileApp.Controllers
                 return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
             }
         }
+		 public async Task<IActionResult> Announcement(String cId)
+        {
+            try
+            {
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
+                {
+                    ViewData["ChosenCourse"] = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    ViewData["userRole"] = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
+                    L2PAnnouncementList aList = await L2PAPIClient.api.Calls.L2PviewAllAnnouncements(cId);
+                    List<L2PAnnouncementElement> announcements = new List<L2PAnnouncementElement>();
+                    if (aList.dataSet != null)
+                    {
+                        announcements = aList.dataSet;
+                    }
+                    ViewData["CourseAnnouncements"] = announcements;
+                    return View();
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
+        }
+        public async Task<IActionResult> Email(String cId)
+        {
+            try
+            {
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
+                {
+                    ViewData["ChosenCourse"] = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    ViewData["userRole"] = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
+                    L2PEmailList eList = await L2PAPIClient.api.Calls.L2PviewAllEmails(cId);
+                    List<L2PEmailElement> emails = new List<L2PEmailElement>();
+                    if (eList.dataSet != null)
+                    {
+                        emails = eList.dataSet;
+
+                    }
+                    ViewData["CourseEmails"] = emails;
+                    return View();
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
+        }
 
         public IActionResult Assignments()
         {
             return View();
         }
 
-        public IActionResult Announcement()
-        {
-            return View();
-        }
         public IActionResult AddAnnouncement()
         {
             return View();

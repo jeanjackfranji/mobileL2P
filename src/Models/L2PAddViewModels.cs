@@ -43,4 +43,37 @@ namespace Grp.L2PSite.MobileApp.Models
         [Display(Name = "Remember me?")]
         public bool RememberMe { get; set; }
     }
+	
+	 public class AnnouncementViewModel
+    {
+        [Required]
+        [StringLength(100)]
+        public string title { get; set; }
+
+        [Required]
+        [StringLength(100)]
+        public string body { get; set; }
+
+        public string folderName {get; set; }
+        public int itemId { get; set; }
+        
+    }
+
+    public class EmailViewModel
+    {
+        [Required]
+        [StringLength(100)]
+        public string subject { get; set; }
+
+        [Required]
+        [StringLength(100)]
+        public string body { get; set; }
+
+        [Required]
+        public string recipients { get; set; }
+        
+        public string cc { get; set; }
+        public string sender { get; set; }
+        public int itemId { get; set; }
+    }
 }
