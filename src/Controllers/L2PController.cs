@@ -987,6 +987,14 @@ namespace Grp.L2PSite.MobileApp.Controllers
                 if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
                 {
                     L2PCourseInfoData course = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    List<string> allPossibleRecipients = new List<string>();
+                    
+                    L2PAvailableGroups availableGroupList = await L2PAPIClient.api.Calls.L2PviewAvailableGroupsInGroupWorkspace(cId);
+                    foreach (var el in availableGroupList.dataSet) {
+                        allPossibleRecipients.Add(el.systemGeneratedAlias);
+                    }
+                    ViewData["allPossibleRecipients"] = allPossibleRecipients;
+
                     L2PRole userRole = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
                     if (userRole != null && (userRole.role.Contains("manager") || userRole.role.Contains("tutors")))
                     {
@@ -1025,7 +1033,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
                 {
                     L2PCourseInfoData course = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
                     L2PRole userRole = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
-
+                   
                     if (userRole != null && (userRole.role.Contains("manager") || userRole.role.Contains("tutors")))
                     {
                         ViewData["ChosenCourse"] = course;
@@ -1040,8 +1048,11 @@ namespace Grp.L2PSite.MobileApp.Controllers
                         newEmail.body = model.body;
                         if (model.cc != null)
                             newEmail.cc = model.cc;
-                        newEmail.recipients = model.recipients;
-
+                        newEmail.recipients = model.recipients+";";
+                        newEmail.subject = model.subject;
+                        newEmail.cc = "";
+                        newEmail.replyTo = "";
+                        newEmail.attachmentsToUpload = new List<L2PUploadRequest>();
 
                         if (file != null)
                         {
@@ -1063,7 +1074,10 @@ namespace Grp.L2PSite.MobileApp.Controllers
                             listOfUploads.Add(data);
                             newEmail.attachmentsToUpload = listOfUploads;
                         }
-                        await L2PAPIClient.api.Calls.L2PAddEmail(cId, newEmail);
+
+                        L2PAddUpdateResponse response = await L2PAPIClient.api.Calls.L2PAddEmail(cId, newEmail);
+
+ 
 
                         return RedirectToAction(nameof(MyCoursesController.Email), "MyCourses", new { cId = cId, @msg = "Email was successfully added!" });
                     }

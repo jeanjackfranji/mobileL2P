@@ -7,6 +7,8 @@
     bool? isEditMode = ViewData["EditMode"] as bool?;
 
     ViewData["Title"] = "Compose Email";
+	
+	List<string> allPossibleRecipients = ViewData["allPossibleRecipients"] as List<string>;
 }
 
 <nav>
@@ -32,9 +34,23 @@
         </div>
         <div class="row">
             <div class="input-field col s12">
-                <input asp-for="recipients" class="validate" type="text" />
-                <label asp-for="recipients">Recipients</label>
-                <span asp-validation-for="recipients" class="red-text"></span>
+               <select multiple asp-for="recipients">
+                            <option value="" disabled selected>Choose by roles</option>
+                            <option value="managers">Managers</option>
+                            <option value="students">Students</option>
+                            <option value="extras">Extra Users</option>
+                            <option value="tutors">Tutors</option>
+                            <option value="" disabled>Choose by groups</option>
+                           @if (allPossibleRecipients != null)
+                           {
+                               foreach (string userGroup in allPossibleRecipients)
+                               {
+                                     <option value="@userGroup">@userGroup</option>
+                               }
+                           }
+                    </select>
+                    <label>Recipients</label>
+                </div>
             </div>
         </div>
         <div class="row">
@@ -74,3 +90,10 @@
         </div>
     </form>
 </div>
+
+<script>
+        $(function () {
+            $('select').material_select();
+        });
+</script>
+
