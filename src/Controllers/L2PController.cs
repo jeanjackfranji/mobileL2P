@@ -957,7 +957,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
                             int.TryParse(hId, out id);
                             await L2PAPIClient.api.Calls.L2PDeleteAnnouncement(cId, id);
                         }
-                        return RedirectToAction(nameof(MyCoursesController.Announcement), "MyCourses", new { @cId = cId, @msg = "Hyperlinks(s) successfully deleted!" });
+                        return RedirectToAction(nameof(MyCoursesController.Announcement), "MyCourses", new { @cId = cId, @msg = "Announcement(s) successfully deleted!" });
                     }
                     else
                     {
@@ -987,6 +987,14 @@ namespace Grp.L2PSite.MobileApp.Controllers
                 if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
                 {
                     L2PCourseInfoData course = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    List<string> allPossibleRecipients = new List<string>();
+                    
+                    L2PAvailableGroups availableGroupList = await L2PAPIClient.api.Calls.L2PviewAvailableGroupsInGroupWorkspace(cId);
+                    foreach (var el in availableGroupList.dataSet) {
+                        allPossibleRecipients.Add(el.systemGeneratedAlias);
+                    }
+                    ViewData["allPossibleRecipients"] = allPossibleRecipients;
+
                     L2PRole userRole = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
                     if (userRole != null && (userRole.role.Contains("manager") || userRole.role.Contains("tutors")))
                     {
@@ -1025,7 +1033,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
                 {
                     L2PCourseInfoData course = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
                     L2PRole userRole = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
-
+                   
                     if (userRole != null && (userRole.role.Contains("manager") || userRole.role.Contains("tutors")))
                     {
                         ViewData["ChosenCourse"] = course;
@@ -1040,8 +1048,11 @@ namespace Grp.L2PSite.MobileApp.Controllers
                         newEmail.body = model.body;
                         if (model.cc != null)
                             newEmail.cc = model.cc;
-                        newEmail.recipients = model.recipients;
-
+                        newEmail.recipients = model.recipients+";";
+                        newEmail.subject = model.subject;
+                        newEmail.cc = "";
+                        newEmail.replyTo = "";
+                        newEmail.attachmentsToUpload = new List<L2PUploadRequest>();
 
                         if (file != null)
                         {
@@ -1063,7 +1074,10 @@ namespace Grp.L2PSite.MobileApp.Controllers
                             listOfUploads.Add(data);
                             newEmail.attachmentsToUpload = listOfUploads;
                         }
-                        await L2PAPIClient.api.Calls.L2PAddEmail(cId, newEmail);
+
+                        L2PAddUpdateResponse response = await L2PAPIClient.api.Calls.L2PAddEmail(cId, newEmail);
+
+ 
 
                         return RedirectToAction(nameof(MyCoursesController.Email), "MyCourses", new { cId = cId, @msg = "Email was successfully added!" });
                     }
@@ -1168,7 +1182,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
                             int.TryParse(hId, out id);
                             await L2PAPIClient.api.Calls.L2PDeleteEmail(cId, id);
                         }
-                        return RedirectToAction(nameof(MyCoursesController.Email), "MyCourses", new { @cId = cId, @msg = "Hyperlinks(s) successfully deleted!" });
+                        return RedirectToAction(nameof(MyCoursesController.Email), "MyCourses", new { @cId = cId, @msg = "Email(s) successfully deleted!" });
                     }
                     else
                     {
@@ -1843,32 +1857,32 @@ namespace Grp.L2PSite.MobileApp.Controllers
 
                         L2PAddUpdateResponse response = await L2PAPIClient.api.Calls.L2PAddAssignment(cId, newAssignment);
 
-                        if (file != null)
-                        {
+                        //if (file != null)
+                        //{
 
-                            L2PUploadRequest data = new L2PUploadRequest();
-                            data.fileName = ContentDispositionHeaderValue
-                                .Parse(file.ContentDisposition)
-                                .FileName
-                                .Trim('"');// FileName returns "fileName.ext"(with double quotes) in beta 3
+                        //    L2PUploadRequest data = new L2PUploadRequest();
+                        //    data.fileName = ContentDispositionHeaderValue
+                        //        .Parse(file.ContentDisposition)
+                        //        .FileName
+                        //        .Trim('"');// FileName returns "fileName.ext"(with double quotes) in beta 3
 
-                            using (System.IO.Stream stream = file.OpenReadStream())
-                            {
-                                byte[] buffer = new byte[stream.Length];
-                                await stream.ReadAsync(buffer, 0, (int)stream.Length);
-                                data.stream = Convert.ToBase64String(buffer);
-                            }
+                        //    using (System.IO.Stream stream = file.OpenReadStream())
+                        //    {
+                        //        byte[] buffer = new byte[stream.Length];
+                        //        await stream.ReadAsync(buffer, 0, (int)stream.Length);
+                        //        data.stream = Convert.ToBase64String(buffer);
+                        //    }
 
-                            L2PAssignmentList elem = await L2PAPIClient.api.Calls.L2PviewAssignment(cId, response.itemId);
-                            
-                            if (elem.dataSet != null && elem.dataSet.Any())
-                            {
-                                //assessment|/ss16/16ss-55492/assessment/Lists/LA_AssignmentDocuments/A01/cens_hnctz_1_Data.csv
-                                string directory = "assessment|" +  " / " + course.semester + "/" + cId + "/assessment/Lists/LA_AssignmentDocuments/A" + elem.dataSet.First().itemId + "/";
-                                await L2PAPIClient.api.Calls.L2PuploadInAssignments(cId, directory, data);
+                        //    L2PAssignmentList elem = await L2PAPIClient.api.Calls.L2PviewAssignment(cId, response.itemId);
 
-                            }
-                        }
+                        //    if (elem.dataSet != null && elem.dataSet.Any())
+                        //    {
+
+                        //        string directory = "/" + course.semester + "/" + cId + "/assessment/Lists/LA_AssignmentDocuments/A" + elem.dataSet.First().itemId + "/";
+                        //        await L2PAPIClient.api.Calls.L2PuploadInAssignments(cId, directory, data);
+
+                        //    }
+                        //}
                         //if (fileSo != null)
                         //{
 
@@ -1878,21 +1892,22 @@ namespace Grp.L2PSite.MobileApp.Controllers
                         //        .FileName
                         //        .Trim('"');// FileName returns "fileName.ext"(with double quotes) in beta 3
 
-                        //    using (System.IO.Stream stream = file.OpenReadStream())
+                        //    using (System.IO.Stream stream = fileSo.OpenReadStream())
                         //    {
                         //        byte[] buffer = new byte[stream.Length];
                         //        await stream.ReadAsync(buffer, 0, (int)stream.Length);
                         //        data2.stream = Convert.ToBase64String(buffer);
                         //    }
 
-                        //    L2PAnnouncementList elem2 = await L2PAPIClient.api.Calls.L2PviewAnnouncement(cId, response.itemId);
-                        //    if (elem2.dataSet != null && elem2.dataSet.Any())
+                        //    L2PAssignmentList elem = await L2PAPIClient.api.Calls.L2PviewAssignment(cId, response.itemId);
+                        //    if (elem.dataSet != null && elem.dataSet.Any())
                         //    {
-                        //        await L2PAPIClient.api.Calls.L2PuploadInAnnouncements(cId, elem2.dataSet.First().attachmentDirectory, data2);
+                        //        string directory = "/" + course.semester + "/" + cId + "/assessment/Lists/LA_SolutionDocuments/A" + elem.dataSet.First().itemId + "/" + "S/" ;
+                        //        await L2PAPIClient.api.Calls.L2PuploadInAssignments(cId, directory, data2);
 
                         //    }
                         //}
-                        return RedirectToAction(nameof(MyCoursesController.Assignments), "MyCourses", new { cId = cId, @msg = "Assignment was successfully added!" });
+                        return RedirectToAction(nameof(MyCoursesController.Assignments), "MyCourses", new { cId = cId, @msg = "Sample Solution was successfully added!" });
                     }
 
                     else
@@ -1915,7 +1930,193 @@ namespace Grp.L2PSite.MobileApp.Controllers
             }
         }
 
+        // Get Method to add a new assignment in a course
+        // GET: /L2P/AddAssignment
+        [HttpGet]
+        public async Task<IActionResult> EditAssignment(string cId,string aId)
+        {
+            try
+            {
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
+                {
+                    L2PCourseInfoData course = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    L2PRole userRole = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
+                    if (userRole != null && (userRole.role.Contains("manager") || userRole.role.Contains("tutors")))
+                    {
+                        ViewData["ChosenCourse"] = course;
+                        ViewData["userRole"] = userRole;
+                        L2PAssignmentList aList = await L2PAPIClient.api.Calls.L2PviewAssignment(cId, Int32.Parse(aId));
+                        if (aList != null)
+                        {
+                            AssignmentViewModel model = new AssignmentViewModel();
+                            foreach (L2PAssignmentElement a in aList.dataSet)
+                            {
 
+                                model.Description = a.description;
+
+                                model.DueDate = Tools.toDateTime(a.dueDate);
+                                model.DueDatehours = Tools.toHours(a.dueDate);
+                                if (a.groupSubmissionAllowed)
+                                {
+                                   model.groupSubmissionAllowed ="Yes" ;
+                                }
+                                else
+                                {
+                                    model.groupSubmissionAllowed = "No";
+                                }
+                                model.Title = a.title;
+                                model.totalPoint = a.totalPoint;
+                               
+
+                            }
+                            ViewData["AssignmentViewModel"] = model;
+                            return View("~/Views/L2P/AddEditAssignment.cshtml", model);
+                        }
+                        else
+                        {
+                            string errorMessage = "The Assignment you are trying to view does not exist.";
+                            return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
+                        }
+                    }
+                    else
+                    {
+                        string errorMessage = "You do not have the sufficient rights to edit this Assignment";
+                        return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
+                    }
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
+        }
+
+
+        // Post Method to add a new Hyperlink in a course
+        // POST: /L2P/AddHyperlink?
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditAssignment(AssignmentViewModel model, string cId, IFormFile file, IFormFile fileSo)
+        {
+            try
+            {
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
+                {
+                    L2PCourseInfoData course = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    L2PRole userRole = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
+                    if (userRole != null && (userRole.role.Contains("manager") || userRole.role.Contains("tutors")))
+                    {
+                        ViewData["ChosenCourse"] = course;
+                        ViewData["userRole"] = userRole;
+
+                        if (!ModelState.IsValid) // Check if the model was filled correctly (Always add)
+                        {
+                            return View("~/Views/L2P/AddEditAssignment.cshtml", model);
+                        }
+
+
+                        L2PAddAssignmentRequest newAssignment = new L2PAddAssignmentRequest();
+                        newAssignment.description = model.Description;
+
+                        string one = model.DueDate;
+                        string two = model.DueDatehours;
+
+                        DateTime dt = Convert.ToDateTime(one + " " + two);
+
+                        //DateTime dt1 = DateTime.ParseExact(one + " " + two, "dd/MM/yy h:mm:ss tt", CultureInfo.InvariantCulture);
+                        long dtunix = (long)(TimeZoneInfo.ConvertTimeToUtc(dt) - new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc)).TotalSeconds;
+
+
+                        newAssignment.dueDate = dtunix;
+                        if (model.groupSubmissionAllowed == "on")
+                            newAssignment.groupSubmissionAllowed = true;
+                        else
+                            newAssignment.groupSubmissionAllowed = false;
+                        newAssignment.title = model.Title;
+                        newAssignment.totalMarks = model.totalPoint;
+                        
+                       // await L2PAPIClient.api.Calls.L2PupdateAssignment(cId, newAssignment);
+
+                        //if (file != null)
+                        //{
+
+                        //    L2PUploadRequest data = new L2PUploadRequest();
+                        //    data.fileName = ContentDispositionHeaderValue
+                        //        .Parse(file.ContentDisposition)
+                        //        .FileName
+                        //        .Trim('"');// FileName returns "fileName.ext"(with double quotes) in beta 3
+
+                        //    using (System.IO.Stream stream = file.OpenReadStream())
+                        //    {
+                        //        byte[] buffer = new byte[stream.Length];
+                        //        await stream.ReadAsync(buffer, 0, (int)stream.Length);
+                        //        data.stream = Convert.ToBase64String(buffer);
+                        //    }
+
+                        //    L2PAssignmentList elem = await L2PAPIClient.api.Calls.L2PviewAssignment(cId, response.itemId);
+
+                        //    if (elem.dataSet != null && elem.dataSet.Any())
+                        //    {
+
+                        //        string directory = "/" + course.semester + "/" + cId + "/assessment/Lists/LA_AssignmentDocuments/A" + elem.dataSet.First().itemId + "/";
+                        //        await L2PAPIClient.api.Calls.L2PuploadInAssignments(cId, directory, data);
+
+                        //    }
+                        //}
+                        //if (fileSo != null)
+                        //{
+
+                        //    L2PUploadRequest data2 = new L2PUploadRequest();
+                        //    data2.fileName = ContentDispositionHeaderValue
+                        //        .Parse(fileSo.ContentDisposition)
+                        //        .FileName
+                        //        .Trim('"');// FileName returns "fileName.ext"(with double quotes) in beta 3
+
+                        //    using (System.IO.Stream stream = fileSo.OpenReadStream())
+                        //    {
+                        //        byte[] buffer = new byte[stream.Length];
+                        //        await stream.ReadAsync(buffer, 0, (int)stream.Length);
+                        //        data2.stream = Convert.ToBase64String(buffer);
+                        //    }
+
+                        //    L2PAssignmentList elem = await L2PAPIClient.api.Calls.L2PviewAssignment(cId, response.itemId);
+                        //    if (elem.dataSet != null && elem.dataSet.Any())
+                        //    {
+                        //        string directory = "/" + course.semester + "/" + cId + "/assessment/Lists/LA_SolutionDocuments/A" + elem.dataSet.First().itemId + "/" + "S/" ;
+                        //        await L2PAPIClient.api.Calls.L2PuploadInAssignments(cId, directory, data2);
+
+                        //    }
+                        //}
+                        return RedirectToAction(nameof(MyCoursesController.Assignments), "MyCourses", new { cId = cId, @msg = "Sample Solution was successfully added!" });
+                    }
+
+                    else
+                    {
+
+                        string errorMessage = "You do not have the sufficient rights to add an Assignment";
+                        return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
+                    }
+                }
+
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
+        }
     }
 }
 

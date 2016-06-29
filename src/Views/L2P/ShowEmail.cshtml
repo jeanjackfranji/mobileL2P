@@ -32,6 +32,8 @@
         <div id="div_text_area">@Html.Raw(email.body)</div>
     </div>
 </div>
+@if (attachments != null)
+{
 <div class="row">
     <div class="input-field col s12" style="margin-top: 0px">
         <label for="div_text_area">Attachments</label>
@@ -52,6 +54,7 @@
         </div>
     </div>
  </div>
+ }
 @if (userRole.role.Contains("managers") || userRole.role.Contains("tutors"))
 {
     <div class="fixed-action-btn horizontal" style="bottom: 5px; right: 30px;">

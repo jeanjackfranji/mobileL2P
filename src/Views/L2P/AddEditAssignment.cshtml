@@ -21,13 +21,13 @@
     <div class="nav-wrapper white">
         <div class="col s12">
             <a asp-controller="MyCourses" asp-action="WhatsNew" asp-route-cId="@course.uniqueid" class="breadcrumb blue-text" style="font-size: 12px; margin-left: 10px;">@Tools.truncateString(course.courseTitle, 20)</a>
-            <a asp-controller="MyCourses" asp-action="Assignment" asp-route-cId="@course.uniqueid" class="breadcrumb blue-text" style="font-size: 12px">Literature</a>
+            <a asp-controller="MyCourses" asp-action="Assignment" asp-route-cId="@course.uniqueid" class="breadcrumb blue-text" style="font-size: 12px">Assignment</a>
             <a href="#!" class="breadcrumb blue-text" style="font-size: 12px">@(isEditMode.HasValue ? "Edit" : "Add")</a>
         </div>
     </div>
 </nav>
 <div class="row">
-    <form class="col s12" asp-controller="L2P" asp-action="@(isEditMode.HasValue? "EditAssignment" : "AddAssignment" )" asp-route-cId="@course.uniqueid"  method="post" role="form" enctype="multipart/form-data">
+    <form class="col s12" asp-controller="L2P" asp-action="@(isEditMode.HasValue? "EditAssignment" : "AddAssignment" )" asp-route-cId="@course.uniqueid" method="post" role="form" enctype="multipart/form-data">
         <div class="row">
             <div asp-validation-summary="ValidationSummary.All"></div>
         </div>
@@ -40,7 +40,7 @@
         </div>
         <div class="row">
             <div class="input-field col s12">
-                <label asp-for="Description" >Description*</label>
+                <label asp-for="Description">Description*</label>
                 <input asp-for="Description" class="validate" type="text" />
             </div>
         </div>
@@ -48,7 +48,6 @@
             <div class="input-field col s12">
                 <input id="groupSubmissionAllowed" type="checkbox" name="groupSubmissionAllowed" />
                 <label for="groupSubmissionAllowed">Allow Group Submission</label>
-                <br />
             </div>
         </div>
         <div class="row">
@@ -61,130 +60,90 @@
         <div class="row">
             <div class="input-field col s12">
 
-                <input type="date" class="datepicker" asp-for="assignmentPublishDate" />
-                <label asp-for="assignmentPublishDate">Publish Date</label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="input-field col s12">
-                    <input id="pick-a-time1" asp-for="assignmentPublishDatehours" />
-                    <label asp-for="assignmentPublishDatehours">Publish Time</label>
-                </div>
-            </div>
-        <div class="row">
-            <div class="input-field col s12">
-
                 <input type="date" class="datepicker" asp-for="DueDate" />
                 <label asp-for="DueDate">Due Date*</label>
 
             </div>
         </div>
-        <div class="row">
-            <div class="input-field col s12">
-                
-                <input id="pick-a-time2"  asp-for="DueDatehours" />
-                <label asp-for="DueDatehours">Due Date Time*</label>
-            </div>
+<div class="row">
+    <div class="input-field col s12">
+
+        <input id="pick-a-time2" asp-for="DueDatehours" />
+        <label asp-for="DueDatehours">Due Date Time*</label>
+    </div>
+</div>
+
+<div class="row">
+    <p>Please choose a assignment file</p>
+    <div class="file-field input-field">
+        <div class="btn blue">
+            <span>Upload File</span>
+            <input type="file" id="file" name="file" />
         </div>
-
-        <div class="row">
-            <p>Please choose a assignment file</p>
-            <div class="file-field input-field">
-                <div class="btn blue">
-                    <span>Upload File</span>
-                    <input type="file" id="file" name="file" />
-                </div>
-                <div class="file-path-wrapper">
-                    <input class="file-path validate" type="text">
-                </div>
-            </div>
+        <div class="file-path-wrapper">
+            <input class="file-path validate" type="text">
         </div>
-        <div class="row">
-            <div class="input-field col s12">
+    </div>
+</div>
 
-                <input type="date" class="datepicker" asp-for="solutionPublishDate" />
-                <label asp-for="solutionPublishDate">Solution Publish Date:</label>
-            </div>
+
+<div class="row">
+    <p>Please choose a sample solution file</p>
+    <div class="file-field input-field">
+        <div class="btn blue">
+            <span>Upload File</span>
+            <input type="file" id="fileSo" name="fileSo" />
         </div>
-        <div class="row">
-            <div class="input-field col s12">
-                <input id="pick-a-time3" asp-for="solutionPublishDatehours" />
-                <label asp-for="solutionPublishDatehours">Solution Publish Time:</label>
-            </div>
+        <div class="file-path-wrapper">
+            <input class="file-path validate" type="text">
         </div>
+    </div>
+</div>
 
 
 
-        <div class="row">
-            <p>Please choose a sample solution file</p>
-            <div class="file-field input-field">
-                <div class="btn blue">
-                    <span>Upload File</span>
-                    <input type="file" id="fileSo" name="fileSo" />
-                </div>
-                <div class="file-path-wrapper">
-                    <input class="file-path validate" type="text">
-                </div>
-            </div>
-        </div>
-
-        @*<div class="row">
-            <div class="input-field col s12">
-                <div class="file-field input-field">
-                    <div class="btn">
-                        <span>File</span>
-                        <input type="file">
-                    </div>
-                    <div class="file-path-wrapper">
-                        <input class="file-path validate" asp-for="AssignmentDocuments" type="text" placeholder="Upload one or more files"/>
-                        <label asp-for="AssignmentDocuments">Assignment Documents</label>
-                    </div>
-                </div>
-                </div>
-            </div>*@
-
-        <div class="row right-align">
-            <div class="input-field col s12">
-                <input asp-for="itemId" hidden="hidden" value="@(isEditMode.HasValue ? Model.itemId + "" : "-1")" />
-                <button class="btn waves-effect waves-light" type="submit" name="action">
-                    Submit
-                    <i class="material-icons right">send</i>
-                </button>
-            </div>
-        </div>
+<div class="row right-align">
+    <div class="input-field col s12">
+        <input asp-for="itemId" hidden="hidden" value="@(isEditMode.HasValue ? Model.itemId + "" : "-1")" />
+        <button class="btn waves-effect waves-light" type="submit" name="action">
+            Submit
+            <i class="material-icons right">send</i>
+        </button>
+    </div>
+</div>
     </form>
 </div>
 
 
 <script>
 
-  
+
     $(document).ready(function () {
-    $('.datepicker').pickadate({
-        selectMonths: true, // Creates a dropdown to control month
-        selectYears: 16 // Creates a dropdown of 15 years to control year
-    });
-    $(function () {
-        $('#pick-a-time1').lolliclock({ autoclose: true });
-    });
-    $(function () {
-        $('#pick-a-time2').lolliclock({ autoclose: true });
-    });
-    $(function () {
-        $('#pick-a-time3').lolliclock({ autoclose: true });
-    });
+        $('.datepicker').pickadate({
+            selectMonths: true, // Creates a dropdown to control month
+            selectYears: 16 // Creates a dropdown of 15 years to control year
+        });
+        $(function () {
+            $('#pick-a-time1').lolliclock({ autoclose: true });
+        });
+        $(function () {
+            $('#pick-a-time2').lolliclock({ autoclose: true });
+        });
+        $(function () {
+            $('#pick-a-time3').lolliclock({ autoclose: true });
+        });
 
-    $('input[id="cb_check_all"]').change(function () {
-        if ($(this).is(':checked')) {
-            $('input[name="groupSubmissionAllowed"]').prop('checked', true);
-            
-        } else {
-            $('input[name="groupSubmissionAllowed"]').prop('checked', false);
-          
-        }
-        
+        $('input[id="cb_check_all"]').change(function () {
+            if ($(this).is(':checked')) {
+                $('input[name="groupSubmissionAllowed"]').prop('checked', true);
+
+            } else {
+                $('input[name="groupSubmissionAllowed"]').prop('checked', false);
+
+            }
+
+        });
+
+
     });
-
-
-    }); 
 </script>

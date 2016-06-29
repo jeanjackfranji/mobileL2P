@@ -18,10 +18,13 @@
                 <thead>
 
                     <tr>
-                        <th>
-                            <input id="cb_check_all" type="checkbox" />
-                            <label for="cb_check_all"></label>
-                        </th>
+                        @if (userRole.role.Contains("managers") || userRole.role.Contains("tutors"))
+                       {
+                            <th>
+                                <input id="cb_check_all" type="checkbox" />
+                                <label for="cb_check_all"></label>
+                            </th>
+                        }
                         <th data-field="from">Sender</th>
                         <th data-field="title">Subject</th>
                         <th data-field="hasAttachment">Attachments</th>
@@ -33,10 +36,13 @@
                         foreach (L2PEmailElement eml in emails)
                         {
                             <tr>
-                                <td>
-                                    <input type="checkbox" name="tbl_cb" id="@eml.itemId" />
-                                    <label for="@eml.itemId"></label>
-                                </td>
+                               @if (userRole.role.Contains("managers") || userRole.role.Contains("tutors"))
+								{
+                                    <td>
+                                        <input type="checkbox" name="tbl_cb" id="@eml.itemId" />
+                                        <label for="@eml.itemId"></label>
+                                    </td>
+                                }
                                 @if (!String.IsNullOrEmpty(eml.from))
                                 {
                                     <td><a asp-controller="L2P" asp-action="ShowEmail" asp-route-cId="@course.uniqueid" asp-route-hId="@eml.itemId">@eml.from</a></td>
@@ -54,7 +60,7 @@
                                 }
                                 else
                                 {
-                                <td><a asp-controller="L2P" asp-action="ShowEmail" asp-route-cId="@course.uniqueid" asp-route-hId="@eml.itemId">@eml.itemId</a></td>
+                                    <td><a asp-controller="L2P" asp-action="ShowEmail" asp-route-cId="@course.uniqueid" asp-route-hId="@eml.itemId">@eml.itemId</a></td>
                                 }
 
                                 @if (eml.attachments != null)
@@ -63,7 +69,7 @@
                                 }
                                 else
                                 {
-                                    <td>No</td> 
+                                    <td>No</td>
                                 }
 
                             </tr>
@@ -109,7 +115,7 @@
     $(function () {
         $('.modal-trigger').leanModal(); // Set the Modal to Trigger later on
 
-        if('@ViewData["Message"]' != ''){
+        if ('@ViewData["Message"]' != '') {
             Materialize.toast('@ViewData["Message"]', 3000) // 3000 is the duration of the toast
         }
     });
@@ -142,5 +148,4 @@
         $("#a_delete_emails").attr("href", url + str);
     });
 </script>
-
 
