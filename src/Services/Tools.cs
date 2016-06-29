@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using System.Text.RegularExpressions;
 using ICSharpCode.SharpZipLib.Zip;
 using ICSharpCode.SharpZipLib.Core;
+using System.Globalization;
 
 namespace Grp.L2PSite.MobileApp.Services
 {
@@ -73,30 +74,39 @@ namespace Grp.L2PSite.MobileApp.Services
         {
             if (dateNb <= 0)
                 return "";
-            DateTime date = new DateTime(1970, 1, 1);
-            date = date.AddDays(Math.Floor(dateNb / 60 / 60 / 24));
-            return date.ToShortDateString();
+
+            DateTime date = new DateTime(1970, 1, 1).AddSeconds(dateNb);
+            TimeZoneInfo nInfo = TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time");
+            date = TimeZoneInfo.ConvertTimeFromUtc(date, nInfo);
+            return date.ToString("dd/MM/yyyy");
         }
 
         public static String toTime(double dateNb)
         {
             if (dateNb <= 0)
                 return "";
-            DateTime date = new DateTime(1970, 1, 1);
-            date = date.AddDays(Math.Floor(dateNb / 60 / 60 / 24));
-            return date.ToString("dd/MM/yyyy hh:mm");
+
+            DateTime date = new DateTime(1970, 1, 1).AddSeconds(dateNb);
+            TimeZoneInfo nInfo = TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time");
+            date = TimeZoneInfo.ConvertTimeFromUtc(date, nInfo);
+            return date.ToString("dd/MM/yyyy HH:mm");
         }
 
         public static String toHours(double dateNb)
         {
-            DateTime date = new DateTime(1970, 1, 1);
-            date = date.AddDays(Math.Floor(dateNb / 60 / 60 / 24));
-            return date.ToString("hh:mm");
+            if (dateNb <= 0)
+                return "";
+
+            DateTime date = new DateTime(1970, 1, 1).AddSeconds(dateNb);
+            TimeZoneInfo nInfo = TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time");
+            date = TimeZoneInfo.ConvertTimeFromUtc(date, nInfo);
+            return date.ToString("HH:mm");
         }
         public static DateTime toDate(double dateNb)
         {
-            DateTime date = new DateTime(1970, 1, 1);
-            date = date.AddDays(Math.Floor(dateNb / 60 / 60 / 24));
+            DateTime date = new DateTime(1970, 1, 1).AddSeconds(dateNb);
+            TimeZoneInfo nInfo = TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time");
+            date = TimeZoneInfo.ConvertTimeFromUtc(date, nInfo);
             return date;
         }
 
@@ -154,47 +164,54 @@ namespace Grp.L2PSite.MobileApp.Services
 
         public static string getImagePathByFileName(string fileName)
         {
-            if (fileName != null)
+            try
             {
-                Match match = Regex.Match(fileName, ".pdf", RegexOptions.IgnoreCase);
-                if (match.Success)
+                if (fileName != null)
                 {
-                    return "../images/learning_material/PDF.png";
+                    Match match = Regex.Match(fileName, @"$(?<=\.(pdf))", RegexOptions.IgnoreCase);
+                    if (match.Success)
+                    {
+                        return "../images/learning_material/PDF.png";
+                    }
+                    else if (Regex.Match(fileName, @"$(?<=\.(png|jpg|jpeg|gif|bmp))", RegexOptions.IgnoreCase).Success)
+                    {
+                        return "../images/learning_material/Full_Image.png";
+                    }
+                    else if (Regex.Match(fileName, @"$(?<=\.(3g2|3gp|asf|asx|avi|flv|mov|mp4|mpg|rm|swf|vob|wmv))", RegexOptions.IgnoreCase).Success)
+                    {
+                        return "../images/learning_material/Video_Message.png";
+                    } 
+                    else if (Regex.Match(fileName, @"$(?<=\.(doc|docx|rtf))", RegexOptions.IgnoreCase).Success)
+                    {
+                        return "../images/learning_material/MS_Word.png";
+                    }
+                    else if (Regex.Match(fileName, @"$(?<=\.(log|txt|wpd|wps))", RegexOptions.IgnoreCase).Success)
+                    {
+                        return "../images/learning_material/Text_Document.png";
+                    }
+                    else if (Regex.Match(fileName, @"$(?<=\.(csv|xls|xlsx))", RegexOptions.IgnoreCase).Success)
+                    {
+                        return "../images/learning_material/MS_Excel.png";
+                    }
+                    else if (Regex.Match(fileName, @"$(?<=\.(ppt|pptx|pps))", RegexOptions.IgnoreCase).Success)
+                    {
+                        return "../images/learning_material/MS_PowerPoint.png";
+                    }
+                    else if (Regex.Match(fileName, @"$(?<=\.(zip|rar|7z|tar.gz))", RegexOptions.IgnoreCase).Success)
+                    {
+                        return "../images/learning_material/ZIP.png";
+                    }
+                    else
+                    {
+                        return "../images/learning_material/File.png";
+                    }
                 }
-                else if (Regex.Match(fileName, ".png|.jpg|.jpeg|.gif|.bmp", RegexOptions.IgnoreCase).Success)
-                {
-                    return "../images/learning_material/Full_Image.png";
-                }
-                else if (Regex.Match(fileName, ".3g2|.3gp|.asf|.asx|.avi|.flv|.mov|.mp4|.mpg|.rm|.swf|.vob|.wmv", RegexOptions.IgnoreCase).Success)
-                {
-                    return "../images/learning_material/Video_Message.png";
-                }
-                else if (Regex.Match(fileName, ".doc|.docx|.rtf", RegexOptions.IgnoreCase).Success)
-                {
-                    return "../images/learning_material/MS_Word.png";
-                }
-                else if (Regex.Match(fileName, ".log|.txt|.wpd|.wps", RegexOptions.IgnoreCase).Success)
-                {
-                    return "../images/learning_material/Text_Document.png";
-                }
-                else if (Regex.Match(fileName, ".csv|.xls|.xlsx", RegexOptions.IgnoreCase).Success)
-                {
-                    return "../images/learning_material/MS_Excel.png";
-                }
-                else if (Regex.Match(fileName, ".ppt|.pptx|.pps", RegexOptions.IgnoreCase).Success)
-                {
-                    return "../images/learning_material/MS_PowerPoint.png";
-                }
-                else if (Regex.Match(fileName, ".zip|.rar|.7z|.tar.gz", RegexOptions.IgnoreCase).Success)
-                {
-                    return "../images/learning_material/ZIP.png";
-                }
-                else
-                {
-                    return "../images/learning_material/File.png";
-                }
+                return "../images/learning_material/File.png";
             }
-            return "../images/learning_material/File.png";
+            catch
+            {
+                return "../images/learning_material/File.png";
+            }
         }
 
         public enum LoginStatus : int

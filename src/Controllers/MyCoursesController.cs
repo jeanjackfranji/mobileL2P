@@ -40,8 +40,6 @@ namespace Grp.L2PSite.MobileApp.Controllers
                     Context.Session.SetString("CourseId", cId);
                     ViewData["ChosenCourse"] = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
                     ViewData["CourseWhatsNew"] = await L2PAPIClient.api.Calls.L2PwhatsNewSinceAsync(cId, 180000);
-
-
                     ViewData["ExamResults"] = await L2PAPIClient.api.Calls.L2PviewExamResults(cId);
 
                     L2PAssignmentList assnList = await L2PAPIClient.api.Calls.L2PviewAllAssignments(cId);
@@ -53,6 +51,33 @@ namespace Grp.L2PSite.MobileApp.Controllers
                         assignments.Sort((x, y) => y.assignmentPublishDate.CompareTo(x.assignmentPublishDate));
                     }
                     ViewData["Assignments"] = assignments;
+                    return View();
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
+        }
+
+        [HttpGet] // Get Method for Exam Results Display
+        public async Task<IActionResult> ExamResults(string cId)
+        {
+            try
+            {
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context))
+                {
+
+                    Context.Session.SetString("CourseId", cId);
+                    ViewData["ChosenCourse"] = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    ViewData["ExamResults"] = await L2PAPIClient.api.Calls.L2PviewExamResults(cId);
+                    ViewData["ExamResultStatistics"] = await L2PAPIClient.api.Calls.L2PviewExamResultsStatistics(cId);
                     return View();
                 }
                 else
@@ -261,7 +286,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
 
 
         [HttpGet] // Get Method to show all the hyperlinks of a course
-        public async Task<IActionResult> Assignments(String cId)
+        public async Task<IActionResult> Assignments(String cId, string msg)
         {
             try
             {
@@ -280,6 +305,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
                         assignments.Sort((x, y) => y.assignmentPublishDate.CompareTo(x.assignmentPublishDate));
                     }
                     ViewData["Assignments"] = assignments;
+                    ViewData["Message"] = msg;
                     return View();
                 }
                 else
@@ -453,45 +479,52 @@ namespace Grp.L2PSite.MobileApp.Controllers
                 foreach (L2PAssignmentElement a in assignments)
                 {
                     List<L2PAttachmentElement> filePaths = a.assignmentDocuments;
-                    foreach (L2PAttachmentElement filePath in filePaths)
+                    if(filePaths != null)
                     {
-                        string callURL = Config.L2PEndPoint + "/downloadFile/" + filePath.fileName + "?accessToken=" + Config.getAccessToken() + "&cid=" + caid + "&downloadUrl=" + filePath.downloadUrl;
-                        HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(callURL);
-                        myHttpWebRequest.MaximumAutomaticRedirections = 1;
-                        myHttpWebRequest.AllowAutoRedirect = true;
-                        HttpWebResponse myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
-                        FileStreamResult file = File(myHttpWebResponse.GetResponseStream(), myHttpWebResponse.ContentType, filePath.fileName);
+                        foreach (L2PAttachmentElement filePath in filePaths)
+                        {
+                            string callURL = Config.L2PEndPoint + "/downloadFile/" + filePath.fileName + "?accessToken=" + Config.getAccessToken() + "&cid=" + caid + "&downloadUrl=" + filePath.downloadUrl;
+                            HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(callURL);
+                            myHttpWebRequest.MaximumAutomaticRedirections = 1;
+                            myHttpWebRequest.AllowAutoRedirect = true;
+                            HttpWebResponse myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
+                            FileStreamResult file = File(myHttpWebResponse.GetResponseStream(), myHttpWebResponse.ContentType, filePath.fileName);
 
-                        Stream s = myHttpWebResponse.GetResponseStream();
-                        FileStream s1 = new FileStream(tempDownloadFilesPath + filePath.fileName, FileMode.Create);
-                        Tools.CopyStream(s, s1);
-                        s1.Close();
+                            Stream s = myHttpWebResponse.GetResponseStream();
+                            FileStream s1 = new FileStream(tempDownloadFilesPath + filePath.fileName, FileMode.Create);
+                            Tools.CopyStream(s, s1);
+                            s1.Close();
+                        }
+
+                        FileStream fsOut = System.IO.File.Create(tempZipPath + a.title + ".zip");
+                        ZipOutputStream zipStream = new ZipOutputStream(fsOut);
+
+                        zipStream.SetLevel(3); //0-9, 9 being the highest level of compression
+
+                        // This setting will strip the leading part of the folder path in the entries, to
+                        // make the entries relative to the starting folder.
+                        // To include the full path for each entry up to the drive root, assign folderOffset = 0.
+                        int folderOffset = tempDownloadFilesPath.Length + 0;
+
+                        Tools.CompressFolder(tempDownloadFilesPath, zipStream, folderOffset);
+
+                        zipStream.IsStreamOwner = true; // Makes the Close also Close the underlying stream
+                        zipStream.Close();
+
+                        //Wait 10 seconds to delete the files in temp folder
+                        Task t = Task.Run(async delegate
+                        {
+                            await Task.Delay(TimeSpan.FromSeconds(10));
+                            Directory.Delete(tempDownloadFilesPath, true);
+                            Directory.Delete(tempZipPath, true);
+                            Directory.Delete(tempFilePath, true);
+                        });
+                        return File(tempZipPath + a.title + ".zip", "application/zip", a.title + ".zip");
                     }
-
-                    FileStream fsOut = System.IO.File.Create(tempZipPath + a.title + ".zip");
-                    ZipOutputStream zipStream = new ZipOutputStream(fsOut);
-
-                    zipStream.SetLevel(3); //0-9, 9 being the highest level of compression
-
-                    // This setting will strip the leading part of the folder path in the entries, to
-                    // make the entries relative to the starting folder.
-                    // To include the full path for each entry up to the drive root, assign folderOffset = 0.
-                    int folderOffset = tempDownloadFilesPath.Length + 0;
-
-                    Tools.CompressFolder(tempDownloadFilesPath, zipStream, folderOffset);
-
-                    zipStream.IsStreamOwner = true; // Makes the Close also Close the underlying stream
-                    zipStream.Close();
-
-                    //Wait 10 seconds to delete the files in temp folder
-                    Task t = Task.Run(async delegate
+                    else
                     {
-                        await Task.Delay(TimeSpan.FromSeconds(10));
-                        Directory.Delete(tempDownloadFilesPath, true);
-                        Directory.Delete(tempZipPath, true);
-                        Directory.Delete(tempFilePath, true);
-                    });
-                    return File(tempZipPath + a.title + ".zip", "application/zip", a.title + ".zip");
+                        return RedirectToAction(nameof(MyCoursesController.Assignments), "MyCourses", new {@cId = caid, @msg = "No Files to download." });
+                    }
 
                 }
                 return RedirectToAction(nameof(MyCoursesController.Assignments), "MyCourses");
@@ -502,40 +535,5 @@ namespace Grp.L2PSite.MobileApp.Controllers
                 return RedirectToAction(nameof(HomeController.Error), "Error");
             }
         }
-
-        [HttpGet] // Get Method to show specific assignments
-        public async Task<IActionResult> ViewAssignment(string cId, string aid)
-        {
-            try
-            {                 
-                // This method must be used before every L2P API call
-                Tools.getAndSetUserToken(Request.Cookies, Context);
-                if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
-                {
-                    ViewData["ChosenCourse"] = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
-                    ViewData["userRole"] = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
-                    L2PAssignmentList assnList = await L2PAPIClient.api.Calls.L2PviewAssignment(cId, int.Parse(aid));
-                    ViewData["ChosenAssignment"] = assnList;
-                    List<L2PAssignmentElement> assignments = new List<L2PAssignmentElement>();
-                    if (assnList.dataSet != null)
-                    {
-
-                        assignments = assnList.dataSet;
-
-                    }
-                    ViewData["ViewAssignment"] = assignments;
-                    return View();
-                }
-                else
-                {
-                    return RedirectToAction(nameof(AccountController.Login), "Account");
-                }
-            }
-            catch (Exception ex)
-            {
-                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
-            }
-        }
-
     }
 }

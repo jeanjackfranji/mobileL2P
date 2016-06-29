@@ -10,8 +10,8 @@
 <nav>
     <div class="nav-wrapper white">
         <div class="col s12">
-            <a asp-controller="MyCourses" asp-action="WhatsNew" asp-route-cId="@course.uniqueid" class="breadcrumb blue-text" style="font-size: 12px; margin-left: 10px;">@Tools.truncateString(course.courseTitle, 20)...</a>
-            <a asp-controller="MyCourses" asp-action="Literature" asp-route-cId="@course.uniqueid" class="breadcrumb blue-text" style="font-size: 12px">@ViewData["Title"]</a>
+            <a asp-controller="MyCourses" asp-action="WhatsNew" asp-route-cId="@course.uniqueid" class="breadcrumb blue-text" style="font-size: 9px; margin-left: 10px;">@Tools.truncateString(course.courseTitle, 20) @((course.courseTitle != null && course.courseTitle.Length > 20) ? "..." : "")</a>
+            <a asp-controller="MyCourses" asp-action="Literature" asp-route-cId="@course.uniqueid" class="breadcrumb blue-text" style="font-size: 9px">@ViewData["Title"]</a>
         </div>
     </div>
 </nav>
@@ -47,7 +47,7 @@
                                 </td>
                                 <td>
                                     <a asp-controller="L2P" asp-action="ViewLiterature" asp-route-cId="@course.uniqueid" asp-route-lId="@L.itemID">@L.title</a>
-</td>
+                                </td>
                                 <td>
                                     @L.authors
                                 </td>

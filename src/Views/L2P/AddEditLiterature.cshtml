@@ -18,7 +18,7 @@
 <nav>
     <div class="nav-wrapper white">
         <div class="col s12">
-            <a asp-controller="MyCourses" asp-action="WhatsNew" asp-route-cId="@course.uniqueid" class="breadcrumb blue-text" style="font-size: 9px; margin-left: 10px;">@Tools.truncateString(course.courseTitle, 20)</a>
+            <a asp-controller="MyCourses" asp-action="WhatsNew" asp-route-cId="@course.uniqueid" class="breadcrumb blue-text" style="font-size: 9px; margin-left: 10px;">@Tools.truncateString(course.courseTitle, 20) @((course.courseTitle != null && course.courseTitle.Length > 20) ? "..." : "")</a>
             <a asp-controller="MyCourses" asp-action="Literature" asp-route-cId="@course.uniqueid" class="breadcrumb blue-text" style="font-size: 9px">Literature</a>
             <a href="#!" class="breadcrumb blue-text" style="font-size: 9px">@(isEditMode.HasValue ? "Edit" : "Add")</a>
         </div>

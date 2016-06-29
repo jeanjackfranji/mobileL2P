@@ -9,7 +9,6 @@ using static Grp.L2PSite.MobileApp.Services.Tools;
 using Microsoft.Net.Http.Headers;
 using System.Collections.Generic;
 using System.Linq;
-using System.Globalization;
 
 namespace Grp.L2PSite.MobileApp.Controllers
 {
@@ -1047,7 +1046,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
                         L2PAddEmailRequest newEmail = new L2PAddEmailRequest();
                         newEmail.body = model.body;
                         if (model.cc != null)
-                            newEmail.cc = model.cc;
+                            newEmail.cc = model.cc.Replace(",",";");
                         newEmail.recipients = model.recipients+";";
                         newEmail.subject = model.subject;
                         newEmail.cc = "";
@@ -2111,6 +2110,40 @@ namespace Grp.L2PSite.MobileApp.Controllers
                     return RedirectToAction(nameof(AccountController.Login), "Account");
                 }
 
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
+        }
+
+        [HttpGet] // Get Method to show specific assignments
+        public async Task<IActionResult> ShowAssignment(string cId, string aid)
+        {
+            try
+            {
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
+                {
+                    ViewData["ChosenCourse"] = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    ViewData["userRole"] = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
+                    L2PAssignmentList assnList = await L2PAPIClient.api.Calls.L2PviewAssignment(cId, int.Parse(aid));
+                    ViewData["ChosenAssignment"] = assnList;
+                    List<L2PAssignmentElement> assignments = new List<L2PAssignmentElement>();
+                    if (assnList.dataSet != null)
+                    {
+
+                        assignments = assnList.dataSet;
+
+                    }
+                    ViewData["ViewAssignment"] = assignments;
+                    return View();
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
             }
             catch (Exception ex)
             {

@@ -12,8 +12,8 @@
 <nav>
     <div class="nav-wrapper white">
         <div class="col s12">
-            <a asp-controller="MyCourses" asp-action="WhatsNew" asp-route-cId="@course.uniqueid" class="breadcrumb blue-text" style="font-size: 12px; margin-left: 10px;">@Tools.truncateString(course.courseTitle, 20)...</a>
-            <a asp-controller="MyCourses" asp-action="LearningMaterials" asp-route-cId="@course.uniqueid" class="breadcrumb blue-text" style="font-size: 12px">@ViewData["Title"]</a>
+            <a asp-controller="MyCourses" asp-action="WhatsNew" asp-route-cId="@course.uniqueid" class="breadcrumb blue-text" style="font-size: 9px; margin-left: 10px;">@Tools.truncateString(course.courseTitle, 20) @((course.courseTitle != null && course.courseTitle.Length > 20) ? "..." : "")</a>
+            <a asp-controller="MyCourses" asp-action="LearningMaterials" asp-route-cId="@course.uniqueid" class="breadcrumb blue-text" style="font-size: 9px">@ViewData["Title"]</a>
         </div>
     </div>
 </nav>
@@ -46,7 +46,7 @@
                     else
                     {
                         <img src="@Tools.getImagePathByFileName(lm.name)" class="circle rel-position" style="background-size: 80% !important" />
-                        <span class="title"><a asp-controller="MyCourses" asp-action="Downloads" asp-route-cId="@course.uniqueid" asp-route-url="@lm.selfUrl" asp-route-filename="@lm.name">@lm.name</a></span>
+                        <span class="title"><a asp-controller="MyCourses" asp-action="Downloads" asp-route-cId="@course.uniqueid" asp-route-url="@lm.selfUrl" asp-route-filename="@lm.name">@lm.name.Replace("_", " ")</a></span>
                         <a id="a-secondary-content" class="secondary-content" asp-controller="MyCourses" asp-action="Downloads" asp-route-cId="@course.uniqueid" asp-route-url="@lm.selfUrl" asp-route-filename="@lm.name"><i class="material-icons blue-text">get_app</i></a>
                     }
                     <p class="margin-left-25">
