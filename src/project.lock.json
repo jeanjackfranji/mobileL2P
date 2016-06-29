@@ -3027,6 +3027,7 @@
       "HtmlAgilityPack >= 1.4.9"
     ],
     "DNX,Version=v4.5.1": [
+      "ICSharpCode.SharpZipLib >= 1.0.0-*",
       "L2PAPIClient >= 1.0.0-*"
     ]
   }

@@ -1,0 +1,10 @@
+{
+  "version": "1.4.9",
+  "frameworks": {
+    "dnx451": {
+      "bin": {
+        "assembly": "../../lib/dnx451/HtmlAgilityPack.dll"
+      }
+    }
+  }
+}
