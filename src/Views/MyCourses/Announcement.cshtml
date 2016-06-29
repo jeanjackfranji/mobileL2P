@@ -18,8 +18,8 @@
                 <thead>
 
                     <tr>
-                        @if (userRole.role.Contains("students") || userRole.role.Contains("extras"))
-                        {
+                       @if (userRole.role.Contains("managers") || userRole.role.Contains("tutors"))
+                       {
                             <th>
                                 <input id="cb_check_all" type="checkbox" />
                                 <label for="cb_check_all"></label>
@@ -35,8 +35,8 @@
                         foreach (L2PAnnouncementElement ann in announcements)
                         {
                             <tr>
-                                @if (userRole.role.Contains("students") || userRole.role.Contains("extras"))
-                                {
+                                @if (userRole.role.Contains("managers") || userRole.role.Contains("tutors"))
+								{
                                     <td>
                                         <input type="checkbox" name="tbl_cb" id="@ann.itemId" />
                                         <label for="@ann.itemId"></label>
