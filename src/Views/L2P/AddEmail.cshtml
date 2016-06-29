@@ -7,16 +7,16 @@
     bool? isEditMode = ViewData["EditMode"] as bool?;
 
     ViewData["Title"] = "Compose Email";
-	
-	List<string> allPossibleRecipients = ViewData["allPossibleRecipients"] as List<string>;
+
+    List<string> allPossibleRecipients = ViewData["allPossibleRecipients"] as List<string>;
 }
 
 <nav>
     <div class="nav-wrapper white">
         <div class="col s12">
-            <a asp-controller="MyCourses" asp-action="WhatsNew" asp-route-cId="@course.uniqueid" class="breadcrumb blue-text" style="font-size: 12px; margin-left: 10px;">@Tools.truncateString(course.courseTitle, 20)</a>
-            <a asp-controller="MyCourses" asp-action="Email" asp-route-cId="@course.uniqueid" class="breadcrumb blue-text" style="font-size: 12px">Email</a>
-            <a href="#!" class="breadcrumb blue-text" style="font-size: 12px">Compose</a>
+            <a asp-controller="MyCourses" asp-action="WhatsNew" asp-route-cId="@course.uniqueid" class="breadcrumb blue-text" style="font-size: 9px; margin-left: 10px;">@Tools.truncateString(course.courseTitle, 20) @((course.courseTitle != null && course.courseTitle.Length > 20) ? "..." : "")</a>
+            <a asp-controller="MyCourses" asp-action="Email" asp-route-cId="@course.uniqueid" class="breadcrumb blue-text" style="font-size: 9px">Email</a>
+            <a href="#!" class="breadcrumb blue-text" style="font-size: 9px">Compose</a>
         </div>
     </div>
 </nav>
@@ -34,30 +34,32 @@
         </div>
         <div class="row">
             <div class="input-field col s12">
-               <select multiple asp-for="recipients">
-                            <option value="" disabled selected>Choose by roles</option>
-                            <option value="managers">Managers</option>
-                            <option value="students">Students</option>
-                            <option value="extras">Extra Users</option>
-                            <option value="tutors">Tutors</option>
-                            <option value="" disabled>Choose by groups</option>
-                           @if (allPossibleRecipients != null)
-                           {
-                               foreach (string userGroup in allPossibleRecipients)
-                               {
-                                     <option value="@userGroup">@userGroup</option>
-                               }
-                           }
-                    </select>
-                    <label>Recipients</label>
-                </div>
+                <select multiple asp-for="recipients">
+                    <option value="" disabled selected>Choose by roles</option>
+                    <option value="managers">Managers</option>
+                    <option value="students">Students</option>
+                    <option value="extras">Extra Users</option>
+                    <option value="tutors">Tutors</option>
+                    <option value="" disabled>Choose by groups</option>
+                    @if (allPossibleRecipients != null)
+                    {
+                        foreach (string userGroup in allPossibleRecipients)
+                        {
+                            <option value="@userGroup">@userGroup</option>
+                        }
+                    }
+                </select>
+                <label>Recipients</label>
             </div>
         </div>
         <div class="row">
-            <div class="input-field col s12">
+            <div class="input-field col s12" style="border-bottom: 1px solid #9e9e9e;">
                 <input asp-for="cc" class="validate" type="text" />
                 <label asp-for="cc">CC</label>
                 <span asp-validation-for="cc" class="red-text"></span>
+                    @*<input asp-for="cc" class="validate" type="text" />
+                    <label asp-for="cc">CC</label>
+                    <span asp-validation-for="cc" class="red-text"></span>*@
             </div>
         </div>
         <div class="row">
@@ -81,7 +83,7 @@
         </div>
         <div class="row right-align">
             <div class="input-field col s12">
-                <input asp-for="itemId" hidden="hidden" value="@(isEditMode.HasValue ? Model.itemId + "" : "-1")"/>
+                <input asp-for="itemId" hidden="hidden" value="@(isEditMode.HasValue ? Model.itemId + "" : "-1")" />
                 <button class="btn waves-effect waves-light" type="submit" name="action">
                     Submit
                     <i class="material-icons right">send</i>
@@ -92,8 +94,67 @@
 </div>
 
 <script>
-        $(function () {
-            $('select').material_select();
+
+    $(function () {
+        $('select[name="recipients"]').material_select();
+
+        var REGEX_EMAIL = '([a-z0-9!#$%&\'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&\'*+/=?^_`{|}~-]+)*@@'
+                      + '(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)';
+
+        $('input[name="cc"]').selectize({
+            persist: false,
+            maxItems: null,
+            valueField: 'email',
+            labelField: 'name',
+            searchField: ['name', 'email'],
+            render: {
+                item: function (item, escape) {
+                    return '<div class="chip">' +
+                        (item.name ? '<span class="name">' + escape(item.name) + '</span>' : '') +
+                        (item.email ? '<span class="email">' + escape(item.email) + '</span>' : '') +
+                    '</div>';
+                },
+                option: function (item, escape) {
+                    var label = item.name || item.email;
+                    var caption = item.name ? item.email : null;
+                    return '<div>' +
+                        '<span class="label">' + escape(label) + '</span>' +
+                        (caption ? '<span class="caption">' + escape(caption) + '</span>' : '') +
+                    '</div>';
+                }
+            },
+            createFilter: function (input) {
+                var match, regex;
+
+                // email@address.com
+                regex = new RegExp('^' + REGEX_EMAIL + '$', 'i');
+                match = input.match(regex);
+                if (match) return !this.options.hasOwnProperty(match[0]);
+
+                // name <email@address.com>
+                regex = new RegExp('^([^<]*)\<' + REGEX_EMAIL + '\>$', 'i');
+                match = input.match(regex);
+                if (match) return !this.options.hasOwnProperty(match[2]);
+
+                return false;
+            },
+            create: function (input) {
+                if ((new RegExp('^' + REGEX_EMAIL + '$', 'i')).test(input)) {
+                    return { email: input };
+                }
+                var match = input.match(new RegExp('^([^<]*)\<' + REGEX_EMAIL + '\>$', 'i'));
+                if (match) {
+                    return {
+                        email: match[2],
+                        name: $.trim(match[1])
+                    };
+                }
+                alert('Invalid email address.');
+                return false;
+            }
         });
+
+    });
+
 </script>
 

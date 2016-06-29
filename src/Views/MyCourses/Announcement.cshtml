@@ -1,4 +1,5 @@
 ﻿@using L2PAPIClient.DataModel;
+@using Grp.L2PSite.MobileApp.Services;
 @{
     ViewData["Title"] = "Announcements";
     L2PCourseInfoData course = ViewData["ChosenCourse"] as L2PCourseInfoData;
@@ -6,17 +7,18 @@
     List<L2PAnnouncementElement> announcements = ViewData["CourseAnnouncements"] as List<L2PAnnouncementElement>;
 }
 
-<div class="container">
-    <div class="row" style="margin-bottom: 0px !important">
-        <div class="col s12 center-align">
-            <div class="chip"><i class="material-icons">link</i><b>Announcements</b> | @course.courseTitle </div>
+<nav>
+    <div class="nav-wrapper white">
+        <div class="col s12">
+            <a asp-controller="MyCourses" asp-action="WhatsNew" asp-route-cId="@course.uniqueid" class="breadcrumb blue-text" style="font-size: 9px; margin-left: 10px;">@Tools.truncateString(course.courseTitle, 20) @((course.courseTitle != null && course.courseTitle.Length > 20) ? "..." : "")</a>
+            <a asp-controller="MyCourses" asp-action="Announcement" asp-route-cId="@course.uniqueid" class="breadcrumb blue-text" style="font-size: 9px">@ViewData["Title"]</a>
         </div>
     </div>
+</nav>
     <div class="row">
         <div class="col s12">
             <table class="bordered highlight">
                 <thead>
-
                     <tr>
                        @if (userRole.role.Contains("managers") || userRole.role.Contains("tutors"))
                        {

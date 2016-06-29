@@ -9,7 +9,6 @@ using static Grp.L2PSite.MobileApp.Services.Tools;
 using Microsoft.Net.Http.Headers;
 using System.Collections.Generic;
 using System.Linq;
-using System.Globalization;
 
 namespace Grp.L2PSite.MobileApp.Controllers
 {
@@ -1047,8 +1046,25 @@ namespace Grp.L2PSite.MobileApp.Controllers
                         L2PAddEmailRequest newEmail = new L2PAddEmailRequest();
                         newEmail.body = model.body;
                         if (model.cc != null)
+<<<<<<< HEAD
                             newEmail.cc = model.cc;
                         newEmail.recipients = model.recipients+";";
+=======
+
+                            newEmail.cc = model.cc.Replace(",",";");
+
+                        var recipients = from elts in Request.Form
+                                         where elts.Key == "recipients"
+                                         select elts;
+						if(recipients !=null)
+						{
+                        string[] recipientList = recipients.First().Value;
+	                        foreach (string s in recipientList)
+	                        {
+	                          newEmail.recipients = newEmail.recipients + s + ";";
+	                        }
+						}
+>>>>>>> 3f1d8b270521d2b59dbfebfa59aa39bd4437e71d
                         newEmail.subject = model.subject;
                         newEmail.cc = "";
                         newEmail.replyTo = "";
@@ -2194,10 +2210,15 @@ namespace Grp.L2PSite.MobileApp.Controllers
             }
         }
 
+<<<<<<< HEAD
         // View Discussion with Privilege Validation
         // GET: /L2P/ShowDiscussion?
         [HttpGet]
         public async Task<IActionResult> ShowDiscussion(string cId, int dId)
+=======
+        [HttpGet] // Get Method to show specific assignments
+        public async Task<IActionResult> ShowAssignment(string cId, string aid)
+>>>>>>> 3f1d8b270521d2b59dbfebfa59aa39bd4437e71d
         {
             try
             {
@@ -2207,6 +2228,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
                 {
                     ViewData["ChosenCourse"] = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
                     ViewData["userRole"] = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
+<<<<<<< HEAD
                     
                     L2PDiscussionItemList dList = await L2PAPIClient.api.Calls.L2PviewDiscussionItem(cId, dId);
                     if (dList != null)
@@ -2513,6 +2535,19 @@ namespace Grp.L2PSite.MobileApp.Controllers
                         string errorMessage = "Unauthorized Reply";
                         return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
                     }
+=======
+                    L2PAssignmentList assnList = await L2PAPIClient.api.Calls.L2PviewAssignment(cId, int.Parse(aid));
+                    ViewData["ChosenAssignment"] = assnList;
+                    List<L2PAssignmentElement> assignments = new List<L2PAssignmentElement>();
+                    if (assnList.dataSet != null)
+                    {
+
+                        assignments = assnList.dataSet;
+
+                    }
+                    ViewData["ViewAssignment"] = assignments;
+                    return View();
+>>>>>>> 3f1d8b270521d2b59dbfebfa59aa39bd4437e71d
                 }
                 else
                 {
