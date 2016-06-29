@@ -37,6 +37,13 @@
             <li><a asp-controller="MyCourses" asp-action="Literature" asp-route-cId="@cId" class="waves-effect waves-light">Literarture</a></li>
         </ul>
     }
+    <ul class="side-nav" id="mobile">
+        <li><a class="waves-effect waves-light" asp-controller="Home" asp-action="MyCourses">My Courses</a></li>
+        <li><a class="waves-effect waves-light" asp-controller="Home" asp-action="Calendar">Calendar</a></li>
+        <li><a class="waves-effect waves-light" asp-controller="Home" asp-action="About">About</a></li>
+        <li class="divider"></li>
+        @await Html.PartialAsync("_LoginPartial")
+    </ul>
     <nav class="blue darken-3" role="navigation">
         <div class="nav-wrapper">
             <a href="#!" class="brand-logo margin-left-20">L2P Mobile</a>
@@ -44,14 +51,7 @@
             <ul class="right">
                 <!-- Dropdown Trigger -->
                 <li><a class="dropdown-button" href="#!"  data-constrainwidth="false" data-activates="coursesDropdown"><i class="material-icons right">more_vert</i></a></li>
-            </ul>
-            <ul class="side-nav" id="mobile">
-                <li><a class="waves-effect waves-light" asp-controller="Home" asp-action="MyCourses">My Courses</a></li>
-                <li><a class="waves-effect waves-light" asp-controller="Home" asp-action="Calendar">Calendar</a></li>
-                <li><a class="waves-effect waves-light" asp-controller="Home" asp-action="About">About</a></li>
-                <li class="divider"></li>
-                @await Html.PartialAsync("_LoginPartial")
-            </ul>
+            </ul>           
         </div>
     </nav>
 
