@@ -18,10 +18,13 @@
                 <thead>
 
                     <tr>
-                        <th>
-                            <input id="cb_check_all" type="checkbox" />
-                            <label for="cb_check_all"></label>
-                        </th>
+                        @if (userRole.role.Contains("students") || userRole.role.Contains("extras"))
+                        {
+                            <th>
+                                <input id="cb_check_all" type="checkbox" />
+                                <label for="cb_check_all"></label>
+                            </th>
+                        }
                         <th data-field="title">Title</th>
                         <th data-field="hasAttachment">Attachments</th>
                     </tr>
@@ -32,17 +35,20 @@
                         foreach (L2PAnnouncementElement ann in announcements)
                         {
                             <tr>
-                                <td>
-                                    <input type="checkbox" name="tbl_cb" id="@ann.itemId" />
-                                    <label for="@ann.itemId"></label>
-                                </td>
+                                @if (userRole.role.Contains("students") || userRole.role.Contains("extras"))
+                                {
+                                    <td>
+                                        <input type="checkbox" name="tbl_cb" id="@ann.itemId" />
+                                        <label for="@ann.itemId"></label>
+                                    </td>
+                                }
                                 @if (!String.IsNullOrEmpty(ann.title))
                                 {
                                     <td><a asp-controller="L2P" asp-action="ShowAnnouncement" asp-route-cId="@course.uniqueid" asp-route-hId="@ann.itemId">@ann.title</a></td>
                                 }
                                 else
                                 {
-                                <td><a asp-controller="L2P" asp-action="ShowAnnouncement" asp-route-cId="@course.uniqueid" asp-route-hId="@ann.itemId">@ann.itemId</a></td>
+                                    <td><a asp-controller="L2P" asp-action="ShowAnnouncement" asp-route-cId="@course.uniqueid" asp-route-hId="@ann.itemId">@ann.itemId</a></td>
                                 }
                                 @if (ann.attachments != null)
                                 {
@@ -50,7 +56,7 @@
                                 }
                                 else
                                 {
-                                    <td>No</td> 
+                                    <td>No</td>
                                 }
 
                             </tr>
@@ -96,7 +102,7 @@
     $(function () {
         $('.modal-trigger').leanModal(); // Set the Modal to Trigger later on
 
-        if('@ViewData["Message"]' != ''){
+        if ('@ViewData["Message"]' != '') {
             Materialize.toast('@ViewData["Message"]', 3000) // 3000 is the duration of the toast
         }
     });
@@ -129,5 +135,4 @@
         $("#a_delete_announcements").attr("href", url + str);
     });
 </script>
-
 

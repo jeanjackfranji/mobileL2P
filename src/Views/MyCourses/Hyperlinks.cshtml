@@ -21,10 +21,13 @@
             <table class="bordered highlight">
                 <thead>
                     <tr>
-                        <th>
-                            <input id="cb_check_all" type="checkbox" />
-                            <label for="cb_check_all"></label>
-                        </th>
+                        @if (userRole.role.Contains("students") || userRole.role.Contains("extras"))
+                        {
+                            <th>
+                                <input id="cb_check_all" type="checkbox" />
+                                <label for="cb_check_all"></label>
+                            </th>
+                        }
                         <th data-field="name">URL</th>
                         <th data-field="notes">Notes</th>
                         <th class="center-align" data-field="oLink">Open Link</th>
@@ -36,10 +39,13 @@
                         foreach (L2PHyperlinkElement hpl in hyperlinks)
                         {
                             <tr>
-                                <td>
-                                    <input type="checkbox" name="tbl_cb" id="@hpl.itemId"/>
-                                    <label for="@hpl.itemId"></label>
-                                </td>
+                                @if (userRole.role.Contains("students") || userRole.role.Contains("extras"))
+                                {
+                                    <td>
+                                        <input type="checkbox" name="tbl_cb" id="@hpl.itemId" />
+                                        <label for="@hpl.itemId"></label>
+                                    </td>
+                                }
                                 @if (!String.IsNullOrEmpty(hpl.description))
                                 {
                                     <td><a asp-controller="L2P" asp-action="ShowHyperlink" asp-route-cId="@course.uniqueid" asp-route-hId="@hpl.itemId">@hpl.description</a></td>
@@ -56,7 +62,7 @@
                 </tbody>
             </table>
         </div>
-    </div> 
+    </div>
     @if (userRole.role.Contains("managers") || userRole.role.Contains("tutors"))
     {
         <div class="fixed-action-btn horizontal" style="bottom: 5px; right: 30px;">
@@ -92,7 +98,7 @@
     $(function () {
         $('.modal-trigger').leanModal(); // Set the Modal to Trigger later on
 
-        if('@ViewData["Message"]' != ''){
+        if ('@ViewData["Message"]' != '') {
             Materialize.toast('@ViewData["Message"]', 3000) // 3000 is the duration of the toast
         }
     });
