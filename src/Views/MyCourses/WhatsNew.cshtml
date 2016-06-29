@@ -5,6 +5,8 @@
     L2PCourseInfoData course = ViewData["ChosenCourse"] as L2PCourseInfoData;
     L2PWhatsNewDataType cWhatsNew = ViewData["CourseWhatsNew"] as L2PWhatsNewDataType;
     List<L2PAssignmentElement> assignments = ViewData["Assignments"] as List<L2PAssignmentElement>;
+    L2PExamResultViewDataType examResults = ViewData["ExamResults"] as L2PExamResultViewDataType;
+
 }
 
 <div class="row" style="margin-bottom: 0px !important">
@@ -13,6 +15,39 @@
     </div>
 </div>
 <div class="row">
+    <div class="col s12 m6">
+        <div class="card indigo lighten-5">
+            <div class="card-content black-text hoverable">
+                <span class="card-title">Exam Results</span>
+                <ul class="collection">
+                    @if (cWhatsNew.learningMaterials != null)
+                    {
+                        var learnMat = (from elt in cWhatsNew.learningMaterials
+                                        where elt.isDirectory == false
+                                        orderby elt.created descending
+                                        select elt).Take(5);
+                        foreach (L2PLearningMaterialElement lm in learnMat)
+                        {
+                            L2PFileInformationElement fileInfo = Tools.DeserializeObject<L2PFileInformationElement>(lm.fileInformation);
+                            <li class="collection-item avatar">
+                                <img src="@Tools.getImagePathByFileName(lm.name)" class="circle" style="background-size: 80% !important" />
+                                <span class="title"><a asp-controller="MyCourses" asp-action="Downloads" asp-route-cId="@course.uniqueid" asp-route-url="@lm.selfUrl" asp-route-filename="@lm.name">@lm.name</a></span>
+                                <a id="a-secondary-content" class="secondary-content" asp-controller="MyCourses" asp-action="Downloads" asp-route-cId="@course.uniqueid" asp-route-url="@lm.selfUrl" asp-route-filename="@lm.name"><i class="material-icons blue-text">get_app</i></a>
+                                <p>
+                                    @if (lm.relatedLectureDates != null && lm.relatedLectureDates.Count() > 0)
+                                    {
+                                        <b>Lecture Date:</b> @Tools.toDateTime(lm.relatedLectureDates.First());
+                                        <br />
+                                    }
+                                    @Html.Raw(fileInfo != null ? "<b>Size: </b>" + Tools.ToFileSize(fileInfo.fileSize) : "")
+                                </p>
+                            </li>
+                        }
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
     <div class="col s12 m6">
         <div class="card indigo lighten-5 dismissable">
             <div class="card-content black-text hoverable">

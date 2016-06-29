@@ -36,9 +36,13 @@ namespace Grp.L2PSite.MobileApp.Controllers
                 Tools.getAndSetUserToken(Request.Cookies, Context);
                 if (Tools.isUserLoggedInAndAPIActive(Context))
                 {
+
                     Context.Session.SetString("CourseId", cId);
                     ViewData["ChosenCourse"] = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
                     ViewData["CourseWhatsNew"] = await L2PAPIClient.api.Calls.L2PwhatsNewSinceAsync(cId, 180000);
+
+
+                    ViewData["ExamResults"] = await L2PAPIClient.api.Calls.L2PviewExamResults(cId);
 
                     L2PAssignmentList assnList = await L2PAPIClient.api.Calls.L2PviewAllAssignments(cId);
                     List<L2PAssignmentElement> assignments = new List<L2PAssignmentElement>();
@@ -406,8 +410,8 @@ namespace Grp.L2PSite.MobileApp.Controllers
         {
             try
             {
-                if (filename != null && !filename.StartsWith("|"))
-                    filename = "|" + filename;
+                if (url != null && !url.StartsWith("|"))
+                    url = "|" + url;
                 string callURL = Config.L2PEndPoint + "/downloadFile/" + filename + "?accessToken=" + Config.getAccessToken() + "&cid=" + cId + "&downloadUrl=" + url;
                 HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(callURL);
                 myHttpWebRequest.MaximumAutomaticRedirections = 1;
