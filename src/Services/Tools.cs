@@ -71,6 +71,8 @@ namespace Grp.L2PSite.MobileApp.Services
 
         public static String toDateTime(double dateNb)
         {
+            if (dateNb <= 0)
+                return "";
             DateTime date = new DateTime(1970, 1, 1);
             date = date.AddDays(Math.Floor(dateNb / 60 / 60 / 24));
             return date.ToShortDateString();
@@ -78,6 +80,8 @@ namespace Grp.L2PSite.MobileApp.Services
 
         public static String toTime(double dateNb)
         {
+            if (dateNb <= 0)
+                return "";
             DateTime date = new DateTime(1970, 1, 1);
             date = date.AddDays(Math.Floor(dateNb / 60 / 60 / 24));
             return date.ToString("dd/MM/yyyy hh:mm");

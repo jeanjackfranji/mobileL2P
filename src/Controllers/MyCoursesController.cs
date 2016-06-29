@@ -399,24 +399,6 @@ namespace Grp.L2PSite.MobileApp.Controllers
             }
         }
 
-        public IActionResult Assignments()
-        {
-            return View();
-        }
-
-        public IActionResult AddAnnouncement()
-        {
-            return View();
-        }
-        public IActionResult AddLiterature()
-        {
-            return View();
-        }
-        public IActionResult AddHyperlink()
-        {
-            return View();
-        }
-
         // Function used to download files from the L2P Client API
         public ActionResult Downloads(string cId, string url, string filename)
         {
@@ -437,26 +419,6 @@ namespace Grp.L2PSite.MobileApp.Controllers
                 return RedirectToAction(nameof(HomeController.Error), "Error");
             }
         }
-
-
-        public ActionResult DownloadsUsingCID(string url, string filename, string cId)
-        {
-            try
-            {
-                string callURL = Config.L2PEndPoint + "/downloadFile/" + filename + "?accessToken=" + Config.getAccessToken() + "&cid=" + cId + "&downloadUrl=" + url;
-                HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(callURL);
-                myHttpWebRequest.MaximumAutomaticRedirections = 1;
-                myHttpWebRequest.AllowAutoRedirect = true;
-                HttpWebResponse myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
-                return File(myHttpWebResponse.GetResponseStream(), myHttpWebResponse.ContentType, filename);
-            }
-            catch (Exception ex)
-            {
-                ViewData["error"] = ex.Message;
-                return RedirectToAction(nameof(HomeController.Error), "Error");
-            }
-        }
-
 
         public async Task<ActionResult> DownloadsZip(string caid, string aid)
         {
@@ -536,7 +498,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
         }
 
         [HttpGet] // Get Method to show specific assignments
-        public async Task<IActionResult> ViewAssignment(String cId, string aid)
+        public async Task<IActionResult> ViewAssignment(string cId, string aid)
         {
             try
             {                 

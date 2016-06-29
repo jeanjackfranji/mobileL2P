@@ -169,8 +169,7 @@ namespace Grp.L2PSite.MobileApp.Models
         [Display(Name = "Availability")]
         public string availability { get; set; }
 
-
-        public int itemID { get; set; }
+        public int itemId { get; set; }
 
         [StringLength(50)]
         [Display(Name = "Editor")]

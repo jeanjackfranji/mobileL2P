@@ -18,9 +18,9 @@
 <nav>
     <div class="nav-wrapper white">
         <div class="col s12">
-            <a asp-controller="MyCourses" asp-action="WhatsNew" asp-route-cId="@course.uniqueid" class="breadcrumb blue-text" style="font-size: 12px; margin-left: 10px;">@Tools.truncateString(course.courseTitle, 20)</a>
-            <a asp-controller="MyCourses" asp-action="Literature" asp-route-cId="@course.uniqueid" class="breadcrumb blue-text" style="font-size: 12px">Literature</a>
-            <a href="#!" class="breadcrumb blue-text" style="font-size: 12px">@(isEditMode.HasValue ? "Edit" : "Add")</a>
+            <a asp-controller="MyCourses" asp-action="WhatsNew" asp-route-cId="@course.uniqueid" class="breadcrumb blue-text" style="font-size: 9px; margin-left: 10px;">@Tools.truncateString(course.courseTitle, 20)</a>
+            <a asp-controller="MyCourses" asp-action="Literature" asp-route-cId="@course.uniqueid" class="breadcrumb blue-text" style="font-size: 9px">Literature</a>
+            <a href="#!" class="breadcrumb blue-text" style="font-size: 9px">@(isEditMode.HasValue ? "Edit" : "Add")</a>
         </div>
     </div>
 </nav>
@@ -46,7 +46,6 @@
                     <option value="Article">New Article</option>
                     <option value="In-Proceedings">In Proceedings</option>
                     <option value="Other Literature">Other Literature</option>
-                  
                 </select>
                 <label asp-for="type">Literature Type*</label>
                 <span asp-validation-for="type" class="red-text"></span>
@@ -72,7 +71,7 @@
                 <label asp-for="series">Series</label>
             </div>
         </div>
-        <div class="row" id="btitle">
+        <div class="row" id="book_title_div">
             <div class="input-field col s12">
                 <input asp-for="booktitle" class="validate" type="text" />
                 <label asp-for="booktitle">Book Title*</label>
@@ -80,7 +79,7 @@
         </div>
        
       
-        <div class="row" id="jName">
+        <div class="row" id="journal_name_div">
             <div class="input-field col s12">
                 <input asp-for="journalName" class="validate" type="text" />
                 <label asp-for="journalName">Journal Name*</label>
@@ -119,19 +118,19 @@
         </div>
         <div class="row">
             <div class="input-field col s12">
-                <input asp-for="fromPage" class="validate" type="text" />
+                <input asp-for="fromPage" class="validate" type="number" />
                 <label asp-for="fromPage">From Page</label>
             </div>
         </div>
         <div class="row">
             <div class="input-field col s12">
-                <input asp-for="toPage" class="validate" type="text" />
+                <input asp-for="toPage" class="validate" type="number" />
                 <label asp-for="toPage">To Page</label>
             </div>
         </div>
         <div class="row">
             <div class="input-field col s12">
-                <input asp-for="year" class="validate" type="text" />
+                <input asp-for="year" class="validate" type="number" />
                 <label asp-for="year">Publication Year*</label>
                 <span asp-validation-for="year" class="red-text"></span>
             </div>
@@ -167,7 +166,7 @@
             <div class="input-field col s12" id="lrelevance">
                 <select asp-for="relevance" class="validate" type="text">
                     <option value="" disabled selected>Choose Relevance</option>
-                    <option value="Mandotary">Mandotary</option>
+                    <option value="Mandatory">Mandatory</option>
                     <option value="Optional">Optional</option>
                     <option value="None">None</option>
                     <option value="Invalid">Invalid</option>
@@ -194,7 +193,7 @@
 
         <div class="row right-align">
             <div class="input-field col s12">
-                <input asp-for="itemID" hidden="hidden" />
+                <input asp-for="itemId" hidden="hidden" value="@(isEditMode.HasValue ? Model.itemId + "" : "-1")" />
                 <button class="btn waves-effect waves-light" type="submit" name="action">
                     Submit
                     <i class="material-icons right">send</i>
@@ -218,62 +217,50 @@
             return ($(this).text() == type);
         }).prop('selected', true);
 
-    toggleFields(); //call this first so we start out with the correct visibility depending on the selected form values
-    //this will call our toggleFields function every time the selection value of our underAge field changes
-    $("#ltype").change(function () { toggleFields(); });
-
+        toggleFields(); //call this first so we start out with the correct visibility depending on the selected form values
+        //this will call our toggleFields function every time the selection value of our underAge field changes
+        $("#ltype").change(function () { toggleFields(); });
    
-    //this toggles the visibility of our parent permission fields depending on the current selected value of the underAge field
-    function toggleFields()
-    {
-        if ($("#ltype").val() == "InBook") {
-            $("#btitle").show();
-            $("#booktitle").attr("required", "required");
-            $("#fromPage").attr("required", "required");
-            $("#toPage").attr("required", "required");
-            $("#publisher").attr("required", "required");
-            $("#journalName").removeAttr("required", "required");
-        }
-        else {
-            $("#btitle").hide();
-  
-        }
-        if ($("#ltype").val() == "Article") {
-            $("#jName").show();
-            $("#booktitle").removeAttr("required", "required");
-            $("#fromPage").removeAttr("required", "required");
-            $("#toPage").removeAttr("required", "required");
-            $("#publisher").removeAttr("required", "required");
-            $("#journalName").attr("required", "required");
-        }
-        else {
-            $("#jName").hide();
-            
-        }
+        //this toggles the visibility of our parent permission fields depending on the current selected value of the underAge field
+        function toggleFields()
+        {
+            if ($("#ltype").val() == "InBook") {
+                $("#book_title_div").show();
+                $("#journal_name_div").hide();
 
-        if ($("#ltype").val() == "In-Proceedings") {
-            $("#btitle").show();
-            $("#booktitle").attr("required", "required");
-            $("#fromPage").attr("required", "required");
-            $("#toPage").attr("required", "required");
-            $("#publisher").attr("required", "required");
-            //$("#booktitle").removeAttr("required");
-            $("#journalName").removeAttr("required", "required");
-        }
-        else {
-            $("#btitle").hide();
-      
-        }
-        if ($("#ltype").val() == "Book") {
-            $("#publisher").attr("required", "required");
-            $("#booktitle").removeAttr("required", "required");
-            $("#fromPage").removeAttr("required", "required");
-            $("#toPage").removeAttr("required", "required");
-            $("#journalName").attr("required", "required");
-        }
-      
-    }
+                $("#booktitle").attr("required", "required");
+                $("#fromPage").attr("required", "required");
+                $("#toPage").attr("required", "required");
+                $("#publisher").attr("required", "required");
+                $("#journalName").removeAttr("required", "required");
+            }
+            else if ($("#ltype").val() == "Article") {
+                $("#journal_name_div").show();
+                $("#book_title_div").hide();
 
+                $("#booktitle").removeAttr("required", "required");
+                $("#fromPage").removeAttr("required", "required");
+                $("#toPage").removeAttr("required", "required");
+                $("#publisher").removeAttr("required", "required");
+                $("#journalName").attr("required", "required");
+            }
+            else if ($("#ltype").val() == "In-Proceedings") {
+                $("#book_title_div").show();
+                $("#journal_name_div").hide();
+
+                $("#booktitle").attr("required", "required");
+                $("#fromPage").attr("required", "required");
+                $("#toPage").attr("required", "required");
+                $("#publisher").attr("required", "required");
+                $("#journalName").removeAttr("required", "required");
+            }
+            else if ($("#ltype").val() == "Book") {
+                $("#journalName").attr("required", "required");
+                $("#publisher").attr("required", "required");
+                $("#booktitle").removeAttr("required", "required");
+                $("#fromPage").removeAttr("required", "required");
+                $("#toPage").removeAttr("required", "required");
+            }      
+        }
     });
-
 </script>

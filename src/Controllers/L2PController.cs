@@ -1326,10 +1326,9 @@ namespace Grp.L2PSite.MobileApp.Controllers
         //    }
         //}
 
-
-
-        // View Hyperlink with Privilege Validation
-        // GET: /L2P/ShowHyperlink?
+            
+        // View Literature with Privileged Validation
+        // GET: /L2P/ViewLiterature?
         [HttpGet]
         public async Task<IActionResult> ViewLiterature(string cId, int lId)
         {
@@ -1346,34 +1345,30 @@ namespace Grp.L2PSite.MobileApp.Controllers
                     if (LList != null)
                     {
                         LiteratureViewModel model = new LiteratureViewModel();
-                        foreach (L2PLiteratureElementDataType L in LList.dataSet)
-                        {
+                        L2PLiteratureElementDataType literature = LList.dataSet.First();
+                        model.title = literature.title;
+                        model.authors = literature.authors;
+                        model.year = literature.year;
+                        model.url = literature.url;
+                        model.publisher = literature.publisher;
+                        model.relevance = literature.relevance;
+                        model.address = literature.address;
+                        model.booktitle = literature.booktitle;
+                        model.comments = literature.comments;
+                        model.doi = literature.doi;
+                        model.edition = literature.edition;
+                        model.fromPage = literature.fromPage;
+                        model.isxn = literature.isxn;
+                        model.journalName = literature.journalName;
+                        model.number = literature.number;
+                        model.role = literature.role;
+                        model.series = literature.series;
+                        model.toPage = literature.toPage;
+                        model.type = literature.type;
+                        model.volume = literature.volume;
+                        model.urlComment = literature.urlComment;
+                        model.itemId = literature.itemID;
 
-                            model.title = L.title;
-                            model.address = L.address;
-                            model.authors = L.authors;
-                            model.availability = L.availability;
-                            model.booktitle = L.booktitle;
-                            model.comments = L.comments;
-                            model.doi = L.doi;
-                            model.edition = L.edition;
-                            model.editor = L.editor;
-                            model.fromPage = L.fromPage;
-                            model.isxn = L.isxn;
-                            model.itemID = L.itemID;
-                            model.journalName = L.journalName;
-                            model.number = L.number;
-                            model.publisher = L.publisher;
-                            model.relevance = L.relevance;
-                            model.role = L.role;
-                            model.series = L.series;
-                            model.type = L.type;
-                            model.url = L.url;
-                            model.urlComment = L.urlComment;
-                            model.volume = L.volume;
-                            model.year = L.year;
-
-                        }
                         ViewData["LiteratureModel"] = model;
                         return View();
                     }
@@ -1395,8 +1390,8 @@ namespace Grp.L2PSite.MobileApp.Controllers
         }
 
 
-        // Get Method to add a new Hyperlink in a course
-        // GET: /L2P/DeleteHyperlinks
+        // Get Method to delete a new Literature in a course
+        // GET: /L2P/DeleteLiterature
         [HttpGet]
         public async Task<IActionResult> DeleteLiterature(string cId, string lIds)
         {
@@ -1467,32 +1462,30 @@ namespace Grp.L2PSite.MobileApp.Controllers
                         {
 
                             LiteratureViewModel model = new LiteratureViewModel();
-                            foreach (L2PLiteratureElementDataType L in lList.dataSet)
-                            {
-                                model.title = L.title;
-                                model.address = L.address;
-                                model.authors = L.authors;
-                                model.availability = L.availability;
-                                model.booktitle = L.booktitle;
-                                model.comments = L.comments;
-                                model.doi = L.doi;
-                                model.edition = L.edition;
-                                model.editor = L.editor;
-                                model.fromPage = L.fromPage;
-                                model.isxn = L.isxn;
-                                model.itemID = L.itemID;
-                                model.journalName = L.journalName;
-                                model.number = L.number;
-                                model.publisher = L.publisher;
-                                model.relevance = L.relevance;
-                                model.role = L.role;
-                                model.series = L.series;
-                                model.type = L.type;
-                                model.url = L.url;
-                                model.urlComment = L.urlComment;
-                                model.volume = L.volume;
-                                model.year = L.year;
-                            }
+                            L2PLiteratureElementDataType literature = lList.dataSet.First();
+                            model.title = literature.title;
+                            model.authors = literature.authors;
+                            model.year = literature.year;
+                            model.url = literature.url;
+                            model.publisher = literature.publisher;
+                            model.relevance = literature.relevance;
+                            model.address = literature.address;
+                            model.booktitle = literature.booktitle;
+                            model.comments = literature.comments;
+                            model.doi = literature.doi;
+                            model.edition = literature.edition;
+                            model.fromPage = literature.fromPage;
+                            model.isxn = literature.isxn;
+                            model.journalName = literature.journalName;
+                            model.number = literature.number;
+                            model.role = literature.role;
+                            model.series = literature.series;
+                            model.toPage = literature.toPage;
+                            model.type = literature.type;
+                            model.volume = literature.volume;
+                            model.urlComment = literature.urlComment;
+                            model.itemId = literature.itemID;
+
                             ViewData["EditMode"] = true;
                             ViewData["ChosenCourse"] = course;
                             ViewData["userRole"] = userRole;
@@ -1543,38 +1536,30 @@ namespace Grp.L2PSite.MobileApp.Controllers
                         {
                             return View("~/Views/L2P/AddEditLiterature.cshtml", model);
                         }
-                        //if (model.URL != null) // Custom Validation / Validate URL
-                        //{
-                        //    if (model.URL.ToLower().StartsWith("www."))
-                        //        model.URL = "http://" + model.URL;
-                        //    if (!Tools.checkURLValidity(model.URL))
-                        //    {
-                        //        ModelState.AddModelError(string.Empty, "The provided URL is not valid.");
-                        //        View("~/Views/L2P/AddEditHyperlink.cshtml", model);
-                        //    }
-                        //}
 
                         L2PLiteratureAddRequest editLiterature = new L2PLiteratureAddRequest();
-
                         editLiterature.title = model.title;
-                        editLiterature.address = model.address;
                         editLiterature.authors = model.authors;
-
+                        editLiterature.year = model.year;
+                        editLiterature.url = model.url;
+                        editLiterature.publisher = model.publisher;
+                        editLiterature.relevance = model.relevance;
+                        editLiterature.address = model.address;
                         editLiterature.booktitle = model.booktitle;
                         editLiterature.comments = model.comments;
                         editLiterature.doi = model.doi;
                         editLiterature.edition = model.edition;
-
                         editLiterature.fromPage = model.fromPage;
                         editLiterature.isxn = model.isxn;
-
                         editLiterature.journalName = model.journalName;
                         editLiterature.number = model.number;
-                        editLiterature.publisher = model.publisher;
-                        editLiterature.relevance = model.relevance;
                         editLiterature.role = model.role;
                         editLiterature.series = model.series;
+                        editLiterature.toPage = model.toPage;
                         editLiterature.type = model.type;
+                        editLiterature.volume = model.volume;
+                        editLiterature.urlComment = model.urlComment;
+
                         if (model.url != null)
                         {
                             if (model.url.ToLower().StartsWith("www."))
@@ -1585,15 +1570,8 @@ namespace Grp.L2PSite.MobileApp.Controllers
                                 View("~/Views/L2P/AddEditLiterature.cshtml", model);
                             }
                         }
-                        editLiterature.url = model.url;
-                        editLiterature.urlComment = model.urlComment;
-                        editLiterature.volume = model.volume;
-                        editLiterature.year = model.year;
 
-
-
-
-                        await L2PAPIClient.api.Calls.L2PupdateLiterature(cId, model.itemID, editLiterature);
+                        await L2PAPIClient.api.Calls.L2PupdateLiterature(cId, model.itemId, editLiterature);
 
                         return RedirectToAction(nameof(MyCoursesController.Literature), "MyCourses", new { cId = cId, @msg = "Literature was successfully edited!" });
                     }
@@ -1614,12 +1592,10 @@ namespace Grp.L2PSite.MobileApp.Controllers
             }
         }
 
-
-
-        // Get Method to Edit a Hyperlink in a course
-        // GET: /L2P/EditHyperlink
+        // Get Method to Add a Literature in a course
+        // GET: /L2P/AddLiterature
         [HttpGet]
-        public async Task<IActionResult> AddLiterature(string cId, int lId)
+        public async Task<IActionResult> AddLiterature(string cId)
         {
             try
             {
@@ -1631,46 +1607,9 @@ namespace Grp.L2PSite.MobileApp.Controllers
                     L2PRole userRole = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
                     if (userRole != null && (userRole.role.Contains("manager") || userRole.role.Contains("tutors")))
                     {
-                        L2PLiteratureSetDataType lList = await L2PAPIClient.api.Calls.L2PviewLiteratureAsync(cId, lId);
-                        if (lList != null)
-                        {
-
-                            LiteratureViewModel model = new LiteratureViewModel();
-                            foreach (L2PLiteratureElementDataType L in lList.dataSet)
-                            {
-                                model.title = L.title;
-                                model.address = L.address;
-                                model.authors = L.authors;
-                                model.availability = L.availability;
-                                model.booktitle = L.booktitle;
-                                model.comments = L.comments;
-                                model.doi = L.doi;
-                                model.edition = L.edition;
-                                model.editor = L.editor;
-                                model.fromPage = L.fromPage;
-                                model.isxn = L.isxn;
-                                model.itemID = L.itemID;
-                                model.journalName = L.journalName;
-                                model.number = L.number;
-                                model.publisher = L.publisher;
-                                model.relevance = L.relevance;
-                                model.role = L.role;
-                                model.series = L.series;
-                                model.type = L.type;
-                                model.url = L.url;
-                                model.urlComment = L.urlComment;
-                                model.volume = L.volume;
-                                model.year = L.year;
-                            }
-                            ViewData["ChosenCourse"] = course;
-                            ViewData["userRole"] = userRole;
-                            return View("~/Views/L2P/AddEditLiterature.cshtml", model);
-                        }
-                        else
-                        {
-                            string errorMessage = "The Literature you are trying to view does not exist.";
-                            return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
-                        }
+                        ViewData["ChosenCourse"] = course;
+                        ViewData["userRole"] = userRole;
+                        return View("~/Views/L2P/AddEditLiterature.cshtml");
                     }
                     else
                     {
@@ -1689,8 +1628,8 @@ namespace Grp.L2PSite.MobileApp.Controllers
             }
         }
 
-        // POST Method to Edit a Hyperlink in a course
-        // POST: /L2P/EditHyperlink
+        // POST Method to Add Literature in a course
+        // POST: /L2P/AddLiterature
         [HttpPost]
         public async Task<IActionResult> AddLiterature(LiteratureViewModel model, string cId)
         {
@@ -1711,38 +1650,31 @@ namespace Grp.L2PSite.MobileApp.Controllers
                         {
                             return View("~/Views/L2P/AddEditLiterature.cshtml", model);
                         }
-                        //if (model.URL != null) // Custom Validation / Validate URL
-                        //{
-                        //    if (model.URL.ToLower().StartsWith("www."))
-                        //        model.URL = "http://" + model.URL;
-                        //    if (!Tools.checkURLValidity(model.URL))
-                        //    {
-                        //        ModelState.AddModelError(string.Empty, "The provided URL is not valid.");
-                        //        View("~/Views/L2P/AddEditHyperlink.cshtml", model);
-                        //    }
-                        //}
 
                         L2PLiteratureAddRequest AddLiterature = new L2PLiteratureAddRequest();
 
                         AddLiterature.title = model.title;
-                        AddLiterature.address = model.address;
                         AddLiterature.authors = model.authors;
-
+                        AddLiterature.year = model.year;
+                        AddLiterature.url = model.url;
+                        AddLiterature.publisher = model.publisher;
+                        AddLiterature.relevance = model.relevance;
+                        AddLiterature.address = model.address;
                         AddLiterature.booktitle = model.booktitle;
                         AddLiterature.comments = model.comments;
                         AddLiterature.doi = model.doi;
                         AddLiterature.edition = model.edition;
-
                         AddLiterature.fromPage = model.fromPage;
                         AddLiterature.isxn = model.isxn;
-
                         AddLiterature.journalName = model.journalName;
                         AddLiterature.number = model.number;
-                        AddLiterature.publisher = model.publisher;
-                        AddLiterature.relevance = model.relevance;
                         AddLiterature.role = model.role;
                         AddLiterature.series = model.series;
+                        AddLiterature.toPage = model.toPage;
                         AddLiterature.type = model.type;
+                        AddLiterature.volume = model.volume;
+                        AddLiterature.urlComment = model.urlComment;
+
                         if (model.url != null) // Custom Validation / Validate URL
                         {
                             if (model.url.ToLower().StartsWith("www."))
@@ -1753,16 +1685,8 @@ namespace Grp.L2PSite.MobileApp.Controllers
                                 View("~/Views/L2P/AddEditLiterature.cshtml", model);
                             }
                         }
-                        AddLiterature.url = model.url;
-                        AddLiterature.urlComment = model.urlComment;
-                        AddLiterature.volume = model.volume;
-                        AddLiterature.year = model.year;
-
-
-
 
                         await L2PAPIClient.api.Calls.L2PAddLiterature(cId, AddLiterature);
-
                         return RedirectToAction(nameof(MyCoursesController.Literature), "MyCourses", new { cId = cId, @msg = "Literature was successfully Added!" });
                     }
                     else
