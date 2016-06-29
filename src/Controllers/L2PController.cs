@@ -1046,10 +1046,10 @@ namespace Grp.L2PSite.MobileApp.Controllers
                         L2PAddEmailRequest newEmail = new L2PAddEmailRequest();
                         newEmail.body = model.body;
                         if (model.cc != null)
-<<<<<<< HEAD
+
                             newEmail.cc = model.cc;
                         newEmail.recipients = model.recipients+";";
-=======
+
 
                             newEmail.cc = model.cc.Replace(",",";");
 
@@ -1064,7 +1064,6 @@ namespace Grp.L2PSite.MobileApp.Controllers
 	                          newEmail.recipients = newEmail.recipients + s + ";";
 	                        }
 						}
->>>>>>> 3f1d8b270521d2b59dbfebfa59aa39bd4437e71d
                         newEmail.subject = model.subject;
                         newEmail.cc = "";
                         newEmail.replyTo = "";
@@ -2210,15 +2209,11 @@ namespace Grp.L2PSite.MobileApp.Controllers
             }
         }
 
-<<<<<<< HEAD
+
         // View Discussion with Privilege Validation
         // GET: /L2P/ShowDiscussion?
         [HttpGet]
         public async Task<IActionResult> ShowDiscussion(string cId, int dId)
-=======
-        [HttpGet] // Get Method to show specific assignments
-        public async Task<IActionResult> ShowAssignment(string cId, string aid)
->>>>>>> 3f1d8b270521d2b59dbfebfa59aa39bd4437e71d
         {
             try
             {
@@ -2228,7 +2223,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
                 {
                     ViewData["ChosenCourse"] = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
                     ViewData["userRole"] = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
-<<<<<<< HEAD
+
                     
                     L2PDiscussionItemList dList = await L2PAPIClient.api.Calls.L2PviewDiscussionItem(cId, dId);
                     if (dList != null)
@@ -2497,6 +2492,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
             {
                 // This method must be used before every L2P API call
                 Tools.getAndSetUserToken(Request.Cookies, Context);
+                L2PDiscussionItemList elem;
                 if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
                 {
                     L2PCourseInfoData course = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
@@ -2518,7 +2514,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
                         newReply.subject = model.title;
                         L2PAddUpdateResponse response = await L2PAPIClient.api.Calls.L2PAddDiscussionThreadReply(cId, pId, newReply);
 
-                        L2PDiscussionItemList elem = await L2PAPIClient.api.Calls.L2PviewDiscussionItem(cId, response.itemId);
+                        elem = await L2PAPIClient.api.Calls.L2PviewDiscussionItem(cId, response.itemId);
                         if (elem.dataSet != null && elem.dataSet.Any())
                         {
                             return RedirectToAction(nameof(MyCoursesController.DiscussionForum), "MyCourses", new { cId = cId, @msg = "Reply was successfully added!" });
@@ -2535,19 +2531,11 @@ namespace Grp.L2PSite.MobileApp.Controllers
                         string errorMessage = "Unauthorized Reply";
                         return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
                     }
-=======
-                    L2PAssignmentList assnList = await L2PAPIClient.api.Calls.L2PviewAssignment(cId, int.Parse(aid));
-                    ViewData["ChosenAssignment"] = assnList;
-                    List<L2PAssignmentElement> assignments = new List<L2PAssignmentElement>();
-                    if (assnList.dataSet != null)
-                    {
 
-                        assignments = assnList.dataSet;
-
-                    }
-                    ViewData["ViewAssignment"] = assignments;
+                   
+                    ViewData["ShowDiscussion"] = elem;
                     return View();
->>>>>>> 3f1d8b270521d2b59dbfebfa59aa39bd4437e71d
+
                 }
                 else
                 {

@@ -39,10 +39,10 @@ namespace Grp.L2PSite.MobileApp.Controllers
                     Context.Session.SetString("CourseId", cId);
                     ViewData["ChosenCourse"] = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
                     ViewData["CourseWhatsNew"] = await L2PAPIClient.api.Calls.L2PwhatsNewSinceAsync(cId, 180000);
-<<<<<<< HEAD
-=======
+
+
                     ViewData["ExamResults"] = await L2PAPIClient.api.Calls.L2PviewExamResults(cId);
->>>>>>> 3f1d8b270521d2b59dbfebfa59aa39bd4437e71d
+
 
                     L2PAssignmentList assnList = await L2PAPIClient.api.Calls.L2PviewAllAssignments(cId);
                     List<L2PAssignmentElement> assignments = new List<L2PAssignmentElement>();
@@ -609,7 +609,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
                 return RedirectToAction(nameof(HomeController.Error), "Error");
             }
         }
-<<<<<<< HEAD
+
 
         [HttpGet] // Get Method to show specific assignments
         public async Task<IActionResult> ViewAssignment(String cId, string aid)
@@ -645,7 +645,6 @@ namespace Grp.L2PSite.MobileApp.Controllers
             }
         }
 
-=======
->>>>>>> 3f1d8b270521d2b59dbfebfa59aa39bd4437e71d
+
     }
 }
