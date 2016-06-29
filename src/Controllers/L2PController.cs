@@ -1046,8 +1046,20 @@ namespace Grp.L2PSite.MobileApp.Controllers
                         L2PAddEmailRequest newEmail = new L2PAddEmailRequest();
                         newEmail.body = model.body;
                         if (model.cc != null)
+
                             newEmail.cc = model.cc.Replace(",",";");
-                        newEmail.recipients = model.recipients+";";
+
+                        var recipients = from elts in Request.Form
+                                         where elts.Key == "recipients"
+                                         select elts;
+						if(recipients !=null)
+						{
+                        string[] recipientList = recipients.First().Value;
+	                        foreach (string s in recipientList)
+	                        {
+	                          newEmail.recipients = newEmail.recipients + s + ";";
+	                        }
+						}
                         newEmail.subject = model.subject;
                         newEmail.cc = "";
                         newEmail.replyTo = "";
