@@ -107,30 +107,10 @@ namespace Grp.L2PSite.MobileApp.Models
         //[Display(Name = "Due Date Hours")]
         public string DueDatehours { get; set; }
 
-        [StringLength(50)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
-        [Display(Name = "Publish Date")]
-        public string assignmentPublishDate { get; set; }
-
-        [StringLength(50)]
-        [DisplayFormat(DataFormatString = "{0:hh:mm}", ApplyFormatInEditMode = true)]
-        //[Display(Name = "Due Date Hours")]
-        public string assignmentPublishDatehours { get; set; }
-
-
+     
         [DataType(DataType.Url)]
         [Display(Name = "Assignment Documents")]
         public string AssignmentDocuments { get; set; }
-
-        [StringLength(50)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
-        [Display(Name = "Solution Publish Date")]
-        public string solutionPublishDate { get; set; }
-
-        [StringLength(50)]
-        [DisplayFormat(DataFormatString = "{0:hh:mm}", ApplyFormatInEditMode = true)]
-        //[Display(Name = "Due Date Hours")]
-        public string solutionPublishDatehours { get; set; }
 
 
         [DataType(DataType.Url)]

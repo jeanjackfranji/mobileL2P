@@ -82,6 +82,13 @@ namespace Grp.L2PSite.MobileApp.Services
             date = date.AddDays(Math.Floor(dateNb / 60 / 60 / 24));
             return date.ToString("dd/MM/yyyy hh:mm");
         }
+
+        public static String toHours(double dateNb)
+        {
+            DateTime date = new DateTime(1970, 1, 1);
+            date = date.AddDays(Math.Floor(dateNb / 60 / 60 / 24));
+            return date.ToString("hh:mm");
+        }
         public static DateTime toDate(double dateNb)
         {
             DateTime date = new DateTime(1970, 1, 1);

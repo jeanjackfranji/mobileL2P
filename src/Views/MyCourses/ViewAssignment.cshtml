@@ -165,7 +165,7 @@
 
                                         }
                                         else
-                                        {
+                                        {//change the asp-action to add solution 
                                             <a class="btn-floating btn-large blue darken-3" asp-controller="L2P" asp-action="AddHyperlink" asp-route-cId="@course.uniqueid">
                                                 <i class="large material-icons">publish</i>
                                             </a>
@@ -186,7 +186,7 @@
                     <ul>
 
                         <li><a href="#confirmModal" class="btn-floating waves-effect waves-light red modal-trigger"><i class="material-icons">delete</i></a></li>
-                        <li><a asp-controller="L2P" asp-action="DeleteAssignment" asp-route-cId="@course.uniqueid" asp-route-aId="@assign.itemId-" class="btn-floating blue waves-effect waves-light"><i class="material-icons">mode_edit</i></a></li>
+                        <li><a asp-controller="L2P" asp-action="EditAssignment" asp-route-cId="@course.uniqueid" asp-route-aId="@assign.itemId" class="btn-floating blue waves-effect waves-light"><i class="material-icons">mode_edit</i></a></li>
                     </ul>
                 </div>
 
