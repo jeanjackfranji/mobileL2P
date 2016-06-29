@@ -957,7 +957,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
                             int.TryParse(hId, out id);
                             await L2PAPIClient.api.Calls.L2PDeleteAnnouncement(cId, id);
                         }
-                        return RedirectToAction(nameof(MyCoursesController.Announcement), "MyCourses", new { @cId = cId, @msg = "Hyperlinks(s) successfully deleted!" });
+                        return RedirectToAction(nameof(MyCoursesController.Announcement), "MyCourses", new { @cId = cId, @msg = "Announcement(s) successfully deleted!" });
                     }
                     else
                     {
@@ -1182,7 +1182,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
                             int.TryParse(hId, out id);
                             await L2PAPIClient.api.Calls.L2PDeleteEmail(cId, id);
                         }
-                        return RedirectToAction(nameof(MyCoursesController.Email), "MyCourses", new { @cId = cId, @msg = "Hyperlinks(s) successfully deleted!" });
+                        return RedirectToAction(nameof(MyCoursesController.Email), "MyCourses", new { @cId = cId, @msg = "Email(s) successfully deleted!" });
                     }
                     else
                     {

@@ -339,7 +339,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
                 return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
             }
         }
-        public async Task<IActionResult> Announcement(String cId)
+        public async Task<IActionResult> Announcement(String cId, String msg)
         {
             try
             {
@@ -355,6 +355,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
                     {
                         announcements = aList.dataSet;
                     }
+					ViewData["Message"] = msg;
                     ViewData["CourseAnnouncements"] = announcements;
                     return View();
                 }
@@ -368,7 +369,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
                 return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
             }
         }
-        public async Task<IActionResult> Email(String cId)
+        public async Task<IActionResult> Email(String cId, String msg)
         {
             try
             {
@@ -385,6 +386,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
                         emails = eList.dataSet;
 
                     }
+					ViewData["Message"] = msg;
                     ViewData["CourseEmails"] = emails;
                     return View();
                 }
