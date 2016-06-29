@@ -1,35 +1,5 @@
-C:\Users\Jean Jack\Documents\Visual Studio 2013\Projects\L2P-Api-Client-master\L2PAPIClient\bin\Debug\L2PAPIClient.dll.config
-C:\Users\Jean Jack\Documents\Visual Studio 2013\Projects\L2P-Api-Client-master\L2PAPIClient\bin\Debug\L2PAPIClient.dll
-C:\Users\Jean Jack\Documents\Visual Studio 2013\Projects\L2P-Api-Client-master\L2PAPIClient\bin\Debug\L2PAPIClient.pdb
-C:\Users\Jean Jack\Documents\Visual Studio 2013\Projects\L2P-Api-Client-master\L2PAPIClient\obj\Debug\L2PAPIClient.dll
-C:\Users\Jean Jack\Documents\Visual Studio 2013\Projects\L2P-Api-Client-master\L2PAPIClient\obj\Debug\L2PAPIClient.pdb
-C:\Users\Jean Jack\Documents\Visual Studio 2015\Projects\mobileL2P\L2PAPIClient\bin\Debug\L2PAPIClient.dll.config
-C:\Users\Jean Jack\Documents\Visual Studio 2015\Projects\mobileL2P\L2PAPIClient\bin\Debug\L2PAPIClient.dll
-C:\Users\Jean Jack\Documents\Visual Studio 2015\Projects\mobileL2P\L2PAPIClient\bin\Debug\L2PAPIClient.pdb
-C:\Users\Jean Jack\Documents\Visual Studio 2015\Projects\mobileL2P\L2PAPIClient\bin\Debug\Newtonsoft.Json.xml
-C:\Users\Jean Jack\Documents\Visual Studio 2015\Projects\mobileL2P\L2PAPIClient\obj\Debug\L2PAPIClient.dll
-C:\Users\Jean Jack\Documents\Visual Studio 2015\Projects\mobileL2P\L2PAPIClient\obj\Debug\L2PAPIClient.pdb
-C:\Users\Jean Jack\Documents\Visual Studio 2015\Projects\mobileL2P\L2PAPIClient\obj\Debug\L2PAPIClient.csprojResolveAssemblyReference.cache
-C:\Users\mahbu\Documents\GitHub\mobileL2P\L2PAPIClient\bin\Debug\L2PAPIClient.dll.config
-C:\Users\mahbu\Documents\GitHub\mobileL2P\L2PAPIClient\bin\Debug\L2PAPIClient.dll
-C:\Users\mahbu\Documents\GitHub\mobileL2P\L2PAPIClient\bin\Debug\L2PAPIClient.pdb
-C:\Users\mahbu\Documents\GitHub\mobileL2P\L2PAPIClient\bin\Debug\Newtonsoft.Json.xml
-C:\Users\mahbu\Documents\GitHub\mobileL2P\L2PAPIClient\obj\Debug\L2PAPIClient.csprojResolveAssemblyReference.cache
-C:\Users\mahbu\Documents\GitHub\mobileL2P\L2PAPIClient\obj\Debug\L2PAPIClient.dll
-C:\Users\mahbu\Documents\GitHub\mobileL2P\L2PAPIClient\obj\Debug\L2PAPIClient.pdb
-<<<<<<< HEAD
 C:\Users\Atul_Mohan\Source\Repos\New folder\L2PAPIClient\bin\Debug\L2PAPIClient.dll.config
 C:\Users\Atul_Mohan\Source\Repos\New folder\L2PAPIClient\bin\Debug\L2PAPIClient.dll
 C:\Users\Atul_Mohan\Source\Repos\New folder\L2PAPIClient\bin\Debug\L2PAPIClient.pdb
-C:\Users\Atul_Mohan\Source\Repos\New folder\L2PAPIClient\bin\Debug\Newtonsoft.Json.xml
-C:\Users\Atul_Mohan\Source\Repos\New folder\L2PAPIClient\obj\Debug\L2PAPIClient.csprojResolveAssemblyReference.cache
 C:\Users\Atul_Mohan\Source\Repos\New folder\L2PAPIClient\obj\Debug\L2PAPIClient.dll
 C:\Users\Atul_Mohan\Source\Repos\New folder\L2PAPIClient\obj\Debug\L2PAPIClient.pdb
-=======
-C:\Users\amarb\OneDrive\Documents\Visual Studio 2015\Projects\mobileL2P\L2PAPIClient\bin\Debug\L2PAPIClient.dll.config
-C:\Users\amarb\OneDrive\Documents\Visual Studio 2015\Projects\mobileL2P\L2PAPIClient\bin\Debug\L2PAPIClient.dll
-C:\Users\amarb\OneDrive\Documents\Visual Studio 2015\Projects\mobileL2P\L2PAPIClient\bin\Debug\L2PAPIClient.pdb
-C:\Users\amarb\OneDrive\Documents\Visual Studio 2015\Projects\mobileL2P\L2PAPIClient\obj\Debug\L2PAPIClient.dll
-C:\Users\amarb\OneDrive\Documents\Visual Studio 2015\Projects\mobileL2P\L2PAPIClient\obj\Debug\L2PAPIClient.pdb
-C:\Users\amarb\OneDrive\Documents\Visual Studio 2015\Projects\mobileL2P\L2PAPIClient\obj\Debug\L2PAPIClient.csprojResolveAssemblyReference.cache
->>>>>>> 2867b817999c03fa713f2333f8e383cb1ef53715
