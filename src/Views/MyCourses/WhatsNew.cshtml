@@ -79,9 +79,10 @@
                         <li class="collection-item center-align">
                             <b>Total Points: </b> @assignments.Sum(item => item.totalPoint) <br/>
                             <b>Total Obtained Points: </b> @assignments.Sum(item => item.correction.obtainedPoint) <br/>
-                            @if (assignments.Sum(item => item.totalPoint) == 0 && assignments.Sum(item => item.correction.obtainedPoint) == 0)
+                            @if (assignments.Sum(item => item.totalPoint) != 0)
                             {
-                                <b>Total Percentage: </b> @(assignments.Sum(item => item.correction.obtainedPoint) / @assignments.Sum(item => item.totalPoint) * 100)% < br />
+                                <b>Total Percentage: </b> @(assignments.Sum(item => item.correction.obtainedPoint) / @assignments.Sum(item => item.totalPoint) * 100)
+                                <span>%</span>
                             }
                         </li>
                     }
