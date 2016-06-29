@@ -1,0 +1,40 @@
+﻿@using L2PAPIClient.DataModel;
+@using Grp.L2PSite.MobileApp.Services;
+@{
+    ViewData["Title"] = "Discussion Forum";
+    L2PCourseInfoData course = ViewData["ChosenCourse"] as L2PCourseInfoData;
+    L2PRole userRole = ViewData["userRole"] as L2PRole;
+    List<L2PDiscussionItemElement> discussion = ViewData["DIscussionForum"] as List<L2PDiscussionItemElement>;
+}
+
+<nav>
+    <div class="nav-wrapper white">
+        <div class="col s12">
+            <a asp-controller="MyCourses" asp-action="WhatsNew" asp-route-cId="@course.uniqueid" class="breadcrumb blue-text" style="font-size: 12px; margin-left: 10px;">@Tools.truncateString(course.courseTitle, 20)...</a>
+            <a asp-controller="MyCourses" asp-action="MediaLibrary" asp-route-cId="@course.uniqueid" class="breadcrumb blue-text" style="font-size: 12px">@ViewData["Title"]</a>
+        </div>
+    </div>
+</nav>
+<div class="col s12">
+    <ul class="collection with-header">
+        <li class="collection-header center-align"><h4>@ViewData["Title"]</h4></li>
+        @{
+            foreach (L2PDiscussionItemElement elem in discussion)
+            {
+                L2PFileInformationElement fileInfo = Tools.DeserializeObject<L2PFileInformationElement>(elem.subject);
+                <li class="collection-item avatar">
+                    
+                    @{ 
+                       // <img src="@Tools.getImagePathByFileName(elem. )"/>
+                    }
+
+                    @*@{
+                        <img src="@Tools.getImagePathByFileName(elem.subject)" class="circle" style="background-size: 80% !important" />
+                        <span class="title"><a asp-controller="MyCourses" asp-action="Downloads" asp-route-url="@md.selfUrl" asp-route-filename="@md.name">@md.name</a></span>
+                        <a id="a-secondary-content" class="secondary-content" asp-controller="MyCourses" asp-action="Downloads" asp-route-url="@md.selfUrl" asp-route-filename="@md.name"><i class="material-icons blue-text">get_app</i></a>
+                    }*@
+                </li>
+            }
+        }
+    </ul>
+</div>

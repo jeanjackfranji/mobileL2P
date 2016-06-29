@@ -17,3 +17,10 @@ C:\Users\mahbu\Documents\GitHub\mobileL2P\L2PAPIClient\bin\Debug\Newtonsoft.Json
 C:\Users\mahbu\Documents\GitHub\mobileL2P\L2PAPIClient\obj\Debug\L2PAPIClient.csprojResolveAssemblyReference.cache
 C:\Users\mahbu\Documents\GitHub\mobileL2P\L2PAPIClient\obj\Debug\L2PAPIClient.dll
 C:\Users\mahbu\Documents\GitHub\mobileL2P\L2PAPIClient\obj\Debug\L2PAPIClient.pdb
+C:\Users\Atul_Mohan\Source\Repos\New folder\L2PAPIClient\bin\Debug\L2PAPIClient.dll.config
+C:\Users\Atul_Mohan\Source\Repos\New folder\L2PAPIClient\bin\Debug\L2PAPIClient.dll
+C:\Users\Atul_Mohan\Source\Repos\New folder\L2PAPIClient\bin\Debug\L2PAPIClient.pdb
+C:\Users\Atul_Mohan\Source\Repos\New folder\L2PAPIClient\bin\Debug\Newtonsoft.Json.xml
+C:\Users\Atul_Mohan\Source\Repos\New folder\L2PAPIClient\obj\Debug\L2PAPIClient.csprojResolveAssemblyReference.cache
+C:\Users\Atul_Mohan\Source\Repos\New folder\L2PAPIClient\obj\Debug\L2PAPIClient.dll
+C:\Users\Atul_Mohan\Source\Repos\New folder\L2PAPIClient\obj\Debug\L2PAPIClient.pdb

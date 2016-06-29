@@ -275,6 +275,40 @@ namespace Grp.L2PSite.MobileApp.Controllers
             return View();
         }
 
+        //Atul
+        public async Task<IActionResult> DiscussionForum(String cId, String ExtdDir)
+        {
+            try
+            {
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
+                {
+                    L2PCourseInfoData course = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    ViewData["ChosenCourse"] = course;
+                    ViewData["userRole"] = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
+                    L2PDiscussionItemList discussList = await L2PAPIClient.api.Calls.L2PviewAllDiscussionItems(cId);
+                    List<L2PDiscussionItemElement> discussion = new List<L2PDiscussionItemElement>();
+                    
+
+                    var discuss = from elem in discussList.dataSet
+                                     orderby elem.subject.ToString()
+                                     select elem;
+                    discussion = discuss.ToList();
+                    ViewData["DIscussionForum"] = discussion;
+                    return View();                 
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
+        }
+
         // Function used to download files from the L2P Client API
         public ActionResult Downloads(string cId, string url, string filename)
         {
