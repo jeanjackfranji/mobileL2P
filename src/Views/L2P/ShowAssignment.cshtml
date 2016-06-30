@@ -68,7 +68,7 @@
                                     <td>
                                         @foreach (L2PAttachmentElement a in fileInfo)
                                         {
-                                            <a asp-controller="MyCourses" asp-action="Downloads" asp-route-url="@a.downloadUrl" asp-route-filename="@a.fileName" asp-route-cId="@course.uniqueid">@a.fileName</a>
+                                            <a asp-controller="MyCourses" asp-action="DownloadAssignment" asp-route-url="@a.downloadUrl" asp-route-filename="@a.fileName" asp-route-cId="@course.uniqueid">@a.fileName</a>
                                             <br />
                                         }
                                     </td>
@@ -88,7 +88,7 @@
                                         @foreach (L2PAttachmentElement sa in sampleSol)
                                         {
 
-                                            <a asp-controller="MyCourses" asp-action="Downloads" asp-route-url="@sa.downloadUrl" asp-route-filename="@sa.fileName" asp-route-cId="@course.uniqueid">@sa.fileName</a>
+                                            <a asp-controller="MyCourses" asp-action="DownloadAssignment" asp-route-url="@sa.downloadUrl" asp-route-filename="@sa.fileName" asp-route-cId="@course.uniqueid">@sa.fileName</a>
 
                                         }
                                     </td>
@@ -122,7 +122,7 @@
                                                 @foreach (L2PAttachmentElement c in corrdoc)
                                                 {
 
-                                                    <a asp-controller="MyCourses" asp-action="Downloads" asp-route-url="@c.downloadUrl" asp-route-filename="@c.fileName" asp-route-cId="@course.uniqueid">@c.fileName</a>
+                                                    <a asp-controller="MyCourses" asp-action="DownloadAssignment" asp-route-url="@c.downloadUrl" asp-route-filename="@c.fileName" asp-route-cId="@course.uniqueid">@c.fileName</a>
                                                     <br />
                                                     @Tools.toDateTime(c.modifiedTimestamp)
                                                     <br />
@@ -154,8 +154,7 @@
 
                                                 @foreach (L2PAttachmentElement s in sodoc)
                                                 {
-
-                                                    <a asp-controller="MyCourses" asp-action="Downloads" asp-route-url="@s.downloadUrl" asp-route-filename="@s.fileName" asp-route-cId="@course.uniqueid">@s.fileName</a>
+                                                    <a asp-controller="MyCourses" asp-action="DownloadAssignment" asp-route-url="@s.downloadUrl" asp-route-filename="@s.fileName" asp-route-cId="@course.uniqueid">@s.fileName</a>
                                                     <br />
                                                     @Tools.toDateTime(s.modifiedTimestamp)
                                                     <br />
