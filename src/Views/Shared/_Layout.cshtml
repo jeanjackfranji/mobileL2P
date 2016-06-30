@@ -1,6 +1,6 @@
 ﻿@using Microsoft.AspNet.Http;
 @{
-    String cId = Context.Session.GetString("CourseId");
+    string cId = Context.Session.GetString("CourseId");
 }
 <!DOCTYPE html>
 
@@ -52,11 +52,20 @@
                 </ul>
             }
             <ul class="side-nav" id="mobile">
+                <li style="height: 60px">
+                    <div class="row valign-wrapper">
+                        <div class="col s12" >
+                            <img src="~/images/l2p_logo_shadow.png" />
+                            <img width="100" src="~/images/photo.jpg">
+                        </div>=
+                    </div>
+                </li>
                 <li><a class="waves-effect waves-light" asp-controller="Home" asp-action="MyCourses">My Courses</a></li>
                 <li><a class="waves-effect waves-light" asp-controller="Home" asp-action="Calendar">Calendar</a></li>
                 <li><a class="waves-effect waves-light" asp-controller="Home" asp-action="About">About</a></li>
                 <li class="divider"></li>
                 @await Html.PartialAsync("_LoginPartial")
+                
             </ul>
         </div>
     </nav>
