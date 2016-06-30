@@ -1,0 +1,42 @@
+﻿@using L2PAPIClient.DataModel;
+@using Grp.L2PSite.MobileApp.Services;
+@{
+    ViewData["Title"] = "Discussion Forum";
+    L2PCourseInfoData course = ViewData["ChosenCourse"] as L2PCourseInfoData;
+    L2PRole userRole = ViewData["userRole"] as L2PRole;
+    List<L2PDiscussionItemElement> discussion = ViewData["DiscussionForum"] as List<L2PDiscussionItemElement>;
+}
+
+<nav>
+    <div class="nav-wrapper white">
+        <div class="col s12">
+            <a asp-controller="MyCourses" asp-action="WhatsNew" asp-route-cId="@course.uniqueid" class="breadcrumb blue-text" style="font-size: 12px; margin-left: 10px;">@Tools.truncateString(course.courseTitle, 20)...</a>
+            <a asp-controller="MyCourses" asp-action="MediaLibrary" asp-route-cId="@course.uniqueid" class="breadcrumb blue-text" style="font-size: 12px">@ViewData["Title"]</a>
+        </div>
+    </div>
+</nav>
+<div class="col s12">
+
+        <ul class="collapsible popout" data-collapsible="accordion">
+                @foreach (L2PDiscussionItemElement elem in discussion)
+                {
+                        if (elem != null)
+                        {
+                            <li>
+                                @if (@elem.subject.ToString() == "Reply")
+                                {
+                                    @*<div class="collapsible-header"><i class="material-icons grey-text">forum</i><a asp-controller="L2P" asp-action="ShowDiscussion" asp-route-cID="@course.uniqueid" asp-route-dID="@elem.selfId">@elem.from.ToString()</a></div>
+                                    <div class="collapsible-body"><p>@Html.Raw(@elem.body)</p></div>*@
+                                    continue;
+                                }
+
+                                else
+                                {
+                                    <div class="collapsible-header"><i class="material-icons grey-text">forum</i><a asp-controller="L2P" asp-action="ShowDiscussion" asp-route-cID="@course.uniqueid" asp-route-dID="@elem.selfId">@elem.subject.ToString()</a></div>
+                                    <div class="collapsible-body"><p>@Html.Raw(@elem.body)</p></div>
+                                }
+                            </li>
+                        }
+                 }
+            </ul>
+</div>

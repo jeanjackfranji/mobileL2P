@@ -36,11 +36,13 @@ namespace Grp.L2PSite.MobileApp.Controllers
                 Tools.getAndSetUserToken(Request.Cookies, Context);
                 if (Tools.isUserLoggedInAndAPIActive(Context))
                 {
-
                     Context.Session.SetString("CourseId", cId);
                     ViewData["ChosenCourse"] = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
                     ViewData["CourseWhatsNew"] = await L2PAPIClient.api.Calls.L2PwhatsNewSinceAsync(cId, 180000);
+
+
                     ViewData["ExamResults"] = await L2PAPIClient.api.Calls.L2PviewExamResults(cId);
+
 
                     L2PAssignmentList assnList = await L2PAPIClient.api.Calls.L2PviewAllAssignments(cId);
                     List<L2PAssignmentElement> assignments = new List<L2PAssignmentElement>();
@@ -431,13 +433,65 @@ namespace Grp.L2PSite.MobileApp.Controllers
             }
         }
 
+        public IActionResult Assignments()
+        {
+            return View();
+        }
+
+        public IActionResult AddAnnouncement()
+        {
+            return View();
+        }
+        public IActionResult AddLiterature()
+        {
+            return View();
+        }
+        public IActionResult AddHyperlink()
+        {
+            return View();
+        }
+
+        //Atul
+        public async Task<IActionResult> DiscussionForum(String cId, String ExtdDir)
+        {
+            try
+            {
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
+                {
+                    L2PCourseInfoData course = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    ViewData["ChosenCourse"] = course;
+                    ViewData["userRole"] = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
+                    L2PDiscussionItemList discussList = await L2PAPIClient.api.Calls.L2PviewAllDiscussionItems(cId);
+                    List<L2PDiscussionItemElement> discussion = new List<L2PDiscussionItemElement>();
+                    
+
+                    var discuss = from elem in discussList.dataSet
+                                     orderby elem.subject.ToString()
+                                     select elem;
+                    discussion = discuss.ToList();
+                    ViewData["DIscussionForum"] = discussion;
+                    return View();                 
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
+        }
+
         // Function used to download files from the L2P Client API
         public ActionResult Downloads(string cId, string url, string filename)
         {
             try
             {
-                if (url != null && !url.StartsWith("|"))
-                    url = "|" + url;
+                if (filename != null && !filename.StartsWith("|"))
+                    filename = "|" + filename;
                 string callURL = Config.L2PEndPoint + "/downloadFile/" + filename + "?accessToken=" + Config.getAccessToken() + "&cid=" + cId + "&downloadUrl=" + url;
                 HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(callURL);
                 myHttpWebRequest.MaximumAutomaticRedirections = 1;
@@ -451,6 +505,26 @@ namespace Grp.L2PSite.MobileApp.Controllers
                 return RedirectToAction(nameof(HomeController.Error), "Error");
             }
         }
+
+
+        public ActionResult DownloadsUsingCID(string url, string filename, string cId)
+        {
+            try
+            {
+                string callURL = Config.L2PEndPoint + "/downloadFile/" + filename + "?accessToken=" + Config.getAccessToken() + "&cid=" + cId + "&downloadUrl=" + url;
+                HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(callURL);
+                myHttpWebRequest.MaximumAutomaticRedirections = 1;
+                myHttpWebRequest.AllowAutoRedirect = true;
+                HttpWebResponse myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
+                return File(myHttpWebResponse.GetResponseStream(), myHttpWebResponse.ContentType, filename);
+            }
+            catch (Exception ex)
+            {
+                ViewData["error"] = ex.Message;
+                return RedirectToAction(nameof(HomeController.Error), "Error");
+            }
+        }
+
 
         public async Task<ActionResult> DownloadsZip(string caid, string aid)
         {
@@ -535,5 +609,42 @@ namespace Grp.L2PSite.MobileApp.Controllers
                 return RedirectToAction(nameof(HomeController.Error), "Error");
             }
         }
+
+
+        [HttpGet] // Get Method to show specific assignments
+        public async Task<IActionResult> ViewAssignment(String cId, string aid)
+        {
+            try
+            {                 
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
+                {
+                    ViewData["ChosenCourse"] = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    ViewData["userRole"] = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
+                    L2PAssignmentList assnList = await L2PAPIClient.api.Calls.L2PviewAssignment(cId, int.Parse(aid));
+                    ViewData["ChosenAssignment"] = assnList;
+                    List<L2PAssignmentElement> assignments = new List<L2PAssignmentElement>();
+                    if (assnList.dataSet != null)
+                    {
+
+                        assignments = assnList.dataSet;
+
+                    }
+                    ViewData["ViewAssignment"] = assignments;
+                    return View();
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
+        }
+
+
     }
 }

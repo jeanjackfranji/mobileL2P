@@ -1047,6 +1047,10 @@ namespace Grp.L2PSite.MobileApp.Controllers
                         newEmail.body = model.body;
                         if (model.cc != null)
 
+                            newEmail.cc = model.cc;
+                        newEmail.recipients = model.recipients+";";
+
+
                             newEmail.cc = model.cc.Replace(",",";");
 
                         var recipients = from elts in Request.Form
@@ -1351,9 +1355,10 @@ namespace Grp.L2PSite.MobileApp.Controllers
         //    }
         //}
 
-            
-        // View Literature with Privileged Validation
-        // GET: /L2P/ViewLiterature?
+
+
+        // View Hyperlink with Privilege Validation
+        // GET: /L2P/ShowHyperlink?
         [HttpGet]
         public async Task<IActionResult> ViewLiterature(string cId, int lId)
         {
@@ -1370,30 +1375,34 @@ namespace Grp.L2PSite.MobileApp.Controllers
                     if (LList != null)
                     {
                         LiteratureViewModel model = new LiteratureViewModel();
-                        L2PLiteratureElementDataType literature = LList.dataSet.First();
-                        model.title = literature.title;
-                        model.authors = literature.authors;
-                        model.year = literature.year;
-                        model.url = literature.url;
-                        model.publisher = literature.publisher;
-                        model.relevance = literature.relevance;
-                        model.address = literature.address;
-                        model.booktitle = literature.booktitle;
-                        model.comments = literature.comments;
-                        model.doi = literature.doi;
-                        model.edition = literature.edition;
-                        model.fromPage = literature.fromPage;
-                        model.isxn = literature.isxn;
-                        model.journalName = literature.journalName;
-                        model.number = literature.number;
-                        model.role = literature.role;
-                        model.series = literature.series;
-                        model.toPage = literature.toPage;
-                        model.type = literature.type;
-                        model.volume = literature.volume;
-                        model.urlComment = literature.urlComment;
-                        model.itemId = literature.itemID;
+                        foreach (L2PLiteratureElementDataType L in LList.dataSet)
+                        {
 
+                            model.title = L.title;
+                            model.address = L.address;
+                            model.authors = L.authors;
+                            model.availability = L.availability;
+                            model.booktitle = L.booktitle;
+                            model.comments = L.comments;
+                            model.doi = L.doi;
+                            model.edition = L.edition;
+                            model.editor = L.editor;
+                            model.fromPage = L.fromPage;
+                            model.isxn = L.isxn;
+                            model.itemID = L.itemID;
+                            model.journalName = L.journalName;
+                            model.number = L.number;
+                            model.publisher = L.publisher;
+                            model.relevance = L.relevance;
+                            model.role = L.role;
+                            model.series = L.series;
+                            model.type = L.type;
+                            model.url = L.url;
+                            model.urlComment = L.urlComment;
+                            model.volume = L.volume;
+                            model.year = L.year;
+
+                        }
                         ViewData["LiteratureModel"] = model;
                         return View();
                     }
@@ -1415,8 +1424,8 @@ namespace Grp.L2PSite.MobileApp.Controllers
         }
 
 
-        // Get Method to delete a new Literature in a course
-        // GET: /L2P/DeleteLiterature
+        // Get Method to add a new Hyperlink in a course
+        // GET: /L2P/DeleteHyperlinks
         [HttpGet]
         public async Task<IActionResult> DeleteLiterature(string cId, string lIds)
         {
@@ -1487,30 +1496,32 @@ namespace Grp.L2PSite.MobileApp.Controllers
                         {
 
                             LiteratureViewModel model = new LiteratureViewModel();
-                            L2PLiteratureElementDataType literature = lList.dataSet.First();
-                            model.title = literature.title;
-                            model.authors = literature.authors;
-                            model.year = literature.year;
-                            model.url = literature.url;
-                            model.publisher = literature.publisher;
-                            model.relevance = literature.relevance;
-                            model.address = literature.address;
-                            model.booktitle = literature.booktitle;
-                            model.comments = literature.comments;
-                            model.doi = literature.doi;
-                            model.edition = literature.edition;
-                            model.fromPage = literature.fromPage;
-                            model.isxn = literature.isxn;
-                            model.journalName = literature.journalName;
-                            model.number = literature.number;
-                            model.role = literature.role;
-                            model.series = literature.series;
-                            model.toPage = literature.toPage;
-                            model.type = literature.type;
-                            model.volume = literature.volume;
-                            model.urlComment = literature.urlComment;
-                            model.itemId = literature.itemID;
-
+                            foreach (L2PLiteratureElementDataType L in lList.dataSet)
+                            {
+                                model.title = L.title;
+                                model.address = L.address;
+                                model.authors = L.authors;
+                                model.availability = L.availability;
+                                model.booktitle = L.booktitle;
+                                model.comments = L.comments;
+                                model.doi = L.doi;
+                                model.edition = L.edition;
+                                model.editor = L.editor;
+                                model.fromPage = L.fromPage;
+                                model.isxn = L.isxn;
+                                model.itemID = L.itemID;
+                                model.journalName = L.journalName;
+                                model.number = L.number;
+                                model.publisher = L.publisher;
+                                model.relevance = L.relevance;
+                                model.role = L.role;
+                                model.series = L.series;
+                                model.type = L.type;
+                                model.url = L.url;
+                                model.urlComment = L.urlComment;
+                                model.volume = L.volume;
+                                model.year = L.year;
+                            }
                             ViewData["EditMode"] = true;
                             ViewData["ChosenCourse"] = course;
                             ViewData["userRole"] = userRole;
@@ -1561,30 +1572,38 @@ namespace Grp.L2PSite.MobileApp.Controllers
                         {
                             return View("~/Views/L2P/AddEditLiterature.cshtml", model);
                         }
+                        //if (model.URL != null) // Custom Validation / Validate URL
+                        //{
+                        //    if (model.URL.ToLower().StartsWith("www."))
+                        //        model.URL = "http://" + model.URL;
+                        //    if (!Tools.checkURLValidity(model.URL))
+                        //    {
+                        //        ModelState.AddModelError(string.Empty, "The provided URL is not valid.");
+                        //        View("~/Views/L2P/AddEditHyperlink.cshtml", model);
+                        //    }
+                        //}
 
                         L2PLiteratureAddRequest editLiterature = new L2PLiteratureAddRequest();
+
                         editLiterature.title = model.title;
-                        editLiterature.authors = model.authors;
-                        editLiterature.year = model.year;
-                        editLiterature.url = model.url;
-                        editLiterature.publisher = model.publisher;
-                        editLiterature.relevance = model.relevance;
                         editLiterature.address = model.address;
+                        editLiterature.authors = model.authors;
+
                         editLiterature.booktitle = model.booktitle;
                         editLiterature.comments = model.comments;
                         editLiterature.doi = model.doi;
                         editLiterature.edition = model.edition;
+
                         editLiterature.fromPage = model.fromPage;
                         editLiterature.isxn = model.isxn;
+
                         editLiterature.journalName = model.journalName;
                         editLiterature.number = model.number;
+                        editLiterature.publisher = model.publisher;
+                        editLiterature.relevance = model.relevance;
                         editLiterature.role = model.role;
                         editLiterature.series = model.series;
-                        editLiterature.toPage = model.toPage;
                         editLiterature.type = model.type;
-                        editLiterature.volume = model.volume;
-                        editLiterature.urlComment = model.urlComment;
-
                         if (model.url != null)
                         {
                             if (model.url.ToLower().StartsWith("www."))
@@ -1595,8 +1614,15 @@ namespace Grp.L2PSite.MobileApp.Controllers
                                 View("~/Views/L2P/AddEditLiterature.cshtml", model);
                             }
                         }
+                        editLiterature.url = model.url;
+                        editLiterature.urlComment = model.urlComment;
+                        editLiterature.volume = model.volume;
+                        editLiterature.year = model.year;
 
-                        await L2PAPIClient.api.Calls.L2PupdateLiterature(cId, model.itemId, editLiterature);
+
+
+
+                        await L2PAPIClient.api.Calls.L2PupdateLiterature(cId, model.itemID, editLiterature);
 
                         return RedirectToAction(nameof(MyCoursesController.Literature), "MyCourses", new { cId = cId, @msg = "Literature was successfully edited!" });
                     }
@@ -1617,10 +1643,12 @@ namespace Grp.L2PSite.MobileApp.Controllers
             }
         }
 
-        // Get Method to Add a Literature in a course
-        // GET: /L2P/AddLiterature
+
+
+        // Get Method to Edit a Hyperlink in a course
+        // GET: /L2P/EditHyperlink
         [HttpGet]
-        public async Task<IActionResult> AddLiterature(string cId)
+        public async Task<IActionResult> AddLiterature(string cId, int lId)
         {
             try
             {
@@ -1632,9 +1660,46 @@ namespace Grp.L2PSite.MobileApp.Controllers
                     L2PRole userRole = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
                     if (userRole != null && (userRole.role.Contains("manager") || userRole.role.Contains("tutors")))
                     {
-                        ViewData["ChosenCourse"] = course;
-                        ViewData["userRole"] = userRole;
-                        return View("~/Views/L2P/AddEditLiterature.cshtml");
+                        L2PLiteratureSetDataType lList = await L2PAPIClient.api.Calls.L2PviewLiteratureAsync(cId, lId);
+                        if (lList != null)
+                        {
+
+                            LiteratureViewModel model = new LiteratureViewModel();
+                            foreach (L2PLiteratureElementDataType L in lList.dataSet)
+                            {
+                                model.title = L.title;
+                                model.address = L.address;
+                                model.authors = L.authors;
+                                model.availability = L.availability;
+                                model.booktitle = L.booktitle;
+                                model.comments = L.comments;
+                                model.doi = L.doi;
+                                model.edition = L.edition;
+                                model.editor = L.editor;
+                                model.fromPage = L.fromPage;
+                                model.isxn = L.isxn;
+                                model.itemID = L.itemID;
+                                model.journalName = L.journalName;
+                                model.number = L.number;
+                                model.publisher = L.publisher;
+                                model.relevance = L.relevance;
+                                model.role = L.role;
+                                model.series = L.series;
+                                model.type = L.type;
+                                model.url = L.url;
+                                model.urlComment = L.urlComment;
+                                model.volume = L.volume;
+                                model.year = L.year;
+                            }
+                            ViewData["ChosenCourse"] = course;
+                            ViewData["userRole"] = userRole;
+                            return View("~/Views/L2P/AddEditLiterature.cshtml", model);
+                        }
+                        else
+                        {
+                            string errorMessage = "The Literature you are trying to view does not exist.";
+                            return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
+                        }
                     }
                     else
                     {
@@ -1653,8 +1718,8 @@ namespace Grp.L2PSite.MobileApp.Controllers
             }
         }
 
-        // POST Method to Add Literature in a course
-        // POST: /L2P/AddLiterature
+        // POST Method to Edit a Hyperlink in a course
+        // POST: /L2P/EditHyperlink
         [HttpPost]
         public async Task<IActionResult> AddLiterature(LiteratureViewModel model, string cId)
         {
@@ -1675,31 +1740,38 @@ namespace Grp.L2PSite.MobileApp.Controllers
                         {
                             return View("~/Views/L2P/AddEditLiterature.cshtml", model);
                         }
+                        //if (model.URL != null) // Custom Validation / Validate URL
+                        //{
+                        //    if (model.URL.ToLower().StartsWith("www."))
+                        //        model.URL = "http://" + model.URL;
+                        //    if (!Tools.checkURLValidity(model.URL))
+                        //    {
+                        //        ModelState.AddModelError(string.Empty, "The provided URL is not valid.");
+                        //        View("~/Views/L2P/AddEditHyperlink.cshtml", model);
+                        //    }
+                        //}
 
                         L2PLiteratureAddRequest AddLiterature = new L2PLiteratureAddRequest();
 
                         AddLiterature.title = model.title;
-                        AddLiterature.authors = model.authors;
-                        AddLiterature.year = model.year;
-                        AddLiterature.url = model.url;
-                        AddLiterature.publisher = model.publisher;
-                        AddLiterature.relevance = model.relevance;
                         AddLiterature.address = model.address;
+                        AddLiterature.authors = model.authors;
+
                         AddLiterature.booktitle = model.booktitle;
                         AddLiterature.comments = model.comments;
                         AddLiterature.doi = model.doi;
                         AddLiterature.edition = model.edition;
+
                         AddLiterature.fromPage = model.fromPage;
                         AddLiterature.isxn = model.isxn;
+
                         AddLiterature.journalName = model.journalName;
                         AddLiterature.number = model.number;
+                        AddLiterature.publisher = model.publisher;
+                        AddLiterature.relevance = model.relevance;
                         AddLiterature.role = model.role;
                         AddLiterature.series = model.series;
-                        AddLiterature.toPage = model.toPage;
                         AddLiterature.type = model.type;
-                        AddLiterature.volume = model.volume;
-                        AddLiterature.urlComment = model.urlComment;
-
                         if (model.url != null) // Custom Validation / Validate URL
                         {
                             if (model.url.ToLower().StartsWith("www."))
@@ -1710,8 +1782,16 @@ namespace Grp.L2PSite.MobileApp.Controllers
                                 View("~/Views/L2P/AddEditLiterature.cshtml", model);
                             }
                         }
+                        AddLiterature.url = model.url;
+                        AddLiterature.urlComment = model.urlComment;
+                        AddLiterature.volume = model.volume;
+                        AddLiterature.year = model.year;
+
+
+
 
                         await L2PAPIClient.api.Calls.L2PAddLiterature(cId, AddLiterature);
+
                         return RedirectToAction(nameof(MyCoursesController.Literature), "MyCourses", new { cId = cId, @msg = "Literature was successfully Added!" });
                     }
                     else
@@ -2129,8 +2209,11 @@ namespace Grp.L2PSite.MobileApp.Controllers
             }
         }
 
-        [HttpGet] // Get Method to show specific assignments
-        public async Task<IActionResult> ShowAssignment(string cId, string aid)
+
+        // View Discussion with Privilege Validation
+        // GET: /L2P/ShowDiscussion?
+        [HttpGet]
+        public async Task<IActionResult> ShowDiscussion(string cId, int dId)
         {
             try
             {
@@ -2140,17 +2223,322 @@ namespace Grp.L2PSite.MobileApp.Controllers
                 {
                     ViewData["ChosenCourse"] = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
                     ViewData["userRole"] = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
-                    L2PAssignmentList assnList = await L2PAPIClient.api.Calls.L2PviewAssignment(cId, int.Parse(aid));
-                    ViewData["ChosenAssignment"] = assnList;
-                    List<L2PAssignmentElement> assignments = new List<L2PAssignmentElement>();
-                    if (assnList.dataSet != null)
+
+                    L2PDiscussionItemList dList = await L2PAPIClient.api.Calls.L2PviewAllDiscussionItems(cId);
+                    if (dList != null)
                     {
+                        DiscussionViewModel model = new DiscussionViewModel();
+                        foreach (L2PDiscussionItemElement discuss in dList.dataSet)
+                        {
+                            if(discuss.selfId == dId || discuss.parentDiscussionId == dId)
+                            {
+                                model.title = discuss.subject;
+                                model.body = discuss.body;
+                                model.dId = discuss.selfId;
+                                model.pId = discuss.parentDiscussionId;
+                                model.isByMe = discuss.byMe;
+                            }
+                            
+                            //ViewData["attachments"] = announcement.attachments;
+                        }
+                        ViewData["ShowDiscussion"] = model;
 
-                        assignments = assnList.dataSet;
-
+                        return View();
                     }
-                    ViewData["ViewAssignment"] = assignments;
+                    else
+                    {
+                        string errorMessage = "The discussion thread you are trying to view does not exist.";
+                        return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
+                    }
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
+        }
+
+        // Get Method to Edit a Announcement in a course
+        // GET: /L2P/EditAnnouncement
+        [HttpGet]
+        public async Task<IActionResult> EditDiscussion(string cId, int dId)
+        {
+            try
+            {
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
+                {
+                    L2PCourseInfoData course = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    L2PRole userRole = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
+                    if (userRole != null)
+                    {
+                        L2PDiscussionItemList dList = await L2PAPIClient.api.Calls.L2PviewDiscussionItem(cId, dId);
+                        if (dList != null)
+                        {
+
+                            HtmlConverter con = new HtmlConverter();
+                            DiscussionViewModel model = new DiscussionViewModel();
+                            foreach (L2PDiscussionItemElement discuss in dList.dataSet)
+                            {
+                                model.title = discuss.subject;
+                                model.body = con.ConvertHtml(discuss.body);
+                                model.dId = discuss.selfId;
+                            }
+                            ViewData["EditMode"] = true;
+                            ViewData["ChosenCourse"] = course;
+                            ViewData["userRole"] = userRole;
+                            return View("~/Views/L2P/AddEditDiscussion.cshtml", model);
+                        }
+                        else
+                        {
+                            string errorMessage = "The Announcement you are trying to view does not exist.";
+                            return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
+                        }
+                    }
+                    else
+                    {
+                        string errorMessage = "You do not have the sufficient rights to edit this announcement";
+                        return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
+                    }
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
+        }
+
+
+        // POST: /L2P/PostDiscussion
+
+        [HttpGet]
+        public async Task<IActionResult> PostDiscussion(string cId)
+        {
+            try
+            {
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
+                {
+                    L2PCourseInfoData course = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    L2PRole userRole = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
+                    if (userRole != null)
+                    {
+                        ViewData["ChosenCourse"] = course;
+                        ViewData["userRole"] = userRole;
+                        return View("~/Views/L2P/AddEditDiscussion.cshtml");
+                    }
+                    else
+                    {
+                        string errorMessage = "Unauthorized Action!";
+                        return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
+                    }
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
+        }
+
+        // Post Method to add a new Announcement in a course
+        // POST: /L2P/AddAnnouncement?
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> PostDiscussion(DiscussionViewModel model, string cId)
+        {
+            try
+            {
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
+                {
+                    L2PCourseInfoData course = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    L2PRole userRole = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
+                    if (userRole != null)
+                    {
+                        ViewData["ChosenCourse"] = course;
+                        ViewData["userRole"] = userRole;
+
+                        if (!ModelState.IsValid) // Check if the model was filled correctly (Always add)
+                        {
+                            return View("~/Views/L2P/AddEditDiscussion.cshtml", model);
+                        }
+
+                        L2PAddDiscussionThreadRequest discuss = new L2PAddDiscussionThreadRequest();
+                        discuss.subject = model.title;
+                        discuss.body = model.body;
+                        //get discussion id
+                                                
+                        return RedirectToAction(nameof(MyCoursesController.DiscussionForum), "MyCourses", new { cId = cId, @msg = "Discussion Post was successfully added!" });
+                    }
+                    else
+                    {
+                        string errorMessage = "You do not have the sufficient rights to add an announcement";
+                        return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
+                    }
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
+        }
+        
+
+        // Get Method to Delete a Discussions
+        // GET: /L2P/DeleteDiscussions
+        [HttpGet]
+        public async Task<IActionResult> DeleteDiscussions(string cId, string dIds)
+        {
+            try
+            {
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context))
+                {
+                    if (String.IsNullOrEmpty(cId))
+                    {
+                        string errorMessage = "You were redirected to this page with missing parameters.<br/> Please go back to the home page and try again.";
+                        return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
+                    }
+                    else if (String.IsNullOrEmpty(dIds))
+                    {
+                        return RedirectToAction(nameof(MyCoursesController.Announcement), "MyCourses", new { @cId = cId });
+                    }
+
+                    L2PCourseInfoData course = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    L2PRole userRole = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
+                    if (userRole != null)
+                    {
+                        dIds = dIds.TrimEnd('-');
+                        string[] discussionIds = dIds.Split('-');
+                        foreach (string dId in discussionIds)
+                        {
+                            int id = -1;
+                            int.TryParse(dId, out id);
+                            await L2PAPIClient.api.Calls.L2PDeleteDiscussionItem(cId, id);
+                        }
+                        
+                    }
+                    return RedirectToAction(nameof(MyCoursesController.DiscussionForum), "MyCourses", new { @cId = cId, @msg = "Discussion successfully deleted!" });
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ReplyDiscussion(string cId)
+        {
+            try
+            {
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
+                {
+                    L2PCourseInfoData course = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    L2PRole userRole = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
+                    if (userRole != null )
+                    {
+                        ViewData["ChosenCourse"] = course;
+                        ViewData["userRole"] = userRole;
+                        return View("~/Views/L2P/AddReplyDiscussion.cshtml");
+                    }
+                    else
+                    {
+                        string errorMessage = "You are not authorized to add a reply!";
+                        return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
+                    }
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
+        }
+
+        // Post Method to add a new Reply in a Discussion
+        // POST: /L2P/ReplyDiscussion?
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ReplyDiscussion(DiscussionViewModel model, string cId, int pId)
+        {
+            try
+            {
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                L2PDiscussionItemList elem;
+                if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
+                {
+                    L2PCourseInfoData course = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    L2PRole userRole = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
+                    if (userRole != null)
+                    {
+                        ViewData["ChosenCourse"] = course;
+                        ViewData["userRole"] = userRole;
+
+                        if (!ModelState.IsValid) // Check if the model was filled correctly (Always add)
+                        {
+                            return View("~/Views/L2P/AddReplyDiscussion", model);
+                        }
+
+
+                        //to be seen
+                        L2PAddDiscussionThreadReplyRequest newReply = new L2PAddDiscussionThreadReplyRequest();
+                        newReply.body = model.body;
+                        newReply.subject = model.title;
+                        L2PAddUpdateResponse response = await L2PAPIClient.api.Calls.L2PAddDiscussionThreadReply(cId, pId, newReply);
+
+                        elem = await L2PAPIClient.api.Calls.L2PviewDiscussionItem(cId, response.itemId);
+                        if (elem.dataSet != null && elem.dataSet.Any())
+                        {
+                            return RedirectToAction(nameof(MyCoursesController.DiscussionForum), "MyCourses", new { cId = cId, @msg = "Reply was successfully added!" });
+                        }
+                        else
+                        {
+                            return RedirectToAction(nameof(MyCoursesController.DiscussionForum), "MyCourses", new { cId = cId, @msg = "Unable to post reply!!" });
+                        }
+                    }
+                    //return RedirectToAction(nameof(MyCoursesController.Announcement), "MyCourses", new { cId = cId, @msg = "Reply was successfully added!" });
+
+                    else
+                    {
+                        string errorMessage = "Unauthorized Reply";
+                        return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
+                    }
+
+                   
+                    ViewData["ShowDiscussion"] = elem;
                     return View();
+
                 }
                 else
                 {

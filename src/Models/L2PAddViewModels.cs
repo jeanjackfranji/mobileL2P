@@ -149,7 +149,8 @@ namespace Grp.L2PSite.MobileApp.Models
         [Display(Name = "Availability")]
         public string availability { get; set; }
 
-        public int itemId { get; set; }
+
+        public int itemID { get; set; }
 
         [StringLength(50)]
         [Display(Name = "Editor")]
@@ -249,5 +250,25 @@ namespace Grp.L2PSite.MobileApp.Models
         [Display(Name = "Url Description")]
         public string urlComment { get; set; }
 
+    }
+    public class DiscussionViewModel
+    {
+        [Required]
+        [StringLength(100)]
+        public string title { get; set; }
+
+        [Required]
+        [StringLength(200)]
+        public string body { get; set; }
+
+        public string from { get; set; }
+        public bool isByMe { get; set; }
+
+        [Required]
+        public int dId { get; set; }
+
+        public int pId { get; set; }
+
+        public bool byMe { get; set; }
     }
 }

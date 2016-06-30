@@ -124,7 +124,7 @@
         </a>
         <ul>
             <li><a href="#confirmModal" class="btn-floating waves-effect waves-light red modal-trigger"><i class="material-icons">delete</i></a></li>
-            <li><a asp-controller="L2P" asp-action="EditLiterature" asp-route-cId="@course.uniqueid" asp-route-lId="@Literature.itemId" class="btn-floating blue waves-effect waves-light"><i class="material-icons">mode_edit</i></a></li>
+            <li><a asp-controller="L2P" asp-action="EditLiterature" asp-route-cId="@course.uniqueid" asp-route-lId="@Literature.itemID" class="btn-floating blue waves-effect waves-light"><i class="material-icons">mode_edit</i></a></li>
         </ul>
     </div>
 
@@ -136,7 +136,7 @@
                     </div>
                     <div class="modal-footer centered-content">
                         <a class="modal-action modal-close waves-effect waves-light btn-flat red white-text">No</a>
-                        <a asp-controller="L2P" asp-action="DeleteLiterature" asp-route-cId="@course.uniqueid" asp-route-lIds="@Literature.itemId-" class="modal-action modal-close waves-effect waves-light btn-flat green white-text ">Yes</a>
+                        <a asp-controller="L2P" asp-action="DeleteLiterature" asp-route-cId="@course.uniqueid" asp-route-lIds="@Literature.itemID-" class="modal-action modal-close waves-effect waves-light btn-flat green white-text ">Yes</a>
                     </div>
                 </div>
 }

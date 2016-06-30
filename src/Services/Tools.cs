@@ -72,24 +72,36 @@ namespace Grp.L2PSite.MobileApp.Services
 
         public static String toDateTime(double dateNb)
         {
+
+            DateTime date = new DateTime(1970, 1, 1);
+            date = date.AddDays(Math.Floor(dateNb / 60 / 60 / 24));
+            return date.ToShortDateString();
+
             if (dateNb <= 0)
                 return "";
 
-            DateTime date = new DateTime(1970, 1, 1).AddSeconds(dateNb);
+            DateTime defaultdate = new DateTime(1970, 1, 1).AddSeconds(dateNb);
             TimeZoneInfo nInfo = TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time");
             date = TimeZoneInfo.ConvertTimeFromUtc(date, nInfo);
             return date.ToString("dd/MM/yyyy");
+
         }
 
         public static String toTime(double dateNb)
         {
+
+            DateTime date = new DateTime(1970, 1, 1);
+            date = date.AddDays(Math.Floor(dateNb / 60 / 60 / 24));
+            return date.ToString("dd/MM/yyyy hh:mm");
+
             if (dateNb <= 0)
                 return "";
 
-            DateTime date = new DateTime(1970, 1, 1).AddSeconds(dateNb);
+            DateTime defaultdate = new DateTime(1970, 1, 1).AddSeconds(dateNb);
             TimeZoneInfo nInfo = TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time");
             date = TimeZoneInfo.ConvertTimeFromUtc(date, nInfo);
             return date.ToString("dd/MM/yyyy HH:mm");
+
         }
 
         public static String toHours(double dateNb)
