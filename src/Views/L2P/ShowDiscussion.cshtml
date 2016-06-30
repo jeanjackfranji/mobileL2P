@@ -1,0 +1,65 @@
+﻿@using L2PAPIClient.DataModel
+@using Grp.L2PSite.MobileApp.Services
+@{
+    ViewData["Title"] = "View Discussion";
+    L2PRole userRole = ViewData["userRole"] as L2PRole;
+    L2PCourseInfoData course = ViewData["ChosenCourse"] as L2PCourseInfoData;
+    DiscussionViewModel discuss = ViewData["DiscussionForum"] as DiscussionViewModel;
+    if (discuss == null) { discuss = new DiscussionViewModel(); }
+    
+}
+
+<nav>
+    <div class="nav-wrapper white">
+        <div class="col s12">
+            <a asp-controller="MyCourses" asp-action="WhatsNew" asp-route-cId="@course.uniqueid" class="breadcrumb blue-text" style="font-size: 12px; margin-left: 10px;">@Tools.truncateString(course.courseTitle, 20)</a>
+            <a asp-controller="MyCourses" asp-action="DiscussionForum" asp-route-cId="@course.uniqueid" class="breadcrumb blue-text" style="font-size: 12px">Discssion</a>
+            <a href="#!" class="breadcrumb blue-text" style="font-size: 12px">View</a>
+        </div>
+    </div>
+</nav>
+
+<div class="row"></div>
+<div class="row">
+    <div class="input-field col s12" style="margin-top: 0px">
+        <label for="URL">Title*</label>
+        <div id="div_text_area">@discuss.title</div>
+    </div>
+</div>
+<div class="row">
+    <div class="input-field col s12" style="margin-top: 0px">
+        <label for="div_text_area">Body</label>
+        <div id="div_text_area">@Html.Raw(discuss.body)</div>
+    </div>
+</div>
+
+@if (discuss.isByMe)
+{
+    <div class="fixed-action-btn horizontal" style="bottom: 5px; right: 30px;">
+        <a class="btn-floating btn-large blue darken-3">
+            <i class="material-icons">menu</i>
+        </a>
+        <ul>
+            <li><a href="#confirmModal" class="btn-floating waves-effect waves-light red modal-trigger"><i class="material-icons">delete</i></a></li>
+            <li><a asp-controller="L2P" asp-action="EditDiscussion" asp-route-cId="@course.uniqueid" asp-route-hId="@discuss.dId" class="btn-floating blue waves-effect waves-light"><i class="material-icons">mode_edit</i></a></li>
+        </ul>
+    </div>
+
+    <!-- Modal Structure -->
+    <div id="confirmModal" class="modal bottom-sheet">
+        <div class="modal-content">
+            <h4>Delete Discussion(s)</h4>
+            <p>Are you sure you want to delete the selected Discussion(s)</p>
+        </div>
+        <div class="modal-footer centered-content">
+            <a class="modal-action modal-close waves-effect waves-light btn-flat red white-text">No</a>
+            <a asp-controller="L2P" asp-action="DeleteDiscussions" asp-route-cId="@course.uniqueid" asp-route-hIds="@discuss.dId" class="modal-action modal-close waves-effect waves-light btn-flat green white-text ">Yes</a>
+        </div>
+    </div>
+}
+
+<script>
+    $(function () {
+        $('.modal-trigger').leanModal(); // Set the Modal to Trigger later on
+    });
+</script>
