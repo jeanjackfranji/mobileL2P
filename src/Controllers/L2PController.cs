@@ -2224,21 +2224,24 @@ namespace Grp.L2PSite.MobileApp.Controllers
                     ViewData["ChosenCourse"] = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
                     ViewData["userRole"] = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
 
-                    
-                    L2PDiscussionItemList dList = await L2PAPIClient.api.Calls.L2PviewDiscussionItem(cId, dId);
+                    L2PDiscussionItemList dList = await L2PAPIClient.api.Calls.L2PviewAllDiscussionItems(cId);
                     if (dList != null)
                     {
                         DiscussionViewModel model = new DiscussionViewModel();
                         foreach (L2PDiscussionItemElement discuss in dList.dataSet)
                         {
-                            model.title = discuss.subject;
-                            model.body = discuss.body;
-                            model.dId = discuss.selfId;
-                            model.pId = discuss.parentDiscussionId;
-                            model.isByMe = discuss.byMe;
+                            if(discuss.selfId == dId || discuss.parentDiscussionId == dId)
+                            {
+                                model.title = discuss.subject;
+                                model.body = discuss.body;
+                                model.dId = discuss.selfId;
+                                model.pId = discuss.parentDiscussionId;
+                                model.isByMe = discuss.byMe;
+                            }
+                            
                             //ViewData["attachments"] = announcement.attachments;
                         }
-                        ViewData["AnnouncementModel"] = model;
+                        ViewData["ShowDiscussion"] = model;
 
                         return View();
                     }

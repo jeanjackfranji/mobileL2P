@@ -25,14 +25,14 @@
                             <li>
                                 @if (@elem.subject.ToString() == "Reply")
                                 {
-                                    <div class="collapsible-header"><i class="material-icons grey-text">forum</i><a asp-controller="L2P" asp-action="ShowDiscussions" asp-route-cID="@course.uniqueid" asp-route-dID="@elem.selfId">@elem.from.ToString()</a></div>
-                                    <div class="collapsible-body"><p>@Html.Raw(@elem.body)</p></div>
-                                    //continue;
+                                    @*<div class="collapsible-header"><i class="material-icons grey-text">forum</i><a asp-controller="L2P" asp-action="ShowDiscussion" asp-route-cID="@course.uniqueid" asp-route-dID="@elem.selfId">@elem.from.ToString()</a></div>
+                                    <div class="collapsible-body"><p>@Html.Raw(@elem.body)</p></div>*@
+                                    continue;
                                 }
 
                                 else
                                 {
-                                    <div class="collapsible-header"><i class="material-icons grey-text">forum</i><a asp-controller="L2P" asp-action="ShowDiscussions" asp-route-cID="@course.uniqueid" asp-route-dID="@elem.selfId">@elem.subject.ToString()</a></div>
+                                    <div class="collapsible-header"><i class="material-icons grey-text">forum</i><a asp-controller="L2P" asp-action="ShowDiscussion" asp-route-cID="@course.uniqueid" asp-route-dID="@elem.selfId">@elem.subject.ToString()</a></div>
                                     <div class="collapsible-body"><p>@Html.Raw(@elem.body)</p></div>
                                 }
                             </li>

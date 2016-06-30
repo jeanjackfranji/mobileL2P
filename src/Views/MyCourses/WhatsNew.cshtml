@@ -56,7 +56,7 @@
                 <div class="card-content black-text hoverable">
                     <span class="card-title">Learning Materials</span>
                     <ul class="collection">
->>>>>>> 3f1d8b270521d2b59dbfebfa59aa39bd4437e71d
+
                         @if (cWhatsNew.learningMaterials != null)
                         {
                             var learnMat = (from elt in cWhatsNew.learningMaterials
@@ -65,7 +65,7 @@
                                             select elt).Take(5);
                             foreach (L2PLearningMaterialElement lm in learnMat)
                             {
-<<<<<<< HEAD
+
                                 <tr>
                                     <td><a asp-controller="MyCourses" asp-action="Downloads" asp-route-url="@lm.selfUrl" asp-route-filename="@lm.name">@lm.name</a></td>
                                     <td>@Tools.toDateTime(@lm.created)</td>

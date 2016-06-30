@@ -4,7 +4,7 @@
     ViewData["Title"] = "View Discussion";
     L2PRole userRole = ViewData["userRole"] as L2PRole;
     L2PCourseInfoData course = ViewData["ChosenCourse"] as L2PCourseInfoData;
-    DiscussionViewModel discuss = ViewData["DiscussionForum"] as DiscussionViewModel;
+    DiscussionViewModel discuss = ViewData["ShowDiscussion"] as DiscussionViewModel;
     if (discuss == null) { discuss = new DiscussionViewModel(); }
     
 }
