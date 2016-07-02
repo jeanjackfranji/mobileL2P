@@ -106,35 +106,4 @@
 
         if ('@ViewData["Message"]' != '') {
             Materialize.toast('@ViewData["Message"]', 3000) // 3000 is the duration of the toast
-        }
-    });
-
-    //Method to check/uncheck boxes
-    $('input[id="cb_check_all"]').change(function () {
-        if ($(this).is(':checked')) {
-            $('input[name="tbl_cb"]').prop('checked', true);
-            $('input[name="tbl_cb"]').each(function (index, value) {
-                str += $(this).attr("id") + '-';
-            });
-        } else {
-            $('input[name="tbl_cb"]').prop('checked', false);
-            str = "";
-        }
-        $("#a_delete_announcements").attr("href", url + str);
-    });
-
-    //Method to check/uncheck boxes and handle accordingly to delete announcements
-    $('input[name="tbl_cb"]').change(function () {
-        if ($(this).is(':checked')) {
-            if (str.indexOf($(this).attr("id") + '-') < 0) {
-                str += $(this).attr("id") + '-';
-            }
-        } else {
-            if (str.indexOf($(this).attr("id") + '-') >= 0) {
-                str = str.replace($(this).attr("id") + '-', '');
-            }
-        }
-        $("#a_delete_announcements").attr("href", url + str);
-    });
-</script>
-
+   

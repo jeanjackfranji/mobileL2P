@@ -2227,22 +2227,31 @@ namespace Grp.L2PSite.MobileApp.Controllers
                     L2PDiscussionItemList dList = await L2PAPIClient.api.Calls.L2PviewAllDiscussionItems(cId);
                     if (dList != null)
                     {
-                        DiscussionViewModel model = new DiscussionViewModel();
+                        List<DiscussionViewModel> modelList = new List<DiscussionViewModel>();
                         foreach (L2PDiscussionItemElement discuss in dList.dataSet)
                         {
-                            if(discuss.selfId == dId || discuss.parentDiscussionId == dId)
+                            DiscussionViewModel discusselem = new DiscussionViewModel();
+                            if(discuss.parentDiscussionId == dId)
                             {
-                                model.title = discuss.subject;
-                                model.body = discuss.body;
-                                model.dId = discuss.selfId;
-                                model.pId = discuss.parentDiscussionId;
-                                model.isByMe = discuss.byMe;
+                                discusselem.title = discuss.subject;
+                                discusselem.body = discuss.body;
+                                discusselem.dId = discuss.selfId;
+                                discusselem.pId = discuss.parentDiscussionId;
+                                discusselem.isByMe = discuss.byMe;
+                                modelList.Add(discusselem);
                             }
-                            
-                            //ViewData["attachments"] = announcement.attachments;
+                            if(discuss.selfId == dId)
+                            {
+                                discusselem.title = discuss.subject;
+                                discusselem.body = discuss.body;
+                                discusselem.dId = discuss.selfId;
+                                discusselem.pId = discuss.parentDiscussionId;
+                                discusselem.isByMe = discuss.byMe;
+                                modelList.Insert(0, discusselem);
+                            }
                         }
-                        ViewData["ShowDiscussion"] = model;
 
+                        ViewData["ShowDiscussion"] = modelList;
                         return View();
                     }
                     else

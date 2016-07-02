@@ -4,8 +4,9 @@
     ViewData["Title"] = "View Discussion";
     L2PRole userRole = ViewData["userRole"] as L2PRole;
     L2PCourseInfoData course = ViewData["ChosenCourse"] as L2PCourseInfoData;
-    DiscussionViewModel discuss = ViewData["ShowDiscussion"] as DiscussionViewModel;
-    if (discuss == null) { discuss = new DiscussionViewModel(); }
+    List<DiscussionViewModel> discusslist = ViewData["ShowDiscussion"] as List<DiscussionViewModel>;
+    if (discusslist == null) { discusslist = new List<DiscussionViewModel>(); }
+    DiscussionViewModel headdiscussion = discusslist.ElementAt(0);
     
 }
 
@@ -19,8 +20,56 @@
     </div>
 </nav>
 
+@* list of choosen discussion*@
 <div class="row"></div>
 <div class="row">
+    <div class="col s12">
+        <table class="bordered highlight">
+            <thead>
+                <tr>
+                    <th data-field="title">@headdiscussion.title</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (discusslist != null)
+                {
+                    foreach (DiscussionViewModel elem in discusslist)
+                    {
+                        <tr>
+                            <div class="row">
+                                <div class="col s12 m6">
+                                    <div class="card blue-grey darken-1">
+                                        <div class="card-content white-text">
+                                            @if (!String.IsNullOrEmpty(elem.title))
+                                            {
+                                                <span class="card-title"><a asp-controller="L2P" asp-action="ShowDiscussion" asp-route-cId="@course.uniqueid" asp-route-hId="@elem.dId">@elem.title</a></span>
+                                            }
+                                            
+                                            <p>
+                                                @if (!String.IsNullOrEmpty(elem.body))
+                                                {
+                                                    elem.body.ToString();
+                                                }
+                                            </p>
+                                        </div>
+                                        <div class="card-action" >
+                                          
+                                            <a asp-controller="L2P" asp-action="ReplyDiscussion" asp-route-cId="@course.uniqueid" asp-route-hId="@elem.dId"></a>
+                                           
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                           
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@*<div class="row">
     <div class="input-field col s12" style="margin-top: 0px">
         <label for="URL">Title*</label>
         <div id="div_text_area">@discuss.title</div>
@@ -43,7 +92,7 @@
             <li><a href="#confirmModal" class="btn-floating waves-effect waves-light red modal-trigger"><i class="material-icons">delete</i></a></li>
             <li><a asp-controller="L2P" asp-action="EditDiscussion" asp-route-cId="@course.uniqueid" asp-route-hId="@discuss.dId" class="btn-floating blue waves-effect waves-light"><i class="material-icons">mode_edit</i></a></li>
         </ul>
-    </div>
+    </div>*@
 
     <!-- Modal Structure -->
     <div id="confirmModal" class="modal bottom-sheet">

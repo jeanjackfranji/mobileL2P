@@ -526,6 +526,27 @@ namespace Grp.L2PSite.MobileApp.Controllers
         }
 
 
+
+        // Function used to download files from the L2P Client API
+        public ActionResult DownloadAssignment(string cId, string url, string filename)
+        {
+            try
+            {
+                string callURL = Config.L2PEndPoint + "/downloadFile/" + filename + "?accessToken=" + Config.getAccessToken() + "&cid=" + cId + "&downloadUrl=" + url;
+                HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(callURL);
+                myHttpWebRequest.MaximumAutomaticRedirections = 1;
+                myHttpWebRequest.AllowAutoRedirect = true;
+                HttpWebResponse myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
+                return File(myHttpWebResponse.GetResponseStream(), myHttpWebResponse.ContentType, filename);
+            }
+            catch (Exception ex)
+            {
+                ViewData["error"] = ex.Message;
+                return RedirectToAction(nameof(HomeController.Error), "Error");
+            }
+        }
+
+
         public async Task<ActionResult> DownloadsZip(string caid, string aid)
         {
             try
