@@ -1983,6 +1983,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
 
                             }
                             ViewData["AssignmentViewModel"] = model;
+                            ViewData["EditMode"] = true;
                             return View("~/Views/L2P/AddEditAssignment.cshtml", model);
                         }
                         else
