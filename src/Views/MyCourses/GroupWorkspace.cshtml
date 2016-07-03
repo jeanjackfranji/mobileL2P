@@ -1,0 +1,129 @@
+﻿@using L2PAPIClient.DataModel;
+@using Grp.L2PSite.MobileApp.Services;
+@{
+    ViewData["Title"] = "Group Workspace";
+    L2PCourseInfoData course = ViewData["ChosenCourse"] as L2PCourseInfoData;
+    L2PRole userRole = ViewData["userRole"] as L2PRole;
+    L2PgwsElement groupInfo = ViewData["groupInfo"] as L2PgwsElement;
+    List<L2PgwsElement> allGroups = ViewData["allGroups"] as List<L2PgwsElement>;
+}
+
+<div class="row" style="margin-bottom: 0px !important">
+    <div class="col s12 center-align">
+        <div class="chip"><i class="material-icons">new_releases</i><b>Group Workspace</b> | @course.courseTitle</div>
+    </div>
+</div>
+
+<div class="row">
+    @if (groupInfo != null)
+    {
+        <div class="col s12 m6">
+            <div class="card indigo lighten-5">
+                <div class="card-content black-text hoverable">
+                    <span class="card-title">My Group</span>
+                    <ul class="collection">
+                        <li>
+
+                            <button href="#confirmModal" class="btn waves-effect waves-light modal-trigger" name="action">
+                                Leave Group
+                                <i class="material-icons right">input</i>
+                            </button>
+                            <button href="#" asp-controller="MyCourses" asp-action="InviteMembers" class="btn waves-effect waves-light modal-trigger" name="action">
+                                Invite Members
+                                <i class="material-icons right">perm_contact_calendar</i>
+                            </button>
+                        </li>
+                        <li>
+                            <strong>Group Name:</strong> @groupInfo.name
+                        </li>
+                        <li>
+                            <span class="title"><strong> Group Members: </strong></span>
+                            <ul>
+                                @foreach (string member in groupInfo.members)
+                                {
+                                    <li><i class="small material-icons">perm_identity</i>@member</li>
+                                }
+
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col s12 m6">
+            <div class="card indigo lighten-5">
+                <div class="card-content black-text hoverable">
+                    <span class="card-title">Group Invites</span>
+                    <ul class="collection">
+                        <li>
+                            <button href="#confirmModal" class="btn waves-effect waves-light modal-trigger" name="action">
+                                Invitation
+                                <i class="material-icons right">input</i>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+
+        <div class="col s12 m6">
+            <div class="card indigo lighten-5">
+                <div class="card-content black-text hoverable">
+                    <p>You do not belong to any groups at the moment</p>
+                </div>
+            </div>
+
+        </div>
+    }
+</div>
+<div class="row">
+    @if (allGroups != null)
+    {
+        <div class="col s12 m6">
+            <div class="card indigo lighten-5">
+                <div class="card-content black-text hoverable">
+                    <span class="card-title">Groups</span>
+                    <ul class="collection">
+                        @foreach (L2PgwsElement g in allGroups)
+                        {
+                            <li><strong>Group Name:</strong> @g.name</li>
+                                            <li><strong>Group Members:</strong></li>
+
+                                            @foreach (string member in g.members)
+                                            {
+                                                <li><i class="small material-icons">perm_identity</i>@member</li>
+                                            }
+
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@if(groupInfo != null){
+<!-- Modal Structure -->
+<div id="confirmModal" class="modal bottom-sheet">
+    
+    <div class="modal-content">
+        <h4>Leave Group</h4>
+        <p>Are you sure you want to leave the group?</p>
+    </div>
+    <div class="modal-footer centered-content">
+        <a class="modal-action modal-close waves-effect waves-light btn-flat red white-text">No</a>
+        <a asp-controller="MyCourses" asp-action="LeaveGroup" asp-route-cId="@course.uniqueid" asp-route-groupId="@groupInfo.groupId" class="modal-action modal-close waves-effect waves-light btn-flat green white-text ">Yes</a>
+    </div>
+</div>
+
+}
+
+}
+<script>
+    $(function () {
+        $('.modal-trigger').leanModal(); // Set the Modal to Trigger later on
+    });
+</script>
