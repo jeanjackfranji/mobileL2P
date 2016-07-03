@@ -25,11 +25,11 @@
                         <li>
 
                             <button href="#confirmModal" class="btn waves-effect waves-light modal-trigger" name="action">
-                                Leave Group
+                                Leave
                                 <i class="material-icons right">input</i>
                             </button>
                             <button href="#" asp-controller="MyCourses" asp-action="InviteMembers" class="btn waves-effect waves-light modal-trigger" name="action">
-                                Invite Members
+                                Invite
                                 <i class="material-icons right">perm_contact_calendar</i>
                             </button>
                         </li>
@@ -90,7 +90,7 @@
                         @foreach (L2PgwsElement g in allGroups)
                         {
                             <li><strong>Group Name:</strong> @g.name</li>
-                                            <li><strong>Group Members:</strong></li>
+                            <li><strong>Group Members:</strong></li>
 
                                             @foreach (string member in g.members)
                                             {
@@ -105,23 +105,24 @@
     }
 </div>
 
-@if(groupInfo != null){
-<!-- Modal Structure -->
-<div id="confirmModal" class="modal bottom-sheet">
-    
-    <div class="modal-content">
-        <h4>Leave Group</h4>
-        <p>Are you sure you want to leave the group?</p>
+@if (groupInfo != null)
+{
+    <!-- Modal Structure -->
+    <div id="confirmModal" class="modal bottom-sheet">
+
+        <div class="modal-content">
+            <h4>Leave Group</h4>
+            <p>Are you sure you want to leave the group?</p>
+        </div>
+        <div class="modal-footer centered-content">
+            <a class="modal-action modal-close waves-effect waves-light btn-flat red white-text">No</a>
+            <a asp-controller="MyCourses" asp-action="LeaveGroup" asp-route-cId="@course.uniqueid" asp-route-groupId="@groupInfo.groupId" class="modal-action modal-close waves-effect waves-light btn-flat green white-text ">Yes</a>
+        </div>
     </div>
-    <div class="modal-footer centered-content">
-        <a class="modal-action modal-close waves-effect waves-light btn-flat red white-text">No</a>
-        <a asp-controller="MyCourses" asp-action="LeaveGroup" asp-route-cId="@course.uniqueid" asp-route-groupId="@groupInfo.groupId" class="modal-action modal-close waves-effect waves-light btn-flat green white-text ">Yes</a>
-    </div>
-</div>
 
 }
 
-}
+
 <script>
     $(function () {
         $('.modal-trigger').leanModal(); // Set the Modal to Trigger later on
