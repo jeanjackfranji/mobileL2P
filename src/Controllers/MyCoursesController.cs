@@ -651,13 +651,15 @@ namespace Grp.L2PSite.MobileApp.Controllers
                         L2PgwsElement groupInfo = new L2PgwsElement();
                         if (groupListCount > 0)
                         {
-                        foreach (L2PgwsElement group in groupList) {
-                            if (group.groupId == groupId)
-                            {
-                                groupInfo = group;
-                                break;
-                            }
+                        var element = from elts in groupList
+                                      where elts.groupId == groupId
+                                      select elts;
+                        if (element.Any())
+                            groupInfo = element.First();
+                        else {
+                            return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = "Group id doesn't exist" });
                         }
+
                             invite.systemGeneratedAlias = groupInfo.systemGeneratedAlias;
                             invite.comment = "This is an invite to the group " + groupInfo.systemGeneratedAlias;
                         }
