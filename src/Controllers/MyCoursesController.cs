@@ -495,7 +495,8 @@ namespace Grp.L2PSite.MobileApp.Controllers
                 foreach (L2PAssignmentElement a in assignments)
                 {
                     List<L2PAttachmentElement> filePaths = a.assignmentDocuments;
-                    if(filePaths != null)
+                    
+                    if (filePaths != null)
                     {
                         foreach (L2PAttachmentElement filePath in filePaths)
                         {
@@ -539,7 +540,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
                     }
                     else
                     {
-                        return RedirectToAction(nameof(MyCoursesController.Assignments), "MyCourses", new {@cId = caid, @msg = "No Files to download." });
+                        return RedirectToAction(nameof(MyCoursesController.Assignments), "MyCourses", new { @cId = caid, @msg = "No Files to download." });
                     }
 
                 }
@@ -549,6 +550,190 @@ namespace Grp.L2PSite.MobileApp.Controllers
             {
                 ViewData["error"] = ex.Message;
                 return RedirectToAction(nameof(HomeController.Error), "Error");
+            }
+        }
+        [HttpGet] // Get Method to show group Workspace
+        public async Task<IActionResult> GroupWorkspace(string cId, string msg)
+        {
+            try
+            {
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
+                {
+                    ViewData["ChosenCourse"] = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    L2PRole userRole = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
+                    if (userRole.role.Contains("managers") || userRole.role.Contains("tutors"))
+                    {
+                        L2PAvailableGroups availableGroups = await L2PAPIClient.api.Calls.L2PviewAvailableGroupsInGroupWorkspace(cId);
+                        List<L2PgwsElement> allGroups = availableGroups.dataSet;
+                        ViewData["allGroups"] = allGroups;
+                    }
+                    else if (userRole.role.Contains("students") || userRole.role.Contains("extra"))
+                    {
+                        L2PgwsMyGroupWorkspace g = await L2PAPIClient.api.Calls.L2PviewMyGroupWorkspace(cId);
+
+                        List<L2PgwsElement> groupList = g.dataSet;
+                        int groupListCount = groupList.Count;
+                        if (groupListCount != 0)
+                        {
+                            ViewData["groupInfo"] = groupList;
+                            ViewData["groupInvites"] = g.invitationFromOtherUsers;
+                        }
+
+                    }
+                    ViewData["Message"] = msg;
+                    return View();
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
+
+        }
+        [HttpGet] // Get Method to leave group
+        public async Task<IActionResult> LeaveGroup(string cId, int groupId)
+        {
+            try
+            {
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
+                {
+                    if (String.IsNullOrEmpty(cId))
+                    {
+                        string errorMessage = "You were redirected to this page with missing parameters.<br/> Please go back to the home page and try again.";
+                        return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
+                    }
+
+
+                    await L2PAPIClient.api.Calls.L2PgwsLeaveGroup(cId, groupId);
+                    return RedirectToAction(nameof(MyCoursesController.GroupWorkspace), "MyCourses", new { @cId = cId, @msg = "You have successfully exited the group." });
+
+
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
+
+        }
+
+        // Post Method to add a new folder in the intended view (Learning Material,...)
+        // POST: /L2P/AddFolder
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddUsers(string cId, int groupId, GroupWorkSpaceViewModel model)
+        {
+            try
+            {
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
+                {
+                    L2PgwsInvite invite = new L2PgwsInvite();
+                    invite.emails = model.ListOfUsers.Replace(",", ";") + ";";
+                    L2PgwsMyGroupWorkspace g = await L2PAPIClient.api.Calls.L2PviewMyGroupWorkspace(cId);
+                    List<L2PgwsElement> groupList = g.dataSet;
+                    int groupListCount = groupList.Count;
+                    L2PgwsElement groupInfo = new L2PgwsElement();
+                    if (groupListCount > 0)
+                    {
+                        var element = from elts in groupList
+                                      where elts.groupId == groupId
+                                      select elts;
+                        if (element.Any())
+                            groupInfo = element.First();
+                        else
+                        {
+                            return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = "Group id doesn't exist" });
+                        }
+
+                        invite.systemGeneratedAlias = groupInfo.systemGeneratedAlias;
+                        invite.comment = "This is an invite to the group " + groupInfo.systemGeneratedAlias;
+                    }
+                    if (invite.systemGeneratedAlias != null)
+                        await L2PAPIClient.api.Calls.L2PgwsInviteMemberInGroup(cId, invite);
+                    return RedirectToAction(nameof(MyCoursesController.GroupWorkspace), "MyCourses", new { @cId = cId, @msg = "You have successfully invited the member(s)." });
+
+
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> AcceptOrRejectInvite(string cId, int itemId, string response)
+        {
+            try
+            {
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
+                {
+                    if (response != null)
+                    {
+                        await L2PAPIClient.api.Calls.L2PgwsRespondToInvitation(cId, itemId, response);
+                    }
+                    return RedirectToAction(nameof(MyCoursesController.GroupWorkspace), "MyCourses", new { @cId = cId, @msg = "You have successfully responded to the invite." });
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
+
+        }
+
+        //Atul
+        public async Task<IActionResult> DiscussionForum(String cId, String ExtdDir)
+        {
+            try
+            {
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
+                {
+                    L2PCourseInfoData course = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    ViewData["ChosenCourse"] = course;
+                    ViewData["userRole"] = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
+                    L2PDiscussionItemList discussList = await L2PAPIClient.api.Calls.L2PviewAllDiscussionItems(cId);
+
+                    var discuss = from elem in discussList.dataSet
+                                  where elem.subject != "Reply"
+                                  orderby Tools.toDate(elem.created) descending
+                                  select elem;
+                    ViewData["DIscussionForum"] = discuss.ToList();
+                    return View();
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
             }
         }
     }

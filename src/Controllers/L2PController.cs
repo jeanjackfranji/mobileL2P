@@ -987,9 +987,11 @@ namespace Grp.L2PSite.MobileApp.Controllers
                 {
                     L2PCourseInfoData course = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
                     List<string> allPossibleRecipients = new List<string>();
-                    
+
                     L2PAvailableGroups availableGroupList = await L2PAPIClient.api.Calls.L2PviewAvailableGroupsInGroupWorkspace(cId);
-                    foreach (var el in availableGroupList.dataSet) {
+
+                    foreach (var el in availableGroupList.dataSet)
+                    {
                         allPossibleRecipients.Add(el.systemGeneratedAlias);
                     }
                     ViewData["allPossibleRecipients"] = allPossibleRecipients;
@@ -1032,7 +1034,8 @@ namespace Grp.L2PSite.MobileApp.Controllers
                 {
                     L2PCourseInfoData course = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
                     L2PRole userRole = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
-                   
+
+
                     if (userRole != null && (userRole.role.Contains("manager") || userRole.role.Contains("tutors")))
                     {
                         ViewData["ChosenCourse"] = course;
@@ -1045,25 +1048,23 @@ namespace Grp.L2PSite.MobileApp.Controllers
 
                         L2PAddEmailRequest newEmail = new L2PAddEmailRequest();
                         newEmail.body = model.body;
+                        newEmail.replyTo = "true";
                         if (model.cc != null)
 
-                            newEmail.cc = model.cc.Replace(",",";");
+                            newEmail.cc = model.cc.Replace(",", ";") + ";";
 
                         var recipients = from elts in Request.Form
                                          where elts.Key == "recipients"
                                          select elts;
-						if(recipients !=null)
-						{
-                        string[] recipientList = recipients.First().Value;
-	                        foreach (string s in recipientList)
-	                        {
-	                          newEmail.recipients = newEmail.recipients + s + ";";
-	                        }
-						}
-                        newEmail.subject = model.subject;
-                        newEmail.cc = "";
-                        newEmail.replyTo = "";
-                        newEmail.attachmentsToUpload = new List<L2PUploadRequest>();
+                        if (recipients != null)
+                        {
+                            string[] recipientList = recipients.First().Value;
+                            foreach (string s in recipientList)
+                            {
+                                newEmail.recipients = newEmail.recipients + s + ";";
+                            }
+                        }
+                        newEmail.subject = model.subject; ;
 
                         if (file != null)
                         {
@@ -1084,11 +1085,11 @@ namespace Grp.L2PSite.MobileApp.Controllers
                             List<L2PUploadRequest> listOfUploads = new List<L2PUploadRequest>();
                             listOfUploads.Add(data);
                             newEmail.attachmentsToUpload = listOfUploads;
+
                         }
 
                         L2PAddUpdateResponse response = await L2PAPIClient.api.Calls.L2PAddEmail(cId, newEmail);
 
- 
 
                         return RedirectToAction(nameof(MyCoursesController.Email), "MyCourses", new { cId = cId, @msg = "Email was successfully added!" });
                     }
@@ -1351,7 +1352,8 @@ namespace Grp.L2PSite.MobileApp.Controllers
         //    }
         //}
 
-            
+
+
         // View Literature with Privileged Validation
         // GET: /L2P/ViewLiterature?
         [HttpGet]
@@ -1847,10 +1849,10 @@ namespace Grp.L2PSite.MobileApp.Controllers
                         string two = model.DueDatehours;
 
                         DateTime dt = Convert.ToDateTime(one + " " + two);
-       
+
                         //DateTime dt1 = DateTime.ParseExact(one + " " + two, "dd/MM/yy h:mm:ss tt", CultureInfo.InvariantCulture);
-                        long dtunix =  (long)(TimeZoneInfo.ConvertTimeToUtc(dt) - new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc)).TotalSeconds;
-                        
+                        long dtunix = (long)(TimeZoneInfo.ConvertTimeToUtc(dt) - new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc)).TotalSeconds;
+
 
                         newAssignment.dueDate = dtunix;
                         if (model.groupSubmissionAllowed == "on")
@@ -1858,13 +1860,13 @@ namespace Grp.L2PSite.MobileApp.Controllers
                         else
                             newAssignment.groupSubmissionAllowed = false;
                         newAssignment.title = model.Title;
-                        newAssignment.totalMarks = model.totalPoint ;
-
-                    
+                        newAssignment.totalMarks = model.totalPoint;
 
 
-                       
-                     
+
+
+
+
 
                         L2PAddUpdateResponse response = await L2PAPIClient.api.Calls.L2PAddAssignment(cId, newAssignment);
 
@@ -1944,7 +1946,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
         // Get Method to add a new assignment in a course
         // GET: /L2P/AddAssignment
         [HttpGet]
-        public async Task<IActionResult> EditAssignment(string cId,string aId)
+        public async Task<IActionResult> EditAssignment(string cId, string aId)
         {
             try
             {
@@ -1971,7 +1973,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
                                 model.DueDatehours = Tools.toHoursString(a.dueDate);
                                 if (a.groupSubmissionAllowed)
                                 {
-                                   model.groupSubmissionAllowed ="Yes" ;
+                                    model.groupSubmissionAllowed = "Yes";
                                 }
                                 else
                                 {
@@ -1979,7 +1981,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
                                 }
                                 model.Title = a.title;
                                 model.totalPoint = a.totalPoint;
-                               
+
 
                             }
                             ViewData["AssignmentViewModel"] = model;
@@ -2054,8 +2056,8 @@ namespace Grp.L2PSite.MobileApp.Controllers
                             newAssignment.groupSubmissionAllowed = false;
                         newAssignment.title = model.Title;
                         newAssignment.totalMarks = model.totalPoint;
-                        
-                       // await L2PAPIClient.api.Calls.L2PupdateAssignment(cId, newAssignment);
+
+                        // await L2PAPIClient.api.Calls.L2PupdateAssignment(cId, newAssignment);
 
                         //if (file != null)
                         //{
@@ -2163,6 +2165,353 @@ namespace Grp.L2PSite.MobileApp.Controllers
                 return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
             }
         }
+
+        // View Discussion with Privilege Validation
+        // GET: /L2P/ShowDiscussion?
+        [HttpGet]
+        public async Task<IActionResult> ShowDiscussion(string cId, string dId)
+        {
+            try
+            {
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
+                {
+                    ViewData["ChosenCourse"] = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    ViewData["userRole"] = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
+                    int discussId = -1;
+                    int.TryParse(dId, out discussId);
+
+                    L2PDiscussionItemList dList = await L2PAPIClient.api.Calls.L2PviewAllDiscussionItems(cId);
+                    if (dList != null)
+                    {
+
+
+                        var mainDiscussionForum = from elts in dList.dataSet
+                                                  where elts.parentDiscussionId == discussId
+                                                  select elts;
+
+                        var discussionReplies = from elts in dList.dataSet
+                                                where elts.parentDiscussionId == discussId
+                                                select elts;
+
+                        if (mainDiscussionForum.Any())
+                        {
+                            ViewData["mainThread"] = mainDiscussionForum.ToList();
+                        }
+                        if (discussionReplies.Any())
+                        {
+                            ViewData["mainThreadReplies"] = discussionReplies.ToList();
+                        }
+
+                        return View();
+                    }
+                    else
+                    {
+                        string errorMessage = "The discussion thread you are trying to view does not exist.";
+                        return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
+                    }
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
+        }
+
+        // Get Method to Edit a Announcement in a course
+        // GET: /L2P/EditAnnouncement
+        [HttpGet]
+        public async Task<IActionResult> EditDiscussion(string cId, int dId)
+        {
+            try
+            {
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
+                {
+                    L2PCourseInfoData course = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    L2PRole userRole = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
+                    if (userRole != null)
+                    {
+                        L2PDiscussionItemList dList = await L2PAPIClient.api.Calls.L2PviewDiscussionItem(cId, dId);
+                        if (dList != null)
+                        {
+
+                            HtmlConverter con = new HtmlConverter();
+                            DiscussionViewModel model = new DiscussionViewModel();
+                            foreach (L2PDiscussionItemElement discuss in dList.dataSet)
+                            {
+                                model.title = discuss.subject;
+                                model.body = con.ConvertHtml(discuss.body);
+                                model.dId = discuss.selfId;
+                            }
+                            ViewData["EditMode"] = true;
+                            ViewData["ChosenCourse"] = course;
+                            ViewData["userRole"] = userRole;
+                            return View("~/Views/L2P/AddEditDiscussion.cshtml", model);
+                        }
+                        else
+                        {
+                            string errorMessage = "The Announcement you are trying to view does not exist.";
+                            return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
+                        }
+                    }
+                    else
+                    {
+                        string errorMessage = "You do not have the sufficient rights to edit this announcement";
+                        return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
+                    }
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
+        }
+
+
+        // POST: /L2P/PostDiscussion
+
+        [HttpGet]
+        public async Task<IActionResult> PostDiscussion(string cId)
+        {
+            try
+            {
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
+                {
+                    L2PCourseInfoData course = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    L2PRole userRole = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
+                    if (userRole != null)
+                    {
+                        ViewData["ChosenCourse"] = course;
+                        ViewData["userRole"] = userRole;
+                        return View("~/Views/L2P/AddEditDiscussion.cshtml");
+                    }
+                    else
+                    {
+                        string errorMessage = "Unauthorized Action!";
+                        return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
+                    }
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
+        }
+
+        // Post Method to add a new Announcement in a course
+        // POST: /L2P/AddAnnouncement?
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> PostDiscussion(DiscussionViewModel model, string cId)
+        {
+            try
+            {
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
+                {
+                    L2PCourseInfoData course = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    L2PRole userRole = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
+                    if (userRole != null)
+                    {
+                        ViewData["ChosenCourse"] = course;
+                        ViewData["userRole"] = userRole;
+
+                        if (!ModelState.IsValid) // Check if the model was filled correctly (Always add)
+                        {
+                            return View("~/Views/L2P/AddEditDiscussion.cshtml", model);
+                        }
+
+                        L2PAddDiscussionThreadRequest discuss = new L2PAddDiscussionThreadRequest();
+                        discuss.subject = model.title;
+                        discuss.body = model.body;
+                        //get discussion id
+
+                        return RedirectToAction(nameof(MyCoursesController.DiscussionForum), "MyCourses", new { cId = cId, @msg = "Discussion Post was successfully added!" });
+                    }
+                    else
+                    {
+                        string errorMessage = "You do not have the sufficient rights to add an announcement";
+                        return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
+                    }
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
+        }
+
+
+        // Get Method to Delete a Discussions
+        // GET: /L2P/DeleteDiscussions
+        [HttpGet]
+        public async Task<IActionResult> DeleteDiscussions(string cId, string dIds)
+        {
+            try
+            {
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context))
+                {
+                    if (String.IsNullOrEmpty(cId))
+                    {
+                        string errorMessage = "You were redirected to this page with missing parameters.<br/> Please go back to the home page and try again.";
+                        return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
+                    }
+                    else if (String.IsNullOrEmpty(dIds))
+                    {
+                        return RedirectToAction(nameof(MyCoursesController.Announcement), "MyCourses", new { @cId = cId });
+                    }
+
+                    L2PCourseInfoData course = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    L2PRole userRole = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
+                    if (userRole != null)
+                    {
+                        dIds = dIds.TrimEnd('-');
+                        string[] discussionIds = dIds.Split('-');
+                        foreach (string dId in discussionIds)
+                        {
+                            int id = -1;
+                            int.TryParse(dId, out id);
+                            await L2PAPIClient.api.Calls.L2PDeleteDiscussionItem(cId, id);
+                        }
+
+                    }
+                    return RedirectToAction(nameof(MyCoursesController.DiscussionForum), "MyCourses", new { @cId = cId, @msg = "Discussion successfully deleted!" });
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ReplyDiscussion(string cId)
+        {
+            try
+            {
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
+                {
+                    L2PCourseInfoData course = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    L2PRole userRole = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
+                    if (userRole != null)
+                    {
+                        ViewData["ChosenCourse"] = course;
+                        ViewData["userRole"] = userRole;
+                        return View("~/Views/L2P/AddReplyDiscussion.cshtml");
+                    }
+                    else
+                    {
+                        string errorMessage = "You are not authorized to add a reply!";
+                        return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
+                    }
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
+        }
+
+        // Post Method to add a new Reply in a Discussion
+        // POST: /L2P/ReplyDiscussion?
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ReplyDiscussion(DiscussionViewModel model, string cId, int pId)
+        {
+            try
+            {
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                L2PDiscussionItemList elem;
+                if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
+                {
+                    L2PCourseInfoData course = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    L2PRole userRole = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
+                    if (userRole != null)
+                    {
+                        ViewData["ChosenCourse"] = course;
+                        ViewData["userRole"] = userRole;
+
+                        if (!ModelState.IsValid) // Check if the model was filled correctly (Always add)
+                        {
+                            return View("~/Views/L2P/AddReplyDiscussion", model);
+                        }
+
+
+                        //to be seen
+                        L2PAddDiscussionThreadReplyRequest newReply = new L2PAddDiscussionThreadReplyRequest();
+                        newReply.body = model.body;
+                        newReply.subject = model.title;
+                        L2PAddUpdateResponse response = await L2PAPIClient.api.Calls.L2PAddDiscussionThreadReply(cId, pId, newReply);
+
+                        elem = await L2PAPIClient.api.Calls.L2PviewDiscussionItem(cId, response.itemId);
+                        if (elem.dataSet != null && elem.dataSet.Any())
+                        {
+                            return RedirectToAction(nameof(MyCoursesController.DiscussionForum), "MyCourses", new { cId = cId, @msg = "Reply was successfully added!" });
+                        }
+                        else
+                        {
+                            return RedirectToAction(nameof(MyCoursesController.DiscussionForum), "MyCourses", new { cId = cId, @msg = "Unable to post reply!!" });
+                        }
+                    }
+                    //return RedirectToAction(nameof(MyCoursesController.Announcement), "MyCourses", new { cId = cId, @msg = "Reply was successfully added!" });
+
+                    else
+                    {
+                        string errorMessage = "Unauthorized Reply";
+                        return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
+                    }
+
+
+                    ViewData["ShowDiscussion"] = elem;
+                    return View();
+
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
+        }
+
     }
 }
 

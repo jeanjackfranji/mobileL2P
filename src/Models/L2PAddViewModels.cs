@@ -29,6 +29,14 @@ namespace Grp.L2PSite.MobileApp.Models
 
     }
 
+    public class GroupWorkSpaceViewModel
+    {
+        [Required]
+        [StringLength(1000)]
+       public string ListOfUsers { get; set; }
+
+    }
+
 
     public class LoginViewModel
     {
@@ -72,7 +80,9 @@ namespace Grp.L2PSite.MobileApp.Models
         [Required]
         public string recipients { get; set; }
 
+        [Required]
         public string cc { get; set; }
+
         public string sender { get; set; }
         public int itemId { get; set; }
     }
@@ -249,5 +259,26 @@ namespace Grp.L2PSite.MobileApp.Models
         [Display(Name = "Url Description")]
         public string urlComment { get; set; }
 
+    }
+
+    public class DiscussionViewModel
+    {
+        [Required]
+        [StringLength(100)]
+        public string title { get; set; }
+
+        [Required]
+        [StringLength(200)]
+        public string body { get; set; }
+
+        public string from { get; set; }
+        public bool isByMe { get; set; }
+
+        [Required]
+        public int dId { get; set; }
+
+        public int pId { get; set; }
+
+        public bool byMe { get; set; }
     }
 }
