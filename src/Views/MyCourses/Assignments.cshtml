@@ -36,8 +36,8 @@
                             </span>
                             <p>
                                 
-                                <b>Publish Date:</b> @Tools.toDateTime(A.assignmentPublishDate) <br />
-                                <b>Due Date:</b> @Tools.toTime(A.dueDate)<br />
+                                <b>Publish Date:</b> @Tools.toDateString(A.assignmentPublishDate) <br />
+                                <b>Due Date:</b> @Tools.toDateTimeString(A.dueDate)<br />
                                 <b>Total Point:</b> @A.totalPoint<br />
                                 <b>Group submission:</b> @(A.groupSubmissionAllowed ? "Yes" : "No")<br />
                                 <a id="a-secondary-content" class="secondary-content" asp-controller="L2P" asp-action="ShowAssignment" asp-route-cId="@course.uniqueid" asp-route-aid="@A.itemId"><i class="material-icons blue-text">send</i></a>

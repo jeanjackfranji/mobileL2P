@@ -52,7 +52,7 @@
                     <p class="margin-left-25">
                         @if (lm.relatedLectureDates != null && lm.relatedLectureDates.Count() > 0)
                         {
-                            <b>Lecture Date:</b> @Tools.toDateTime(lm.relatedLectureDates.First());
+                            <b>Lecture Date:</b> @Tools.toDateString(lm.relatedLectureDates.First());
                             <br />
                         }
                         @Html.Raw(fileInfo != null ? "<b>Size: </b>" + Tools.ToFileSize(fileInfo.fileSize) : "")

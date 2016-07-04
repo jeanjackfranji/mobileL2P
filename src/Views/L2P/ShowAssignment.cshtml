@@ -52,12 +52,12 @@
                             </tr>
                             <tr>
                                 <td><b>Publication Date:</b></td>
-                                <td>@Tools.toDateTime(assign.assignmentPublishDate)</td>
+                                <td>@Tools.toDateString(assign.assignmentPublishDate)</td>
                             </tr>
 
                             <tr>
                                 <td><b>Due Date:</b></td>
-                                <td>@Tools.toDateTime(assign.dueDate)</td>
+                                <td>@Tools.toDateString(assign.dueDate)</td>
 
                             </tr>
                             <tr>
@@ -124,7 +124,7 @@
 
                                                     <a asp-controller="MyCourses" asp-action="DownloadAssignment" asp-route-url="@c.downloadUrl" asp-route-filename="@c.fileName" asp-route-cId="@course.uniqueid">@c.fileName</a>
                                                     <br />
-                                                    @Tools.toDateTime(c.modifiedTimestamp)
+                                                    @Tools.toDateString(c.modifiedTimestamp)
                                                     <br />
 
                                                 }
@@ -157,7 +157,7 @@
 
                                                     <a asp-controller="MyCourses" asp-action="DownloadAssignment" asp-route-url="@s.downloadUrl" asp-route-filename="@s.fileName" asp-route-cId="@course.uniqueid">@s.fileName</a>
                                                     <br />
-                                                    @Tools.toDateTime(s.modifiedTimestamp)
+                                                    @Tools.toDateString(s.modifiedTimestamp)
                                                     <br />
 
                                                 }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNet.Http;
 using Grp.L2PSite.MobileApp.Services;
 using static Grp.L2PSite.MobileApp.Services.Tools;
+using System.Collections.Generic;
 
 namespace Grp.L2PSite.MobileApp.Controllers
 {
@@ -59,9 +60,43 @@ namespace Grp.L2PSite.MobileApp.Controllers
             return RedirectToAction(nameof(AccountController.Login), "Account");
         }
 
-        public IActionResult Calendar()
+        public async Task<IActionResult> Calendar()
         {
-            return View();
+            try
+            {
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context))
+                {
+                    //remove previously save course id
+                    Context.Session.Remove("CourseId");
+
+                    List<L2PCourseEvent> courseEvents = new List<L2PCourseEvent>();
+                    L2PCourseInfoSetData courses = L2PAPIClient.api.Calls.L2PviewAllCourseInfoAsync().Result;
+
+                    if(courses.dataset != null)
+                    {
+                        foreach(L2PCourseInfoData course in courses.dataset)
+                        {
+                            L2PCourseEventList result = await L2PAPIClient.api.Calls.L2PviewCourseEvents(course.uniqueid);
+                            if (result.dataSet != null)
+                            {
+                                courseEvents.AddRange(result.dataSet);
+                            }
+                        }
+                    }
+                    ViewData["courseEventsList"] = courseEvents;
+                    return View();
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
         }
 
         public IActionResult About()

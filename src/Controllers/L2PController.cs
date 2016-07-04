@@ -1967,8 +1967,8 @@ namespace Grp.L2PSite.MobileApp.Controllers
 
                                 model.Description = a.description;
 
-                                model.DueDate = Tools.toDateTime(a.dueDate);
-                                model.DueDatehours = Tools.toHours(a.dueDate);
+                                model.DueDate = Tools.toDateTimeString(a.dueDate);
+                                model.DueDatehours = Tools.toHoursString(a.dueDate);
                                 if (a.groupSubmissionAllowed)
                                 {
                                    model.groupSubmissionAllowed ="Yes" ;
@@ -2042,7 +2042,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
                         string two = model.DueDatehours;
 
                         DateTime dt = Convert.ToDateTime(one + " " + two);
-
+                        
                         //DateTime dt1 = DateTime.ParseExact(one + " " + two, "dd/MM/yy h:mm:ss tt", CultureInfo.InvariantCulture);
                         long dtunix = (long)(TimeZoneInfo.ConvertTimeToUtc(dt) - new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc)).TotalSeconds;
 

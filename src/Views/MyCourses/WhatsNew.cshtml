@@ -57,7 +57,7 @@
                                     <p>
                                         @if (lm.relatedLectureDates != null && lm.relatedLectureDates.Count() > 0)
                                         {
-                                            <b>Lecture Date:</b> @Tools.toDateTime(lm.relatedLectureDates.First());
+                                            <b>Lecture Date:</b> @Tools.toDateTimeString(lm.relatedLectureDates.First());
                                             <br />
                                         }
                                         @Html.Raw(fileInfo != null ? "<b>Size: </b>" + Tools.ToFileSize(fileInfo.fileSize) : "")
@@ -94,8 +94,8 @@
                                         {
                                             <i class="material-icons circle red accent-3">clear</i>
                                         }
-                                        <b>Publish Date: </b>@Tools.toDateTime(@assign.assignmentPublishDate)<br />
-                                        <b>Dute Date: </b>@Tools.toTime(@assign.dueDate)
+                                        <b>Publish Date: </b>@Tools.toDateString(@assign.assignmentPublishDate)<br />
+                                        <b>Dute Date: </b>@Tools.toDateTimeString(@assign.dueDate)
                                     </p>
                                 </li>
                             }
@@ -150,7 +150,7 @@
                             foreach (L2PDiscussionItemElement disc in discussions)
                             {
                                 <li>
-                                    <div class="collapsible-header"><i class="material-icons grey-text">forum</i><a asp-controller="MyCourses" asp-action="Discussions" asp-route-id="@disc.selfId">@disc.subject</a></div>
+                                    <div class="collapsible-header"><i class="material-icons grey-text">forum</i><a asp-controller="MyCourses" asp-action="DiscussionForum" asp-route-id="@disc.selfId">@disc.subject</a></div>
                                     <div class="collapsible-body"><p>@Html.Raw(@disc.body)</p></div>
                                 </li>
                             }

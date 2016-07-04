@@ -105,7 +105,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
             Context.Session.SetInt32("LoggedIn", 0);
             Response.Cookies.Delete("CRTID");
             Response.Cookies.Delete("CRAID");
-            return RedirectToAction(nameof(HomeController.MyCourses), "Home");
+            return RedirectToAction(nameof(AccountController.Login), "Account");
         }
 
         #region Helpers

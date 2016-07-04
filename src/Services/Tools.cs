@@ -70,7 +70,7 @@ namespace Grp.L2PSite.MobileApp.Services
             return str;
         }
 
-        public static String toDateTime(double dateNb)
+        public static string toDateString(double dateNb)
         {
             if (dateNb <= 0)
                 return "";
@@ -81,7 +81,7 @@ namespace Grp.L2PSite.MobileApp.Services
             return date.ToString("dd/MM/yyyy");
         }
 
-        public static String toTime(double dateNb)
+        public static string toDateTimeString(double dateNb)
         {
             if (dateNb <= 0)
                 return "";
@@ -92,7 +92,7 @@ namespace Grp.L2PSite.MobileApp.Services
             return date.ToString("dd/MM/yyyy HH:mm");
         }
 
-        public static String toHours(double dateNb)
+        public static string toHoursString(double dateNb)
         {
             if (dateNb <= 0)
                 return "";
@@ -102,7 +102,8 @@ namespace Grp.L2PSite.MobileApp.Services
             date = TimeZoneInfo.ConvertTimeFromUtc(date, nInfo);
             return date.ToString("HH:mm");
         }
-        public static DateTime toDate(double dateNb)
+
+        public static DateTime toDateTime(double dateNb)
         {
             DateTime date = new DateTime(1970, 1, 1).AddSeconds(dateNb);
             TimeZoneInfo nInfo = TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time");

@@ -1,7 +1,6 @@
 ﻿using L2PAPIClient;
 using L2PAPIClient.DataModel;
 using System;
-using ICSharpCode.SharpZipLib;
 using System.Net;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,10 +9,8 @@ using Microsoft.AspNet.Mvc;
 using Microsoft.AspNet.Http;
 using Grp.L2PSite.MobileApp.Services;
 using System.IO;
-using System.IO.Compression;
 using ICSharpCode.SharpZipLib.Zip;
 using Microsoft.Framework.Runtime;
-using System.Threading;
 
 namespace Grp.L2PSite.MobileApp.Controllers
 {
