@@ -1045,9 +1045,10 @@ namespace Grp.L2PSite.MobileApp.Controllers
 
                         L2PAddEmailRequest newEmail = new L2PAddEmailRequest();
                         newEmail.body = model.body;
+                        newEmail.replyTo = "true";
                         if (model.cc != null)
 
-                            newEmail.cc = model.cc.Replace(",",";");
+                            newEmail.cc = model.cc.Replace(",",";")+";";
 
                         var recipients = from elts in Request.Form
                                          where elts.Key == "recipients"
@@ -1061,10 +1062,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
 	                        }
 						}
                         newEmail.subject = model.subject;
-                        newEmail.cc = "";
-                        newEmail.replyTo = "";
-                        newEmail.attachmentsToUpload = new List<L2PUploadRequest>();
-
+                      
                         if (file != null)
                         {
 
@@ -1084,12 +1082,9 @@ namespace Grp.L2PSite.MobileApp.Controllers
                             List<L2PUploadRequest> listOfUploads = new List<L2PUploadRequest>();
                             listOfUploads.Add(data);
                             newEmail.attachmentsToUpload = listOfUploads;
-                        }
+                           }
 
                         L2PAddUpdateResponse response = await L2PAPIClient.api.Calls.L2PAddEmail(cId, newEmail);
-
- 
-
                         return RedirectToAction(nameof(MyCoursesController.Email), "MyCourses", new { cId = cId, @msg = "Email was successfully added!" });
                     }
                     else

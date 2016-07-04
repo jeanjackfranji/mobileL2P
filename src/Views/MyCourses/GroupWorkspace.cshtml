@@ -1,10 +1,12 @@
 ﻿@using L2PAPIClient.DataModel;
 @using Grp.L2PSite.MobileApp.Services;
+@model GroupWorkSpaceViewModel
 @{
     ViewData["Title"] = "Group Workspace";
     L2PCourseInfoData course = ViewData["ChosenCourse"] as L2PCourseInfoData;
     L2PRole userRole = ViewData["userRole"] as L2PRole;
-    L2PgwsElement groupInfo = ViewData["groupInfo"] as L2PgwsElement;
+    List<L2PgwsElement> groupInfo = ViewData["groupInfo"] as List<L2PgwsElement>;
+    List<L2PgwsRequest> groupInvites = ViewData["groupInvites"] as List<L2PgwsRequest>;
     List<L2PgwsElement> allGroups = ViewData["allGroups"] as List<L2PgwsElement>;
 }
 
@@ -20,47 +22,34 @@
         <div class="col s12 m6">
             <div class="card indigo lighten-5">
                 <div class="card-content black-text hoverable">
-                    <span class="card-title">My Group</span>
+                    <span class="card-title">My Groups</span>
                     <ul class="collection">
-                        <li>
 
-                            <button href="#confirmModal" class="btn waves-effect waves-light modal-trigger" name="action">
+                        @foreach(L2PgwsElement group in groupInfo) { 
+
+                        <li>
+                            <strong>Group Name:</strong> @group.name
+                        </li>
+                        <li>
+                            <button href="#confirmModal" onclick="addGroupId('@group.groupId', '@course.uniqueid')" class="btn waves-effect waves-light modal-trigger" name="action">
                                 Leave
                                 <i class="material-icons right">input</i>
                             </button>
-                            <button href="#" asp-controller="MyCourses" asp-action="InviteMembers" class="btn waves-effect waves-light modal-trigger" name="action">
+                            <button href="#addUserModal" onclick="addGroupIdForm('@group.groupId', '@course.uniqueid')" asp-controller="MyCourses" asp-action="InviteMembers" class="btn waves-effect waves-light modal-trigger" name="action">
                                 Invite
                                 <i class="material-icons right">perm_contact_calendar</i>
                             </button>
                         </li>
                         <li>
-                            <strong>Group Name:</strong> @groupInfo.name
-                        </li>
-                        <li>
                             <span class="title"><strong> Group Members: </strong></span>
                             <ul>
-                                @foreach (string member in groupInfo.members)
+                                @foreach (string member in group.members)
                                 {
                                     <li><i class="small material-icons">perm_identity</i>@member</li>
                                 }
 
                             </ul>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="col s12 m6">
-            <div class="card indigo lighten-5">
-                <div class="card-content black-text hoverable">
-                    <span class="card-title">Group Invites</span>
-                    <ul class="collection">
-                        <li>
-                            <button href="#confirmModal" class="btn waves-effect waves-light modal-trigger" name="action">
-                                Invitation
-                                <i class="material-icons right">input</i>
-                            </button>
-                        </li>
+                        </li>}
                     </ul>
                 </div>
             </div>
@@ -72,13 +61,69 @@
         <div class="col s12 m6">
             <div class="card indigo lighten-5">
                 <div class="card-content black-text hoverable">
+                    <span class="card-title">My Group</span>
                     <p>You do not belong to any groups at the moment</p>
                 </div>
             </div>
 
         </div>
     }
+    @if (groupInvites != null)
+    {
+        <div class="col s12 m6">
+            <div class="card indigo lighten-5">
+                <div class="card-content black-text hoverable">
+                    <span class="card-title">Group Invites</span>
+                    @if (groupInvites.Count > 0)
+                    {
+                    <table>
+                        <tr>
+                            <th>Group Name</th>
+                        </tr>
+                      @foreach (L2PgwsRequest invite in groupInvites)
+                        {
+                          <tr>
+                               <td>@invite.groupName</td>
+                               <td>
+                                    <a asp-controller="MyCourses" asp-action="AcceptOrRejectInvite" asp-route-cId="@course.uniqueid" asp-route-itemId="@invite.itemId" asp-route-response="2" class="modal-action left waves-effect waves-light btn-flat red white-text" style="margin-left: 10px" >
+                                        Cancel
+                                        <i class="material-icons right">cancel</i>
+                                    </a>
+                                    <a asp-controller="MyCourses" asp-action="AcceptOrRejectInvite" asp-route-cId="@course.uniqueid" asp-route-itemId="@invite.itemId" asp-route-response="1" class="modal-action left waves-effect waves-light btn-flat green white-text" style="margin-left: 10px">
+                                        Accept
+                                        <i class="material-icons right">send</i>
+                                    </a>
+                                </td>
+                            </tr>
+                      }
+                    </table>
+                    }
+                    else
+                    {
+                        <p>There are no new invitations at the moment</p>
+                     }
+                 </div>
+            </div>
+        </div>
+
+        }
+        else
+        {
+        <div class="col s12 m6">
+            <div class="card indigo lighten-5">
+                <div class="card-content black-text hoverable">
+                    <span class="card-title">Group Invites</span>
+                    <p>There are no new invitations at the moment</p>
+                </div>
+            </div>
+
+        </div>
+    }
+
 </div>
+
+
+
 <div class="row">
     @if (allGroups != null)
     {
@@ -116,15 +161,56 @@
         </div>
         <div class="modal-footer centered-content">
             <a class="modal-action modal-close waves-effect waves-light btn-flat red white-text">No</a>
-            <a asp-controller="MyCourses" asp-action="LeaveGroup" asp-route-cId="@course.uniqueid" asp-route-groupId="@groupInfo.groupId" class="modal-action modal-close waves-effect waves-light btn-flat green white-text ">Yes</a>
+            <a id="a_leave_group" asp-controller="MyCourses" asp-action="LeaveGroup" asp-route-cId="@course.uniqueid"  class="modal-action modal-close waves-effect waves-light btn-flat green white-text ">Yes</a>
         </div>
+    </div>
+
+    <div id="addUserModal" class="modal bottom-sheet">
+        <form id="modalForm" asp-controller="MyCourses" asp-action="AddUsers" asp-route-cId="@course.uniqueid" method="post" enctype="multipart/form-data">
+            <div class="modal-content">
+                <h4>Add Users</h4>
+                <div class="row">
+                   
+                    <div class="file-field input-field">
+                        <input asp-for="ListOfUsers" class="validate" type="text" />
+                        <label asp-for="ListOfUsers">List of Users</label>
+                        <span asp-validation-for="ListOfUsers" class="red-text"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer centered">
+                <a class="modal-action modal-close waves-effect waves-light btn-flat red white-text" style="margin-right: 10px"><i class="material-icons right">clear</i>Cancel</a>
+                <button onclick="appendAction()" class="modal-action left waves-effect waves-light btn-flat green white-text" style="margin-left: 10px" type="submit" name="action">
+                    Submit
+                    <i class="material-icons right">send</i>
+                </button>
+            </div>
+        </form>
     </div>
 
 }
 
-
 <script>
+
     $(function () {
         $('.modal-trigger').leanModal(); // Set the Modal to Trigger later on
-    });
+
+        if ('@ViewData["Message"]' != '') {
+            Materialize.toast('@ViewData["Message"]', 2000) // 2000 is the duration of the toast
+        }
+     });
+
+    function addGroupId(id, cId){
+        $('a[id="a_leave_group"]').attr("href","/MyCourses/LeaveGroup?cId="+cId + "&groupId=" + id);
+    }
+    function addGroupIdForm(id, cId){
+         $('form[id="modalForm"]').attr("action","/MyCourses/AddUsers?cId="+cId + "&groupId=" + id+ "&model=");
+    }
+    function appendAction()
+    {
+        var href = $('form[id="modalForm"]').attr("action");
+        $('form[id="modalForm"]').attr("action", href+model);
+
+    }
 </script>
+
