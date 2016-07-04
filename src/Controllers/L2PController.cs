@@ -987,8 +987,9 @@ namespace Grp.L2PSite.MobileApp.Controllers
                 {
                     L2PCourseInfoData course = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
                     List<string> allPossibleRecipients = new List<string>();
-
+                    
                     L2PAvailableGroups availableGroupList = await L2PAPIClient.api.Calls.L2PviewAvailableGroupsInGroupWorkspace(cId);
+
                     foreach (var el in availableGroupList.dataSet)
                     {
                         allPossibleRecipients.Add(el.systemGeneratedAlias);
@@ -1034,6 +1035,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
                     L2PCourseInfoData course = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
                     L2PRole userRole = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
 
+
                     if (userRole != null && (userRole.role.Contains("manager") || userRole.role.Contains("tutors")))
                     {
                         ViewData["ChosenCourse"] = course;
@@ -1046,9 +1048,10 @@ namespace Grp.L2PSite.MobileApp.Controllers
 
                         L2PAddEmailRequest newEmail = new L2PAddEmailRequest();
                         newEmail.body = model.body;
+                        newEmail.replyTo = "true";
                         if (model.cc != null)
 
-                            newEmail.cc = model.cc.Replace(",", ";");
+                            newEmail.cc = model.cc.Replace(",",";")+";";
 
                         var recipients = from elts in Request.Form
                                          where elts.Key == "recipients"
@@ -1061,11 +1064,8 @@ namespace Grp.L2PSite.MobileApp.Controllers
                                 newEmail.recipients = newEmail.recipients + s + ";";
                             }
                         }
-                        newEmail.subject = model.subject;
-                        newEmail.cc = "";
-                        newEmail.replyTo = "";
-                        newEmail.attachmentsToUpload = new List<L2PUploadRequest>();
-
+                        newEmail.subject = model.subject;;
+                      
                         if (file != null)
                         {
 
@@ -1085,10 +1085,10 @@ namespace Grp.L2PSite.MobileApp.Controllers
                             List<L2PUploadRequest> listOfUploads = new List<L2PUploadRequest>();
                             listOfUploads.Add(data);
                             newEmail.attachmentsToUpload = listOfUploads;
-                        }
+                        
+                           }
 
                         L2PAddUpdateResponse response = await L2PAPIClient.api.Calls.L2PAddEmail(cId, newEmail);
-
 
 
                         return RedirectToAction(nameof(MyCoursesController.Email), "MyCourses", new { cId = cId, @msg = "Email was successfully added!" });
@@ -1352,6 +1352,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
         //    }
         //}
 
+           
 
         // View Literature with Privileged Validation
         // GET: /L2P/ViewLiterature?
@@ -1848,6 +1849,201 @@ namespace Grp.L2PSite.MobileApp.Controllers
                         string two = model.DueDatehours;
 
                         DateTime dt = Convert.ToDateTime(one + " " + two);
+       
+                        //DateTime dt1 = DateTime.ParseExact(one + " " + two, "dd/MM/yy h:mm:ss tt", CultureInfo.InvariantCulture);
+                        long dtunix =  (long)(TimeZoneInfo.ConvertTimeToUtc(dt) - new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc)).TotalSeconds;
+                        
+
+                        newAssignment.dueDate = dtunix;
+                        if (model.groupSubmissionAllowed == "on")
+                            newAssignment.groupSubmissionAllowed = true;
+                        else
+                            newAssignment.groupSubmissionAllowed = false;
+                        newAssignment.title = model.Title;
+                        newAssignment.totalMarks = model.totalPoint ;
+
+                    
+
+
+                       
+                     
+
+                        L2PAddUpdateResponse response = await L2PAPIClient.api.Calls.L2PAddAssignment(cId, newAssignment);
+
+                        //if (file != null)
+                        //{
+
+                        //    L2PUploadRequest data = new L2PUploadRequest();
+                        //    data.fileName = ContentDispositionHeaderValue
+                        //        .Parse(file.ContentDisposition)
+                        //        .FileName
+                        //        .Trim('"');// FileName returns "fileName.ext"(with double quotes) in beta 3
+
+                        //    using (System.IO.Stream stream = file.OpenReadStream())
+                        //    {
+                        //        byte[] buffer = new byte[stream.Length];
+                        //        await stream.ReadAsync(buffer, 0, (int)stream.Length);
+                        //        data.stream = Convert.ToBase64String(buffer);
+                        //    }
+
+                        //    L2PAssignmentList elem = await L2PAPIClient.api.Calls.L2PviewAssignment(cId, response.itemId);
+
+                        //    if (elem.dataSet != null && elem.dataSet.Any())
+                        //    {
+
+                        //        string directory = "/" + course.semester + "/" + cId + "/assessment/Lists/LA_AssignmentDocuments/A" + elem.dataSet.First().itemId + "/";
+                        //        await L2PAPIClient.api.Calls.L2PuploadInAssignments(cId, directory, data);
+
+                        //    }
+                        //}
+                        //if (fileSo != null)
+                        //{
+
+                        //    L2PUploadRequest data2 = new L2PUploadRequest();
+                        //    data2.fileName = ContentDispositionHeaderValue
+                        //        .Parse(fileSo.ContentDisposition)
+                        //        .FileName
+                        //        .Trim('"');// FileName returns "fileName.ext"(with double quotes) in beta 3
+
+                        //    using (System.IO.Stream stream = fileSo.OpenReadStream())
+                        //    {
+                        //        byte[] buffer = new byte[stream.Length];
+                        //        await stream.ReadAsync(buffer, 0, (int)stream.Length);
+                        //        data2.stream = Convert.ToBase64String(buffer);
+                        //    }
+
+                        //    L2PAssignmentList elem = await L2PAPIClient.api.Calls.L2PviewAssignment(cId, response.itemId);
+                        //    if (elem.dataSet != null && elem.dataSet.Any())
+                        //    {
+                        //        string directory = "/" + course.semester + "/" + cId + "/assessment/Lists/LA_SolutionDocuments/A" + elem.dataSet.First().itemId + "/" + "S/" ;
+                        //        await L2PAPIClient.api.Calls.L2PuploadInAssignments(cId, directory, data2);
+
+                        //    }
+                        //}
+                        return RedirectToAction(nameof(MyCoursesController.Assignments), "MyCourses", new { cId = cId, @msg = "Sample Solution was successfully added!" });
+                    }
+
+                    else
+                    {
+
+                        string errorMessage = "You do not have the sufficient rights to add an Assignment";
+                        return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
+                    }
+                }
+
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
+        }
+
+        // Get Method to add a new assignment in a course
+        // GET: /L2P/AddAssignment
+        [HttpGet]
+        public async Task<IActionResult> EditAssignment(string cId,string aId)
+        {
+            try
+            {
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
+                {
+                    L2PCourseInfoData course = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    L2PRole userRole = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
+                    if (userRole != null && (userRole.role.Contains("manager") || userRole.role.Contains("tutors")))
+                    {
+                        ViewData["ChosenCourse"] = course;
+                        ViewData["userRole"] = userRole;
+                        L2PAssignmentList aList = await L2PAPIClient.api.Calls.L2PviewAssignment(cId, Int32.Parse(aId));
+                        if (aList != null)
+                        {
+                            AssignmentViewModel model = new AssignmentViewModel();
+                            foreach (L2PAssignmentElement a in aList.dataSet)
+                            {
+
+                                model.Description = a.description;
+
+                                model.DueDate = Tools.toDateTime(a.dueDate);
+                                model.DueDatehours = Tools.toHours(a.dueDate);
+                                if (a.groupSubmissionAllowed)
+                                {
+                                   model.groupSubmissionAllowed ="Yes" ;
+                                }
+                                else
+                                {
+                                    model.groupSubmissionAllowed = "No";
+                                }
+                                model.Title = a.title;
+                                model.totalPoint = a.totalPoint;
+                               
+
+                            }
+                            ViewData["AssignmentViewModel"] = model;
+                            ViewData["EditMode"] = true;
+                            return View("~/Views/L2P/AddEditAssignment.cshtml", model);
+                        }
+                        else
+                        {
+                            string errorMessage = "The Assignment you are trying to view does not exist.";
+                            return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
+                        }
+                    }
+                    else
+                    {
+                        string errorMessage = "You do not have the sufficient rights to edit this Assignment";
+                        return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
+                    }
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
+        }
+
+
+        // Post Method to add a new Hyperlink in a course
+        // POST: /L2P/AddHyperlink?
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditAssignment(AssignmentViewModel model, string cId, IFormFile file, IFormFile fileSo)
+        {
+            try
+            {
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
+                {
+                    L2PCourseInfoData course = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    L2PRole userRole = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
+                    if (userRole != null && (userRole.role.Contains("manager") || userRole.role.Contains("tutors")))
+                    {
+                        ViewData["ChosenCourse"] = course;
+                        ViewData["userRole"] = userRole;
+
+                        if (!ModelState.IsValid) // Check if the model was filled correctly (Always add)
+                        {
+                            return View("~/Views/L2P/AddEditAssignment.cshtml", model);
+                        }
+
+
+                        L2PAddAssignmentRequest newAssignment = new L2PAddAssignmentRequest();
+                        newAssignment.description = model.Description;
+
+                        string one = model.DueDate;
+                        string two = model.DueDatehours;
+
+                        DateTime dt = Convert.ToDateTime(one + " " + two);
 
                         //DateTime dt1 = DateTime.ParseExact(one + " " + two, "dd/MM/yy h:mm:ss tt", CultureInfo.InvariantCulture);
                         long dtunix = (long)(TimeZoneInfo.ConvertTimeToUtc(dt) - new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc)).TotalSeconds;
@@ -1860,23 +2056,155 @@ namespace Grp.L2PSite.MobileApp.Controllers
                             newAssignment.groupSubmissionAllowed = false;
                         newAssignment.title = model.Title;
                         newAssignment.totalMarks = model.totalPoint;
+                        
+                       // await L2PAPIClient.api.Calls.L2PupdateAssignment(cId, newAssignment);
+
+                        //if (file != null)
+                        //{
+
+                        //    L2PUploadRequest data = new L2PUploadRequest();
+                        //    data.fileName = ContentDispositionHeaderValue
+                        //        .Parse(file.ContentDisposition)
+                        //        .FileName
+                        //        .Trim('"');// FileName returns "fileName.ext"(with double quotes) in beta 3
+
+                        //    using (System.IO.Stream stream = file.OpenReadStream())
+                        //    {
+                        //        byte[] buffer = new byte[stream.Length];
+                        //        await stream.ReadAsync(buffer, 0, (int)stream.Length);
+                        //        data.stream = Convert.ToBase64String(buffer);
+                        //    }
+
+                        //    L2PAssignmentList elem = await L2PAPIClient.api.Calls.L2PviewAssignment(cId, response.itemId);
+
+                        //    if (elem.dataSet != null && elem.dataSet.Any())
+                        //    {
+
+                        //        string directory = "/" + course.semester + "/" + cId + "/assessment/Lists/LA_AssignmentDocuments/A" + elem.dataSet.First().itemId + "/";
+                        //        await L2PAPIClient.api.Calls.L2PuploadInAssignments(cId, directory, data);
+
+                        //    }
+                        //}
+                        //if (fileSo != null)
+                        //{
+
+                        //    L2PUploadRequest data2 = new L2PUploadRequest();
+                        //    data2.fileName = ContentDispositionHeaderValue
+                        //        .Parse(fileSo.ContentDisposition)
+                        //        .FileName
+                        //        .Trim('"');// FileName returns "fileName.ext"(with double quotes) in beta 3
+
+                        //    using (System.IO.Stream stream = fileSo.OpenReadStream())
+                        //    {
+                        //        byte[] buffer = new byte[stream.Length];
+                        //        await stream.ReadAsync(buffer, 0, (int)stream.Length);
+                        //        data2.stream = Convert.ToBase64String(buffer);
+                        //    }
+
+                        //    L2PAssignmentList elem = await L2PAPIClient.api.Calls.L2PviewAssignment(cId, response.itemId);
+                        //    if (elem.dataSet != null && elem.dataSet.Any())
+                        //    {
+                        //        string directory = "/" + course.semester + "/" + cId + "/assessment/Lists/LA_SolutionDocuments/A" + elem.dataSet.First().itemId + "/" + "S/" ;
+                        //        await L2PAPIClient.api.Calls.L2PuploadInAssignments(cId, directory, data2);
+
+                        //    }
+                        //}
+                        return RedirectToAction(nameof(MyCoursesController.Assignments), "MyCourses", new { cId = cId, @msg = "Sample Solution was successfully added!" });
+                    }
+
+                    else
+                    {
+
+                        string errorMessage = "You do not have the sufficient rights to add an Assignment";
+                        return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = errorMessage });
+                    }
+                }
+
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
+        }
+
+        [HttpGet] // Get Method to show specific assignments
+        public async Task<IActionResult> ShowAssignment(string cId, string aid)
+        {
+            try
+            {
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
+                {
+                    ViewData["ChosenCourse"] = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    ViewData["userRole"] = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
+                    L2PAssignmentList assnList = await L2PAPIClient.api.Calls.L2PviewAssignment(cId, int.Parse(aid));
+                    ViewData["ChosenAssignment"] = assnList;
+                    List<L2PAssignmentElement> assignments = new List<L2PAssignmentElement>();
+                    if (assnList.dataSet != null)
+                    {
+
+                        assignments = assnList.dataSet;
+
+                    }
+                    ViewData["ViewAssignment"] = assignments;
+                    return View();
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
+
+                        DateTime dt = Convert.ToDateTime(one + " " + two);
+      
+
+                        //DateTime dt1 = DateTime.ParseExact(one + " " + two, "dd/MM/yy h:mm:ss tt", CultureInfo.InvariantCulture);
 
 
+                        long dtunix = (long)(TimeZoneInfo.ConvertTimeToUtc(dt) - new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc)).TotalSeconds;
 
+
+                        newAssignment.dueDate = dtunix;
+                        if (model.groupSubmissionAllowed == "on")
+                            newAssignment.groupSubmissionAllowed = true;
+                        else
+                            newAssignment.groupSubmissionAllowed = false;
+                        newAssignment.title = model.Title;
+                        newAssignment.totalMarks = model.totalPoint ;
+                        newAssignment.totalMarks = model.totalPoint;
+
+                    
+
+
+                       
+                     
 
 
 
 
                         L2PAddUpdateResponse response = await L2PAPIClient.api.Calls.L2PAddAssignment(cId, newAssignment);
 
+
                         if (file != null)
                         {
+
 
                             L2PUploadRequest data = new L2PUploadRequest();
                             data.fileName = ContentDispositionHeaderValue
                                 .Parse(file.ContentDisposition)
                                 .FileName
                                 .Trim('"');// FileName returns "fileName.ext"(with double quotes) in beta 3
+
 
                             using (System.IO.Stream stream = file.OpenReadStream())
                             {
@@ -1885,24 +2213,41 @@ namespace Grp.L2PSite.MobileApp.Controllers
                                 data.stream = Convert.ToBase64String(buffer);
                             }
 
+
                             L2PAssignmentList elem = await L2PAPIClient.api.Calls.L2PviewAssignment(cId, response.itemId);
+
+
 
                             if (elem.dataSet != null && elem.dataSet.Any())
                             {
 
+
+
                                 string directory = "/" + course.semester + "/" + cId + "/assessment/Lists/LA_AssignmentDocuments/A" + elem.dataSet.First().itemId;
                                 await L2PAPIClient.api.Calls.L2PuploadInAssignments(cId, directory, data);
+
 
                             }
                         }
                         if (fileSo != null)
                         {
 
+
+
+
+
+
                             L2PUploadRequest data2 = new L2PUploadRequest();
                             data2.fileName = ContentDispositionHeaderValue
                                 .Parse(fileSo.ContentDisposition)
                                 .FileName
                                 .Trim('"');// FileName returns "fileName.ext"(with double quotes) in beta 3
+
+
+
+
+
+
 
                             using (System.IO.Stream stream = fileSo.OpenReadStream())
                             {
@@ -1911,11 +2256,18 @@ namespace Grp.L2PSite.MobileApp.Controllers
                                 data2.stream = Convert.ToBase64String(buffer);
                             }
 
+
+
+
+
+
                             L2PAssignmentList elem = await L2PAPIClient.api.Calls.L2PviewAssignment(cId, response.itemId);
                             if (elem.dataSet != null && elem.dataSet.Any())
                             {
                                 string directory = "/" + course.semester + "/" + cId + "/assessment/Lists/LA_SolutionDocuments/A" + elem.dataSet.First().itemId + "/S" + data2.fileName;
                                 await L2PAPIClient.api.Calls.L2PuploadInAssignments(cId, directory, data2);
+
+
 
                             }
                         }
@@ -1945,6 +2297,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
         // Get Method to add a new assignment in a course
         // GET: /L2P/AddAssignment
         [HttpGet]
+
         public async Task<IActionResult> EditAssignment(string cId, string aId)
         {
             try
@@ -1972,6 +2325,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
                                 model.DueDatehours = Tools.toHours(a.dueDate);
                                 if (a.groupSubmissionAllowed)
                                 {
+
                                     model.groupSubmissionAllowed = "Yes";
                                 }
                                 else
@@ -1980,6 +2334,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
                                 }
                                 model.Title = a.title;
                                 model.totalPoint = a.totalPoint;
+
 
 
                             }
@@ -2055,6 +2410,8 @@ namespace Grp.L2PSite.MobileApp.Controllers
                             newAssignment.groupSubmissionAllowed = false;
                         newAssignment.title = model.Title;
                         newAssignment.totalMarks = model.totalPoint;
+
+
 
                         // await L2PAPIClient.api.Calls.L2PupdateAssignment(cId, newAssignment);
 

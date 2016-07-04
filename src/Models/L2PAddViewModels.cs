@@ -29,6 +29,14 @@ namespace Grp.L2PSite.MobileApp.Models
 
     }
 
+    public class GroupWorkSpaceViewModel
+    {
+        [Required]
+        [StringLength(1000)]
+       public string ListOfUsers { get; set; }
+
+    }
+
 
     public class LoginViewModel
     {
@@ -72,7 +80,9 @@ namespace Grp.L2PSite.MobileApp.Models
         [Required]
         public string recipients { get; set; }
 
+        [Required]
         public string cc { get; set; }
+
         public string sender { get; set; }
         public int itemId { get; set; }
     }
