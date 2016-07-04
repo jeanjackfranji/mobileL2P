@@ -554,5 +554,38 @@ namespace Grp.L2PSite.MobileApp.Controllers
                 return RedirectToAction(nameof(HomeController.Error), "Error");
             }
         }
+
+        //Atul
+        public async Task<IActionResult> DiscussionForum(String cId, String ExtdDir)
+        {
+            try
+            {
+                // This method must be used before every L2P API call
+                Tools.getAndSetUserToken(Request.Cookies, Context);
+                if (Tools.isUserLoggedInAndAPIActive(Context) && !String.IsNullOrEmpty(cId))
+                {
+                    L2PCourseInfoData course = await L2PAPIClient.api.Calls.L2PviewCourseInfoAsync(cId);
+                    ViewData["ChosenCourse"] = course;
+                    ViewData["userRole"] = await L2PAPIClient.api.Calls.L2PviewUserRoleAsync(cId);
+                    L2PDiscussionItemList discussList = await L2PAPIClient.api.Calls.L2PviewAllDiscussionItems(cId);
+                    
+                    var discuss = from elem in discussList.dataSet
+                                  where elem.subject != "Reply"
+                                  orderby Tools.toDate(elem.created) descending
+                                  select elem;
+                    ViewData["DIscussionForum"] = discuss.ToList();
+                    return View();
+                }
+                else
+                {
+                    return RedirectToAction(nameof(AccountController.Login), "Account");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
+            }
+        }
+
     }
 }

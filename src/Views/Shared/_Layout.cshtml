@@ -35,7 +35,7 @@
             <li><a asp-controller="MyCourses" asp-action="Assignments" asp-route-cId="@cId"  class="waves-effect waves-light blue-text">Assignments</a></li>
             <li><a asp-controller="MyCourses" asp-action="Announcement" asp-route-cId="@cId"  class="waves-effect waves-light blue-text">Announcements</a></li>
             <li><a asp-controller="MyCourses" asp-action="Email" asp-route-cId="@cId"  class="waves-effect waves-light blue-text">Emails</a></li>
-            <li><a asp-controller="" asp-action="" asp-route-cId="@cId"  class="waves-effect waves-light blue-text">Discussion Forum</a></li>
+            <li><a asp-controller="MyCourses" asp-action="DiscussionForum" asp-route-cId="@cId"  class="waves-effect waves-light blue-text">Discussion Forum</a></li>
             <li><a asp-controller="MyCourses" asp-action="MediaLibrary" asp-route-cId="@cId" class="waves-effect waves-light blue-text">Media Library</a></li>
             <li><a asp-controller="MyCourses" asp-action="Literature" asp-route-cId="@cId" class="waves-effect waves-light blue-text">Literarture</a></li>
         </ul>
@@ -82,12 +82,8 @@
     <script type="text/javascript" src='~/js/moment.js'></script>
     <script type="text/javascript" src='~/js/selectize.min.js'></script>
     <script type="text/javascript" src='http://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.7.2/fullcalendar.min.js'></script>
-    <script src="~/lib/system.js" type="text/javascript"></script>
-    <script src="~/config.js" type="text/javascript"></script>
-
+    
     <script>
-        System.import("js/site").catch(console.log.bind(console));
-
         $(function () {
             $(".dropdown-button").dropdown();
 
@@ -99,6 +95,14 @@
             );
         });
     </script>
+
+    <script src="~/lib/system.js" type="text/javascript"></script>
+    <script src="~/config.js" type="text/javascript"></script>
+
+    <script>
+        System.import("js/site").catch(console.log.bind(console));
+    </script>
+
     @RenderSection("scripts", false)
 </body>
 </html>
