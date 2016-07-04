@@ -554,7 +554,7 @@ namespace L2PAPIClient.api
                 var answer = await RestCallAsync<L2PCourseEventList>("", callURL, false);
                 return answer;
             }
-            catch(Exception ex)
+            catch
             {
                 return new L2PCourseEventList();
             }

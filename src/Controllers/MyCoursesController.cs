@@ -1,6 +1,7 @@
 ﻿using L2PAPIClient;
 using L2PAPIClient.DataModel;
 using System;
+using System.IO;
 using System.Net;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,9 +9,9 @@ using System.Collections.Generic;
 using Microsoft.AspNet.Mvc;
 using Microsoft.AspNet.Http;
 using Grp.L2PSite.MobileApp.Services;
-using System.IO;
 using ICSharpCode.SharpZipLib.Zip;
 using Microsoft.Framework.Runtime;
+using Grp.L2PSite.MobileApp.Models;
 
 namespace Grp.L2PSite.MobileApp.Controllers
 {
@@ -721,7 +722,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
 
                     var discuss = from elem in discussList.dataSet
                                   where elem.subject != "Reply"
-                                  orderby Tools.toDate(elem.created) descending
+                                  orderby Tools.toDateTime(elem.created) descending
                                   select elem;
                     ViewData["DIscussionForum"] = discuss.ToList();
                     return View();
