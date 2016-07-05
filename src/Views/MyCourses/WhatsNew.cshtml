@@ -150,7 +150,7 @@
                             foreach (L2PDiscussionItemElement disc in discussions)
                             {
                                 <li>
-                                    <div class="collapsible-header"><i class="material-icons grey-text">forum</i><a asp-controller="MyCourses" asp-action="DiscussionForum" asp-route-id="@disc.selfId">@disc.subject</a></div>
+                                    <div class="collapsible-header"><i class="material-icons grey-text">forum</i><a asp-controller="MyCourses" asp-action="DiscussionForum" asp-route-cId="@disc.selfId">@disc.subject</a></div>
                                     <div class="collapsible-body"><p>@Html.Raw(@disc.body)</p></div>
                                 </li>
                             }

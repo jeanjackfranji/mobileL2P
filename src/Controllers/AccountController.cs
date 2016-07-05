@@ -99,16 +99,24 @@ namespace Grp.L2PSite.MobileApp.Controllers
         //
         // POST: /Account/LogOff
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        [AllowAnonymous]
         public IActionResult LogOff()
         {
             Context.Session.SetInt32("LoggedIn", 0);
-            Response.Cookies.Delete("CRTID");
-            Response.Cookies.Delete("CRAID");
+            SetCookiesToExpired();
             return RedirectToAction(nameof(AccountController.Login), "Account");
         }
 
         #region Helpers
+
+        private void SetCookiesToExpired()
+        {
+            //Let Cookie Expire
+            CookieOptions cOptions = new CookieOptions();
+            cOptions.Expires = DateTime.Now.AddDays(-1);
+            Response.Cookies.Append("CRTID", Encryptor.Encrypt(L2PAPIClient.Config.getRefreshToken()), cOptions);
+            Response.Cookies.Append("CRAID", Encryptor.Encrypt(L2PAPIClient.Config.getAccessToken()), cOptions);
+        }
 
         // The following code creates the database and schema if they don't exist.
         // This is a temporary workaround since deploying database through EF migrations is

@@ -145,7 +145,7 @@
                                 <tr data-id="3">
                                     <td><b>Work on Solution:</b></td>
                                     <td>
-                                        @if (DateTime.Now > Tools.toDate(assign.dueDate))
+                                        @if (DateTime.Now > Tools.toDateTime(assign.dueDate))
                                         {
                                             @if (soldoc != null)
                                             {

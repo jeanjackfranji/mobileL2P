@@ -53,8 +53,12 @@ namespace Grp.L2PSite.MobileApp.Controllers
             }
             catch(Exception ex)
             {
-                Response.Cookies.Delete("CRTID");
-                Response.Cookies.Delete("CRAID");
+                //Let Cookie Expire
+                CookieOptions cOptions = new CookieOptions();
+                cOptions.Expires = DateTime.Now.AddDays(-1);
+                Response.Cookies.Append("CRTID", Encryptor.Encrypt(L2PAPIClient.Config.getRefreshToken()), cOptions);
+                Response.Cookies.Append("CRAID", Encryptor.Encrypt(L2PAPIClient.Config.getAccessToken()), cOptions);
+
                 return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
             }
             return RedirectToAction(nameof(AccountController.Login), "Account");
@@ -101,7 +105,6 @@ namespace Grp.L2PSite.MobileApp.Controllers
 
         public IActionResult About()
         {
-            ViewData["Message"] = "MobileL2P is a mobile version of the RWTH Aachen L2P.\n\nOur Team Member are:\n  -John Jack Franji\n  -Neetha Baliga Bantwal\n  -Kamar blbel\n  -Pooja Sompura Harisha\n  -Mahbub Hasan\n  -Atul Mohan";
             return View();
         }
 

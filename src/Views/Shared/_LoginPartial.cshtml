@@ -2,11 +2,10 @@
 @if (Tools.isUserLoggedInAndAPIActive(Context))
 {
     <form asp-controller="Account" asp-action="LogOff" method="post" id="logoutForm">
-        <!--<a asp-controller="Manage" asp-action="Index" title="Manage" class="mdl-navigation__link">Data Here!</a>-->
-        <a href="javascript:document.getElementById('logoutForm').submit()" class="mdl-navigation__link">Log off</a>
+        <a href="javascript:document.getElementById('logoutForm').submit()" class="waves-effect waves-light" style="padding-left: 20px !important;">Sign Out <i class="left material-icons" style="color: #0D47A1 !important;">exit_to_app</i></a>
     </form>
 }
 else
 {
-    <a asp-controller="Account" asp-action="Login" class="mdl-navigation__link">Log in</a>
+    <li><a class="waves-effect waves-light" asp-controller="Account" asp-action="Login" style="padding-left: 20px !important;">Sign In <i class="left material-icons" style="color: #0D47A1 !important;">input</i></a></li>
 }

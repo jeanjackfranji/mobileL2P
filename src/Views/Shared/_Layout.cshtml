@@ -40,7 +40,7 @@
             <li><a asp-controller="MyCourses" asp-action="GroupWorkspace" asp-route-cId="@cId" class="waves-effect waves-light blue-text">Group Workspace</a></li>
         </ul>
     }
-    <nav class="blue darken-3" role="navigation">
+    <nav class="blue darken-4" role="navigation">
         <div class="nav-wrapper">
             <a href="#!" class="brand-logo margin-left-20">L2P Mobile</a>
             <a href="#" data-activates="mobile" class="button-collapse show-on-large"><i class="material-icons">menu</i></a>
@@ -60,9 +60,9 @@
                         </div>=
                     </div>
                 </li>
-                <li><a class="waves-effect waves-light" asp-controller="Home" asp-action="MyCourses">My Courses</a></li>
-                <li><a class="waves-effect waves-light" asp-controller="Home" asp-action="Calendar">Calendar</a></li>
-                <li><a class="waves-effect waves-light" asp-controller="Home" asp-action="About">About</a></li>
+                <li><a class="waves-effect waves-light" asp-controller="Home" asp-action="MyCourses" style="padding-left: 20px !important;">My Courses <i class="left material-icons" style="color: #0D47A1 !important;">school</i></a></li>
+                <li><a class="waves-effect waves-light" asp-controller="Home" asp-action="Calendar" style="padding-left: 20px !important;">Calendar <i class="left material-icons" style="color: #0D47A1 !important;">perm_contact_calendar</i></a></li>
+                <li><a class="waves-effect waves-light" asp-controller="Home" asp-action="About" style="padding-left: 20px !important;">About <i class="left material-icons" style="color: #0D47A1 !important;">info_outline</i></a></li>
                 <li class="divider"></li>
                 @await Html.PartialAsync("_LoginPartial")
                 

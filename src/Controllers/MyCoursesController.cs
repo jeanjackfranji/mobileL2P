@@ -679,6 +679,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
                 return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
             }
         }
+
         [HttpGet]
         public async Task<IActionResult> AcceptOrRejectInvite(string cId, int itemId, string response)
         {
@@ -705,9 +706,9 @@ namespace Grp.L2PSite.MobileApp.Controllers
             }
 
         }
-
-        //Atul
-        public async Task<IActionResult> DiscussionForum(String cId, String ExtdDir)
+        
+        [HttpGet]
+        public async Task<IActionResult> DiscussionForum(string cId, string ExtdDir)
         {
             try
             {

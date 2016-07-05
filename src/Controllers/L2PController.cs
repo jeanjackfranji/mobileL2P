@@ -2186,13 +2186,12 @@ namespace Grp.L2PSite.MobileApp.Controllers
                     if (dList != null)
                     {
 
-
                         var mainDiscussionForum = from elts in dList.dataSet
-                                                  where elts.parentDiscussionId == discussId
+                                                  where elts.selfId == discussId
                                                   select elts;
 
                         var discussionReplies = from elts in dList.dataSet
-                                                where elts.parentDiscussionId == discussId
+                                                where elts.parentDiscussionId == discussId && elts.selfId != discussId
                                                 select elts;
 
                         if (mainDiscussionForum.Any())
