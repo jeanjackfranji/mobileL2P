@@ -306,12 +306,12 @@ namespace L2PAPIClient
         private static Thread Refresher = null;
         private static int TokenExpireTime;
 
-        private static void TokenRefresherThread()
+        private async static void TokenRefresherThread()
         {
             //Console.WriteLine("Startet Refresh-Thread");
             Thread.Sleep(TokenExpireTime * 1000);
             //Console.WriteLine("Refreshing!");
-            GenerateAccessTokenFromRefreshTokenAsync();
+            await GenerateAccessTokenFromRefreshTokenAsync();
         }
 
 
