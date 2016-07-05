@@ -575,12 +575,9 @@ namespace Grp.L2PSite.MobileApp.Controllers
                         L2PgwsMyGroupWorkspace g = await L2PAPIClient.api.Calls.L2PviewMyGroupWorkspace(cId);
 
                         List<L2PgwsElement> groupList = g.dataSet;
-                        int groupListCount = groupList.Count;
-                        if (groupListCount != 0)
-                        {
-                            ViewData["groupInfo"] = groupList;
-                            ViewData["groupInvites"] = g.invitationFromOtherUsers;
-                        }
+                        ViewData["groupInfo"] = groupList;
+                        ViewData["groupInvites"] = g.invitationFromOtherUsers;
+                        
 
                     }
                     ViewData["Message"] = msg;
