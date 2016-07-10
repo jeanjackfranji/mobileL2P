@@ -6,7 +6,6 @@ C:\Users\Jean Jack\Documents\Visual Studio 2013\Projects\L2P-Api-Client-master\L
 C:\Users\mahbu\Documents\GitHub\mobileL2P\L2PAPIClient\bin\Debug\L2PAPIClient.dll.config
 C:\Users\mahbu\Documents\GitHub\mobileL2P\L2PAPIClient\bin\Debug\L2PAPIClient.dll
 C:\Users\mahbu\Documents\GitHub\mobileL2P\L2PAPIClient\bin\Debug\L2PAPIClient.pdb
-C:\Users\mahbu\Documents\GitHub\mobileL2P\L2PAPIClient\bin\Debug\Newtonsoft.Json.xml
 C:\Users\mahbu\Documents\GitHub\mobileL2P\L2PAPIClient\obj\Debug\L2PAPIClient.csprojResolveAssemblyReference.cache
 C:\Users\mahbu\Documents\GitHub\mobileL2P\L2PAPIClient\obj\Debug\L2PAPIClient.dll
 C:\Users\mahbu\Documents\GitHub\mobileL2P\L2PAPIClient\obj\Debug\L2PAPIClient.pdb

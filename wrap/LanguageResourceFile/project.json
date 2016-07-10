@@ -1,0 +1,12 @@
+{
+  "version": "1.0.0-*",
+  "frameworks": {
+    "net45+win+wpa81+wp80+MonoAndroid10+Xamarin.iOS10+MonoTouch10": {
+      "wrappedProject": "../../LanguageResourceFile/LanguageResourceFile.csproj",
+      "bin": {
+        "assembly": "../../LanguageResourceFile/obj/{configuration}/LanguageResourceFile.dll",
+        "pdb": "../../LanguageResourceFile/obj/{configuration}/LanguageResourceFile.pdb"
+      }
+    }
+  }
+}
