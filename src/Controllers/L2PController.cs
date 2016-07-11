@@ -1920,7 +1920,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
 
                         //    }
                         //}
-                        return RedirectToAction(nameof(MyCoursesController.Assignments), "MyCourses", new { cId = cId, @msg = "Sample Solution was successfully added!" });
+                        return RedirectToAction(nameof(MyCoursesController.Assignments), "MyCourses", new { cId = cId, @msg = "Assignment was successfully added!" });
                     }
 
                     else
