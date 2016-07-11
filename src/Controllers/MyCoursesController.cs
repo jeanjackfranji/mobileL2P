@@ -15,7 +15,7 @@ using Grp.L2PSite.MobileApp.Models;
 
 namespace Grp.L2PSite.MobileApp.Controllers
 {
-    public class MyCoursesController : Controller
+    public class MyCoursesController : LanguageController
     {
 
         private readonly IApplicationEnvironment _appEnvironment;

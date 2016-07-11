@@ -1,5 +1,6 @@
 ﻿@using L2PAPIClient.DataModel;
 @using Grp.L2PSite.MobileApp.Services;
+@using LanguageResourceFile;
 @{
     ViewData["Title"] = "What's New";
     L2PCourseInfoData course = ViewData["ChosenCourse"] as L2PCourseInfoData;
@@ -39,7 +40,7 @@
         <div class="col s12 m6">
             <div class="card indigo lighten-5 dismissable">
                 <div class="card-content black-text hoverable">
-                    <span class="card-title">Learning Materials</span>
+                    <span class="card-title">@Resource.LearningMaterials</span>
                     <ul class="collection">
                         @if (cWhatsNew.learningMaterials != null)
                         {

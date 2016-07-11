@@ -12,7 +12,7 @@ using System.Linq;
 
 namespace Grp.L2PSite.MobileApp.Controllers
 {
-    public class L2PController : Controller
+    public class L2PController : LanguageController
     {
         // Get Method to add a new Hyperlink in a course
         // GET: /L2P/AddHyperlink

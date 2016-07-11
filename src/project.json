@@ -41,7 +41,8 @@
     "dnx451": {
       "dependencies": {
         "ICSharpCode.SharpZipLib": "1.0.0-*",
-        "L2PAPIClient": "1.0.0-*"
+        "L2PAPIClient": "1.0.0-*",
+        "LanguageResourceFile": "1.0.0-*"
       }
     }
     },
