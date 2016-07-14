@@ -15,9 +15,6 @@
     <SchemaVersion>2.0</SchemaVersion>
     <DevelopmentServerPort>58063</DevelopmentServerPort>
   </PropertyGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\LanguageResourceFile\LanguageResourceFile.csproj" />
-  </ItemGroup>
   <Import Project="$(VSToolsPath)\DNX\Microsoft.DNX.targets" Condition="'$(VSToolsPath)' != ''" />
   <ProjectExtensions>
     <VisualStudio>

@@ -7,12 +7,11 @@ using Microsoft.AspNet.Http;
 using Grp.L2PSite.MobileApp.Services;
 using static Grp.L2PSite.MobileApp.Services.Tools;
 using System.Collections.Generic;
-using LanguageResourceFile;
 using System.Threading;
 
 namespace Grp.L2PSite.MobileApp.Controllers
 {
-    public class HomeController : LanguageController
+    public class HomeController : Controller
     {
         public async Task<IActionResult> MyCourses(String semId)
         {
@@ -109,7 +108,6 @@ namespace Grp.L2PSite.MobileApp.Controllers
         {
             return View();
         }
-
         
         public IActionResult Error(string error)
         {
@@ -120,59 +118,6 @@ namespace Grp.L2PSite.MobileApp.Controllers
             ViewData["error"] = error;
             return View("~/Views/Shared/Error.cshtml");
         }
-
-        public ActionResult SetCulture(string culture)
-        {
-            string cultureName = null;
-
-            // Attempt to read the culture cookie from Request
-            var cultureCookie = Request.Cookies["_culture"];
-            //Request.Cookies["_culture"];
-
-            if (cultureCookie != null)
-            {
-                cultureName = cultureCookie;
-            }
-            else
-            {
-                //cultureName = Request.UserLanguages != null && Request.UserLanguages.Length > 0 ? Request.UserLanguages[0] : null; // obtain it from HTTP header AcceptLanguages
-                cultureName = "en-US";
-            }
-
-            // Validate culture name
-            cultureName = CultureHelper.GetImplementedCulture(cultureName); // This is safe
-
-
-            // Modify current thread's cultures            
-            Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo(cultureName);
-            Thread.CurrentThread.CurrentUICulture = Thread.CurrentThread.CurrentCulture;
-            try
-            {
-                // Validate input
-                culture = CultureHelper.GetImplementedCulture(culture);
-
-                //Save culture in a cookie
-                var cookie = Request.Cookies["_culture"];
-
-                if (!string.IsNullOrWhiteSpace(cookie))
-                {
-                    cookie = culture;   // update cookie value
-                }
-                else
-                {
-                    cookie = Request.Cookies["_culture"];
-                    cookie = culture;
-                }
-                Response.Cookies.Append("_culture", culture);
-            }
-            catch(Exception ex)
-            {
-
-            }
-
-            return RedirectToAction("MyCourses");
-        }
-
 
     }
 }

@@ -9,6 +9,7 @@ using System.Threading;
 using System;
 using Microsoft.AspNet.Http;
 using static Grp.L2PSite.MobileApp.Services.Tools;
+using L2PAPIClient.DataModel;
 
 namespace Grp.L2PSite.MobileApp.Controllers
 {
@@ -63,37 +64,42 @@ namespace Grp.L2PSite.MobileApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
         {
-            EnsureDatabaseCreated(_applicationDbContext);
-            ViewData["ReturnUrl"] = returnUrl;
-            // Wait for authentication
-            bool done = false;
-            while (!done)  // so far, not authenticated
+            try
             {
-                // Just wait 5 seconds - this is the recommended querying time for OAuth by ITC
-                Thread.Sleep(5000);
-                await L2PAPIClient.AuthenticationManager.CheckAuthenticationProgressAsync();
+                EnsureDatabaseCreated(_applicationDbContext);
+                ViewData["ReturnUrl"] = returnUrl;
+                // Wait for authentication
+                bool done = false;
+                while (!done)  // so far, not authenticated
+                {
+                    // Just wait 5 seconds - this is the recommended querying time for OAuth by ITC
+                    Thread.Sleep(5000);
+                    OAuthTokenRequestData reqData = await L2PAPIClient.AuthenticationManager.CheckAuthenticationProgressAsync();
 
-                done = (L2PAPIClient.AuthenticationManager.getState() == L2PAPIClient.AuthenticationManager.AuthenticationState.ACTIVE);
-                if (!done)
-                {
-                    Console.WriteLine("App not authenticated right now...");
+                    done = (L2PAPIClient.AuthenticationManager.getState() == L2PAPIClient.AuthenticationManager.AuthenticationState.ACTIVE);
+                    if (done)
+                    {
+                        //Add a Cookie
+                        CookieOptions cOptions = new CookieOptions();
+                        cOptions.Expires = DateTime.MaxValue;
+                        Response.Cookies.Append("CRTID", Encryptor.Encrypt(reqData.refresh_token), cOptions);
+                        Response.Cookies.Append("CRAID", Encryptor.Encrypt(reqData.access_token), cOptions);
+
+                        System.Diagnostics.Debug.WriteLine(reqData.access_token + " :: :: " + reqData.refresh_token);
+
+                        //Set logged in to true
+                        Context.Session.Set("LoggedIn", Tools.ObjectToByteArray(LoginStatus.LoggedIn));
+                        return RedirectToAction(nameof(HomeController.MyCourses), "Home");
+                    }
                 }
-                else
-                {
-                    //Add a Cookie
-                    CookieOptions cOptions = new CookieOptions();
-                    cOptions.Expires = DateTime.MaxValue;
-                    Response.Cookies.Append("CRTID", Encryptor.Encrypt(L2PAPIClient.Config.getRefreshToken()), cOptions);
-                    Response.Cookies.Append("CRAID", Encryptor.Encrypt(L2PAPIClient.Config.getAccessToken()), cOptions);
-                    
-                    //Set logged in to true
-                    Context.Session.Set("LoggedIn", Tools.ObjectToByteArray(LoginStatus.LoggedIn));
-                    return RedirectToLocal(returnUrl);
-                }
+
+                // If we got this far, something failed, redisplay form
+                return View(model);
+            }catch(Exception ex)
+            {
+                return RedirectToAction(nameof(HomeController.Error), "Home", new { @error = ex.Message });
             }
 
-            // If we got this far, something failed, redisplay form
-            return View(model);
         }
 
         //

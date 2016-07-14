@@ -192,14 +192,14 @@ namespace L2PAPIClient
         /// </summary>
         /// <returns></returns>
         //[MethodImpl(MethodImplOptions.Synchronized)]
-        public async static Task<bool> CheckAuthenticationProgressAsync()
+        public async static Task<OAuthTokenRequestData> CheckAuthenticationProgressAsync()
         {
             //CheckAuthMutex.WaitOne();
             var answer = await TokenCallAsync();
             if (answer == null || answer.status == null || answer.status.StartsWith("Fail:") || answer.status.StartsWith("error:"))
             {
                 // Not working!
-                return false;
+                return null;
             }
             // working!
             // Store the tokens
@@ -207,7 +207,7 @@ namespace L2PAPIClient
             Config.setRefreshToken(answer.refresh_token);
             setState(AuthenticationState.ACTIVE);
             //CheckAuthMutex.ReleaseMutex();
-            return true;
+            return answer;
         }
 
         private static Mutex InitAuthMutex = new Mutex();

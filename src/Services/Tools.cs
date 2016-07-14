@@ -8,15 +8,14 @@ using Newtonsoft.Json;
 using System.Text.RegularExpressions;
 using ICSharpCode.SharpZipLib.Zip;
 using ICSharpCode.SharpZipLib.Core;
-using System.Globalization;
 
 namespace Grp.L2PSite.MobileApp.Services
 {
     public static class Tools
     {
 
-        public static String pWd = "Integr$atorPa%ss123!@#$5";
-        public static Boolean hasCookieToken = false;
+        public static string pWd = "Integr$atorPa%ss123!@#$5";
+        public static bool hasCookieToken = false;
 
         public static void getAndSetUserToken(IReadableStringCollection cookies, HttpContext context){
 
@@ -29,9 +28,16 @@ namespace Grp.L2PSite.MobileApp.Services
                 foreach(var cookie in cookiesList)
                 {
                     if (cookie.Key == "CRTID")
+                    {
                         Config.setRefreshToken(Encryptor.Decrypt(cookie.Value.First()));
+                        System.Diagnostics.Debug.WriteLine("Refresh Token: "+ Encryptor.Decrypt(cookie.Value.First()));
+
+                    }
                     else
-                        Config.setAccessToken(Encryptor.Decrypt(cookie.Value.First()));         
+                    {
+                        Config.setAccessToken(Encryptor.Decrypt(cookie.Value.First()));
+                        System.Diagnostics.Debug.WriteLine("Access Token: " + Encryptor.Decrypt(cookie.Value.First()));
+                    }
                 }
                 if (cookiesList.Count() == 2)
                 {
