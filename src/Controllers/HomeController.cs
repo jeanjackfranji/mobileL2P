@@ -20,7 +20,7 @@ namespace Grp.L2PSite.MobileApp.Controllers
                 LoginStatus lStatus = LoginStatus.Waiting;
                 Tools.getAndSetUserToken(Request.Cookies, Context);
                 if (Context.Session.Get("LoggedIn") != null)
-                    lStatus = (LoginStatus)Tools.ByteArrayToObject(Context.Session["LoggedIn"]);
+                    lStatus = (LoginStatus)Tools.ByteArrayToObject(Context.Session.Get("LoggedIn"));
 
                 if (lStatus == LoginStatus.LoggedIn)
                 {
@@ -118,6 +118,5 @@ namespace Grp.L2PSite.MobileApp.Controllers
             ViewData["error"] = error;
             return View("~/Views/Shared/Error.cshtml");
         }
-
     }
 }

@@ -1,4 +1,5 @@
-﻿using Grp.L2PSite.MobileApp.Models;
+﻿using System.Threading;
+using Grp.L2PSite.MobileApp.Models;
 using Grp.L2PSite.MobileApp.Services;
 using Microsoft.AspNet.Authentication.Facebook;
 using Microsoft.AspNet.Authentication.MicrosoftAccount;
@@ -13,7 +14,7 @@ using Microsoft.Framework.DependencyInjection;
 using Microsoft.Framework.Logging;
 using Microsoft.Framework.Runtime;
 
-namespace Cik.MazSite.WebApp
+namespace Grp.L2PSite.MobileApp
 {
     public class Startup
     {
@@ -33,6 +34,9 @@ namespace Cik.MazSite.WebApp
             }
             builder.AddEnvironmentVariables();
             Configuration = builder.Build();
+
+            Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
+            Thread.CurrentThread.CurrentUICulture = Thread.CurrentThread.CurrentCulture;
         }
 
         public IConfiguration Configuration { get; set; }

@@ -17,56 +17,61 @@
     <!-- Materialize CSS + Calendar + Clock -->
     <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css" media="screen,projection" />
     <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.8.0/fullcalendar.min.css' />
-    <link rel="stylesheet" href="~/css/lolliclock.css" /> 
-    <link rel="stylesheet" href="~/css/site.css" /> 
-    
+    <link rel="stylesheet" href="~/css/lolliclock.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+
     <!--Import jQuery before materialize.js-->
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.0.0.min.js"></script>
 
 </head>
 <body>
     @if (cId != null)
-    {      
+    {
         <ul id="coursesDropdown" class="dropdown-content">
             <li><a asp-controller="MyCourses" asp-action="LearningMaterials" asp-route-cId="@cId" class="waves-effect waves-light blue-text">LearningMaterials</a></li>
             <li><a asp-controller="MyCourses" asp-action="Assignments" asp-route-cId="@cId" class="waves-effect waves-light blue-text">Assignments</a></li>
             <li><a asp-controller="MyCourses" asp-action="MediaLibrary" asp-route-cId="@cId" class="waves-effect waves-light blue-text">MediaLibrary</a></li>
-            <li><a asp-controller="MyCourses" asp-action="SharedDocuments" asp-route-cId="@cId"  class="waves-effect waves-light blue-text">SharedDocuments</a></li>
+            <li><a asp-controller="MyCourses" asp-action="SharedDocuments" asp-route-cId="@cId" class="waves-effect waves-light blue-text">SharedDocuments</a></li>
             <li><a asp-controller="MyCourses" asp-action="Email" asp-route-cId="@cId" class="waves-effect waves-light blue-text">Emails</a></li>
             <li><a asp-controller="MyCourses" asp-action="Announcement" asp-route-cId="@cId" class="waves-effect waves-light blue-text">Announcements</a></li>
-            <li><a asp-controller="MyCourses" asp-action="Hyperlinks" asp-route-cId="@cId"  class="waves-effect waves-light blue-text">Hyperlinks</a></li>
+            <li><a asp-controller="MyCourses" asp-action="Hyperlinks" asp-route-cId="@cId" class="waves-effect waves-light blue-text">Hyperlinks</a></li>
             <li><a asp-controller="MyCourses" asp-action="Literature" asp-route-cId="@cId" class="waves-effect waves-light blue-text">Literature</a></li>
             <li><a asp-controller="MyCourses" asp-action="DiscussionForum" asp-route-cId="@cId" class="waves-effect waves-light blue-text">DiscussionForum</a></li>
             <li><a asp-controller="MyCourses" asp-action="GroupWorkspace" asp-route-cId="@cId" class="waves-effect waves-light blue-text">GroupWorkspace</a></li>
         </ul>
     }
+    <ul id="dpd_languages" class="dropdown-content">
+        <li><a asp-controller="Home" asp-action="Language" asp-route-lang="EN-US">English</a></li>
+        <li><a asp-controller="Home" asp-action="Language" asp-route-lang="DE">Deutsch</a></li>
+    </ul>
     <nav class="blue darken-4" role="navigation">
         <div class="nav-wrapper">
             <a href="#!" class="brand-logo margin-left-20">L2P Mobile</a>
-
             <a href="#" data-activates="mobile" class="button-collapse show-on-large"><i class="material-icons">menu</i></a>
+
+
             @if (cId != null)
             {
                 <ul class="right">
                     <!-- Dropdown Trigger -->
-                    <li><a class="dropdown-button" href="#!"  data-constrainwidth="false" data-activates="coursesDropdown"><i class="material-icons right">more_vert</i></a></li>
+                    <li><a class="dropdown-button" href="#!" data-constrainwidth="false" data-activates="coursesDropdown"><i class="material-icons right">more_vert</i></a></li>
                 </ul>
             }
             <ul class="side-nav" id="mobile">
                 <li style="height: 60px">
                     <div class="row valign-wrapper">
-                        <div class="col s12" >
+                        <div class="col s12">
                             <img src="~/images/l2p_logo_shadow.png" />
                             <img width="100" src="~/images/photo.jpg">
                         </div>=
                     </div>
                 </li>
-                <li><a class="waves-effect waves-light" asp-controller="Home" asp-action="MyCourses" style="padding-left: 20px !important;">MyCourses <i class="left material-icons" style="color: #0D47A1 !important;">school</i></a></li>
-                <li><a class="waves-effect waves-light" asp-controller="Home" asp-action="Calendar" style="padding-left: 20px !important;">Calendar <i class="left material-icons" style="color: #0D47A1 !important;">perm_contact_calendar</i></a></li>
-                <li><a class="waves-effect waves-light" asp-controller="Home" asp-action="About" style="padding-left: 20px !important;">About <i class="left material-icons" style="color: #0D47A1 !important;">info_outline</i></a></li>
+                <li><a class="waves-effect waves-light" asp-controller="Home" asp-action="MyCourses" style="padding-left: 20px !important;">MyCourses<i class="left material-icons" style="color: #0D47A1 !important;">school</i></a></li>
+                <li><a class="waves-effect waves-light" asp-controller="Home" asp-action="Calendar" style="padding-left: 20px !important;">Calendar<i class="left material-icons" style="color: #0D47A1 !important;">perm_contact_calendar</i></a></li>
+                <li><a class="waves-effect waves-light" asp-controller="Home" asp-action="About" style="padding-left: 20px !important;">About<i class="left material-icons" style="color: #0D47A1 !important;">info_outline</i></a></li>
                 <li class="divider"></li>
                 @await Html.PartialAsync("_LoginPartial")
-                
+
             </ul>
         </div>
     </nav>

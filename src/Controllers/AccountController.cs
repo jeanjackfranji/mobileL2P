@@ -43,6 +43,13 @@ namespace Grp.L2PSite.MobileApp.Controllers
         [AllowAnonymous]
         public IActionResult Login(string returnUrl = null)
         {
+
+            if(Context.Session.GetString("Language") == "DE")
+            {
+                Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("DE");
+                Thread.CurrentThread.CurrentUICulture = Thread.CurrentThread.CurrentCulture;
+            }
+
             ViewData["ReturnUrl"] = returnUrl;
             Tools.getAndSetUserToken(Request.Cookies, Context);
             if (!Tools.hasCookieToken)
